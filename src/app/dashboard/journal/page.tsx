@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
-import { PageHeader, Card, CardHeader, EmptyState, Badge } from '@/components/ui';
-import { Book } from 'lucide-react';
+import { PageHeader, Card, CardHeader, EmptyState, Badge, Button } from '@/components/ui';
+import { Book, Plus } from 'lucide-react';
 import { fmtEur, fmtDate } from '@/lib/utils';
+import Link from 'next/link';
 
 type Line = { account: string; debit?: number; credit?: number };
 type Entry = { id: string; entry_date: string; description: string; entry_number?: string; lines: Line[] };
@@ -29,7 +30,11 @@ export default async function JournalPage() {
 
   return (
     <div className="p-8 max-w-7xl">
-      <PageHeader title="Denník & hlavná kniha" subtitle={`${rows.length} zápisov`} />
+      <PageHeader
+        title="Denník & hlavná kniha"
+        subtitle={`${rows.length} zápisov`}
+        actions={<Link href="/dashboard/journal/new"><Button variant="primary"><Plus size={14} /> Nový zápis</Button></Link>}
+      />
 
       {rows.length === 0 ? (
         <Card>

@@ -28,7 +28,7 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isPublic = path.startsWith('/portal/') || path === '/' || path === '/terms' || path === '/privacy' || path === '/cookies';
   const isAuthPage = path.startsWith('/login');
-  const isProtectedPage = (path.startsWith('/dashboard') || path.startsWith('/api/')) && !path.startsWith('/api/portal') && !path.startsWith('/api/stripe');
+  const isProtectedPage = (path.startsWith('/dashboard') || path.startsWith('/api/')) && !path.startsWith('/api/portal') && !path.startsWith('/api/stripe') && !path.startsWith('/api/exchange-rates') && !path.startsWith('/api/validate-vat') && !path.startsWith('/api/health');
   if (isPublic) return supabaseResponse;
 
   if (!user && isProtectedPage) {

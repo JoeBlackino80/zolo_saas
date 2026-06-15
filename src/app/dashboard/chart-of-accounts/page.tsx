@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
-import { PageHeader, Card, EmptyState } from '@/components/ui';
-import { Book } from 'lucide-react';
+import { PageHeader, Card, EmptyState, Button } from '@/components/ui';
+import { Book, Plus } from 'lucide-react';
+import Link from 'next/link';
 
 export default async function ChartOfAccountsPage() {
   const sb = await createClient();
@@ -28,7 +29,11 @@ export default async function ChartOfAccountsPage() {
 
   return (
     <div className="p-8 max-w-6xl">
-      <PageHeader title="Účtová osnova" subtitle={`${rows.length} účtov · podľa SK štandardu`} />
+      <PageHeader
+        title="Účtová osnova"
+        subtitle={`${rows.length} účtov · podľa SK štandardu`}
+        actions={<Link href="/dashboard/chart-of-accounts/new"><Button variant="primary"><Plus size={14} /> Pridať účet</Button></Link>}
+      />
       {rows.length === 0 ? (
         <Card><EmptyState icon={<Book size={24} />} title="Prázdna osnova" description="Importuj štandardnú SK účtovú osnovu pre začiatok." /></Card>
       ) : (

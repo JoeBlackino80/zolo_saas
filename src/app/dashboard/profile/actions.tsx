@@ -42,6 +42,32 @@ export default function ProfileActions() {
     setPwModal(false);
   }
 
+  async function gdprExport() {
+    const r = await fetch('/api/gdpr-export');
+    if (!r.ok) { toast('Chyba pri exporte', 'error'); return; }
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'zolo-export.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('JSON export stiahnutý', 'success');
+  }
+
+  async function gdprDelete() {
+    if (!confirm('Naozaj zmazať účet a všetky dáta?\n\nToto je NEZVRATNÉ.')) return;
+    if (prompt('Pre potvrdenie napíš: DELETE_MY_ACCOUNT_PERMANENTLY') !== 'DELETE_MY_ACCOUNT_PERMANENTLY') {
+      toast('Zrušené', 'info');
+      return;
+    }
+    const r = await fetch('/api/gdpr-delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirm: 'DELETE_MY_ACCOUNT_PERMANENTLY' }) });
+    const j = await r.json();
+    if (!j.ok) { toast(j.error, 'error'); return; }
+    toast(j.message, 'success');
+    setTimeout(() => router.push('/'), 3000);
+  }
+
   return (
     <div className="flex flex-col gap-2 items-end">
       <Button variant="secondary" onClick={changePassword} className="!bg-white/10 !text-white !border-white/20 !hover:bg-white/20">
@@ -50,8 +76,14 @@ export default function ProfileActions() {
       <Button variant="secondary" onClick={setupMfa} className="!bg-white/10 !text-white !border-white/20 !hover:bg-white/20">
         <ShieldCheck size={14} /> Aktivovať MFA
       </Button>
+      <Button variant="secondary" onClick={gdprExport} className="!bg-white/10 !text-white !border-white/20 !hover:bg-white/20">
+        <Key size={14} /> Export dát (GDPR)
+      </Button>
       <Button variant="secondary" onClick={logout} className="!bg-white/10 !text-white !border-white/20 !hover:bg-white/20">
         <LogOut size={14} /> Odhlásiť
+      </Button>
+      <Button variant="danger" onClick={gdprDelete} className="!bg-red-500/80">
+        Zmazať účet
       </Button>
     </div>
   );
