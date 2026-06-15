@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
-import { PageHeader, Card, EmptyState } from '@/components/ui';
-import { Building2 } from 'lucide-react';
+import { PageHeader, Card, EmptyState, Button } from '@/components/ui';
+import { Building2, Plus } from 'lucide-react';
 import { fmtEur, fmtDate } from '@/lib/utils';
+import Link from 'next/link';
 
 export default async function AssetsPage() {
   const sb = await createClient();
@@ -9,9 +10,18 @@ export default async function AssetsPage() {
 
   return (
     <div className="p-8 max-w-7xl">
-      <PageHeader title="Majetok" subtitle={`${assets?.length || 0} aktív · odpisy podľa § 26 ZDP`} />
+      <PageHeader
+        title="Majetok"
+        subtitle={`${assets?.length || 0} aktív · odpisy podľa § 26 ZDP`}
+        actions={<Link href="/dashboard/assets/new"><Button variant="primary"><Plus size={14} /> Pridať majetok</Button></Link>}
+      />
       {!assets?.length ? (
-        <Card><EmptyState icon={<Building2 size={24} />} title="Žiadny majetok" description="Pridaj DHM / DNM pre evidenciu odpisov." /></Card>
+        <Card><EmptyState
+          icon={<Building2 size={24} />}
+          title="Žiadny majetok"
+          description="Pridaj DHM / DNM pre evidenciu odpisov."
+          action={<Link href="/dashboard/assets/new"><Button variant="primary"><Plus size={14} /> Pridať</Button></Link>}
+        /></Card>
       ) : (
         <Card>
           <table className="w-full text-sm">
