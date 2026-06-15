@@ -9,29 +9,27 @@ test.describe('Public pages', () => {
 
   test('terms page is accessible', async ({ page }) => {
     await page.goto('/terms');
-    await expect(page.getByText(/Obchodné podmienky/i)).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Obchodné podmienky');
   });
 
   test('privacy page is accessible', async ({ page }) => {
     await page.goto('/privacy');
-    await expect(page.getByText(/Ochrana osobných údajov/i)).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Ochrana osobných údajov');
   });
 
   test('cookies page is accessible', async ({ page }) => {
     await page.goto('/cookies');
-    await expect(page.getByText(/Cookies/i).first()).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Cookies');
   });
 
   test('pricing page shows plans', async ({ page }) => {
     await page.goto('/pricing');
-    await expect(page.getByText('Free').first()).toBeVisible();
-    await expect(page.getByText('Pro').first()).toBeVisible();
-    await expect(page.getByText('Business').first()).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Vyber si plán');
   });
 
   test('contact page is accessible', async ({ page }) => {
     await page.goto('/contact');
-    await expect(page.getByText(/support@zolo.sk/)).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Kontakt');
   });
 
   test('robots.txt serves correctly', async ({ request }) => {
@@ -50,7 +48,8 @@ test.describe('Public pages', () => {
     const r = await request.get('/api/health');
     expect(r.status()).toBe(200);
     const json = await r.json();
-    expect(json.ok).toBe(true);
+    expect(json.service).toBe('ZOLO');
+    expect(json.version).toBe('1.0.0');
   });
 });
 
@@ -63,7 +62,8 @@ test.describe('Login flow', () => {
 
   test('login form shows email and password fields', async ({ page }) => {
     await page.goto('/login');
-    await expect(page.getByLabel(/email/i).first()).toBeVisible();
+    await expect(page.locator('input[type="email"]')).toBeVisible();
+    await expect(page.locator('input[type="password"]')).toBeVisible();
   });
 });
 

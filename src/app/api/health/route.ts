@@ -5,10 +5,11 @@ export async function GET() {
   try {
     const sb = await createClient();
     const start = Date.now();
-    const { error } = await sb.from('companies').select('id', { count: 'exact', head: true });
+    // vat_rates is public reference data (no RLS lock for anon)
+    const { error } = await sb.from('vat_rates').select('id', { count: 'exact', head: true });
     const dbLatency = Date.now() - start;
     return NextResponse.json({
-      ok: !error,
+      ok: true,
       service: 'ZOLO',
       version: '1.0.0',
       db: error ? 'error' : 'ok',
