@@ -162,6 +162,7 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
         <NavItem icon={Users} label="Tím & pozvánky" href="/dashboard/team" active={segment === 'team'} />
         <NavItem icon={History} label="Audit log" href="/dashboard/audit" active={segment === 'audit'} />
         <NavItem icon={Settings} label="Nastavenia" href="/dashboard/settings" active={segment === 'settings'} />
+        <NavItem icon={Search} label="Pomoc" href="/dashboard/help" active={segment === 'help'} />
       </nav>
 
       <div className="border-t border-white/5 bg-black/15 p-2 space-y-1.5">
