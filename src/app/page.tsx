@@ -29,7 +29,11 @@ export default async function Home() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-extrabold">Z</div>
             <span className="font-bold text-slate-900">ZOLO</span>
           </div>
-          <Link href="/login" className="px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-lg hover:bg-slate-800 transition">Prihlásiť sa</Link>
+          <div className="flex items-center gap-2">
+            <Link href="/pricing" className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900">Cenník</Link>
+            <Link href="/contact" className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900">Kontakt</Link>
+            <Link href="/login" className="px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-lg hover:bg-slate-800 transition">Prihlásiť sa</Link>
+          </div>
         </div>
       </header>
 
