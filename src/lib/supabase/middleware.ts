@@ -26,9 +26,9 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const isPublic = path.startsWith('/portal/');
-  const isAuthPage = path.startsWith('/login') || path === '/';
-  const isProtectedPage = (path.startsWith('/dashboard') || path.startsWith('/api/')) && !isPublic;
+  const isPublic = path.startsWith('/portal/') || path === '/';
+  const isAuthPage = path.startsWith('/login');
+  const isProtectedPage = (path.startsWith('/dashboard') || path.startsWith('/api/')) && !path.startsWith('/api/portal') && !path.startsWith('/api/stripe');
   if (isPublic) return supabaseResponse;
 
   if (!user && isProtectedPage) {

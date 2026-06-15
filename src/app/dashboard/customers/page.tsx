@@ -43,7 +43,7 @@ export default async function CustomersPage() {
         ) : (
           <div className="divide-y divide-slate-100">
             {contacts.map((c) => (
-              <div key={c.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition">
+              <Link key={c.id} href={`/dashboard/customers/${c.id}`} className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-slate-200 text-slate-600 font-semibold flex items-center justify-center text-sm">
                     {c.name[0]?.toUpperCase()}
@@ -55,7 +55,7 @@ export default async function CustomersPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

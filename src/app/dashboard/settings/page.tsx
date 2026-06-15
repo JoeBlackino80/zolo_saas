@@ -29,7 +29,9 @@ export default async function SettingsPage() {
         <SettingCard href="/dashboard/settings/branding" icon={<Palette size={20} />} title="Branding" desc="Logo · farby · pätička" />
         <SettingCard href="/dashboard/settings/payments" icon={<CreditCard size={20} />} title="Platby" desc="Stripe payment links" />
         <SettingCard href="/dashboard/settings/email" icon={<Mail size={20} />} title="Email šablóny" desc="Texty notifikácií" />
+        <SettingCard href="/dashboard/settings/notifications" icon={<Mail size={20} />} title="Pripomienky" desc="Upomienky a termíny" />
         <SettingCard href="/dashboard/settings/webhooks" icon={<Building2 size={20} />} title="Webhooks" desc="N8N · Zapier · Make" />
+        <SettingCard href="/dashboard/settings/preferences" icon={<Palette size={20} />} title="Preferencie" desc="Jazyk · formát · téma" />
         <SettingCard href="/dashboard/team" icon={<Mail size={20} />} title="Tím" desc="Pozvi účtovníčku" />
         <SettingCard href="/dashboard/audit" icon={<History size={20} />} title="Audit log" desc="História zmien" />
       </div>

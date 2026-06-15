@@ -30,6 +30,7 @@ import {
   BarChart3,
   TrendingUp,
   Briefcase,
+  CreditCard,
 } from 'lucide-react';
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { useState } from 'react';
@@ -111,6 +112,8 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
         <Section label="Prehľad & fakturácia" />
         <NavItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" active={!segment} />
         <NavItem icon={FileText} label="Fakturácia" href="/dashboard/invoices" active={segment === 'invoices'} />
+        <NavItem icon={FileText} label="Cenové ponuky" href="/dashboard/quotes" active={segment === 'quotes'} />
+        <NavItem icon={Clock} label="Schvaľovanie" href="/dashboard/approvals" active={segment === 'approvals'} />
         <NavItem icon={Clock} label="Pohľadávky" href="/dashboard/receivables" active={segment === 'receivables'} />
         <NavItem icon={TrendingUp} label="Cash flow 90d" href="/dashboard/cashflow" active={segment === 'cashflow'} />
         <NavItem icon={BarChart3} label="Reporty" href="/dashboard/reports" active={segment === 'reports'} />
@@ -122,6 +125,7 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
         <NavItem icon={Code} label="DP DPH — priznanie" href="/dashboard/vat-return" active={segment === 'vat-return'} />
         <NavItem icon={Code} label="Kontrolný výkaz (KV)" href="/dashboard/control-statement" active={segment === 'control-statement'} />
         <NavItem icon={Code} label="Súhrnný výkaz (SV)" href="/dashboard/summary-statement" active={segment === 'summary-statement'} />
+        <NavItem icon={History} label="História podaní" href="/dashboard/tax-returns" active={segment === 'tax-returns'} />
 
         <Section label="Podanie" />
         <NavItem icon={Send} label="eDane" href="/dashboard/edane" active={segment === 'edane'} />
@@ -130,11 +134,15 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
 
         <Section label="Denné účtovníctvo" />
         <NavItem icon={Book} label="Denník & hlavná kniha" href="/dashboard/journal" active={segment === 'journal'} />
+        <NavItem icon={Book} label="Účtová osnova" href="/dashboard/chart-of-accounts" active={segment === 'chart-of-accounts'} />
         <NavItem icon={Wallet} label="Pokladnica" href="/dashboard/cash-book" active={segment === 'cash-book'} />
+        <NavItem icon={CreditCard} label="Bankové účty" href="/dashboard/bank-accounts" active={segment === 'bank-accounts'} />
         <NavItem icon={Briefcase} label="Projekty" href="/dashboard/projects" active={segment === 'projects'} />
+        <NavItem icon={Target} label="Nákladové strediská" href="/dashboard/cost-centers" active={segment === 'cost-centers'} />
         <NavItem icon={Building2} label="Majetok" href="/dashboard/assets" active={segment === 'assets'} />
         <NavItem icon={Wallet} label="Mzdy" href="/dashboard/payroll" active={segment === 'payroll'} beta />
         <NavItem icon={Boxes} label="Sklady" href="/dashboard/stock" active={segment === 'stock'} />
+        <NavItem icon={Boxes} label="Skladové pohyby" href="/dashboard/stock-movements" active={segment === 'stock-movements'} />
         <NavItem icon={Plane} label="Cestovné príkazy" href="/dashboard/travel" active={segment === 'travel'} />
 
         <Section label="Koncoročné" />
