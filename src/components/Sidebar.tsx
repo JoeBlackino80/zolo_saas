@@ -131,7 +131,11 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
         <NavItem icon={Users} label="Zákazníci" href="/dashboard/customers" active={segment === 'customers'} />
         <NavItem icon={Tag} label="Cenník" href="/dashboard/products" active={segment === 'products'} />
 
+        <Section label="Import" />
+        <NavItem icon={Wallet} label="Bankový výpis" href="/dashboard/bank" active={segment === 'bank'} />
+
         <Section label="Systém" />
+        <NavItem icon={Users} label="Tím & pozvánky" href="/dashboard/team" active={segment === 'team'} />
         <NavItem icon={Settings} label="Nastavenia" href="/dashboard/settings" active={segment === 'settings'} />
       </nav>
 

@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ZOLO — Slovak Tax & Accounting Platform
 
-## Getting Started
+Cloud-first SaaS pre slovenské firmy. Fakturácia, DPH, účtovníctvo, mzdy.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, RSC, Turbopack)
+- **TypeScript** + **Tailwind CSS 4**
+- **Supabase** (Auth + Postgres + RLS) — `knijcjrpmgkuwnkvgpeu` projekt s 91 tabuľkami
+- **Lucide React** ikony
+
+## Setup
 
 ```bash
+npm install
+cp .env.local.example .env.local  # už máš
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Auth
+- Email/password login + signup
+- MFA (TOTP) challenge na druhom kroku
+- Server-side proxy middleware redirects (`/login` ↔ `/dashboard`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Multi-tenant
+- 1 user = N firiem cez `user_company_roles` (admin/accountant/viewer)
+- Cloud-first: žiadne localStorage data leaks
+- RLS na DB úrovni
 
-## Learn More
+### Fakturácia (`/dashboard/invoices`)
+- 6 typov: FA, ZF, DO, DL, PPD, CP
+- List + create + detail
+- Mark paid, email (cez `/api/send-invoice`), PDF tlač
+- Auto-VAT calc 23/19/10/EU
+- Multi-položkový editor
 
-To learn more about Next.js, take a look at the following resources:
+### DPH
+- **Zadávanie** (`/dashboard/vat`) — cross-firm tabuľka per sadzba
+- **DP DPH** XML (`/dashboard/vat-return`) — `DPHv24` namespace
+- **KV DPH** (`/dashboard/control-statement`) — `KVDPHv21` so sekciami A.1, B.1
+- **SV DPH** (`/dashboard/summary-statement`) — `SVDPHv21` EÚ dodania
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Účtovníctvo
+- **Denník** (`/dashboard/journal`)
+- **Pohľadávky** (`/dashboard/receivables`) — aging buckets
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Mzdy + DZP
+- **Mzdová kalkulačka** SK 2026 (SP 9.4%, ZP 4%, daň 19/25%, daňový bonus)
+- **DZP kalkulačka** — FO typ A/B + PO (15% / 21%)
 
-## Deploy on Vercel
+### Banky + Import
+- **CSV import** + auto-match cez VS/sumu
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Plánovanie
+- **Daňový kalendár** + ICS export
+- Browser notifications
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Optimalizácia
+- **DPH** skupinové započítanie cez firmy
+- **Prepojenia** — inter-firm faktúry, obojsmerné toky
+
+### Koncoročné
+- **Závierka** 10-bodový checklist s progress
+
+### Tím
+- Pozvánky účtovníčky + role
+- `team_invitations` cloud tabuľka s RLS
+
+### Global
+- Command palette Cmd+K
+- Toast notifications
+- Apple-style sidebar
+
+## Deploy
+
+```bash
+vercel
+# alebo
+npx wrangler pages deploy .next
+```
+
+Env:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+## TODO
+
+- [ ] Real SMTP via Resend Edge Function
+- [ ] Stripe payment links
+- [ ] eDane priame podanie
+- [ ] eKasa hardware integration
+- [ ] PDF export server-side
+- [ ] Customer portal
+- [ ] OCR pre prijaté FA
+- [ ] AI Vision import
+- [ ] REST API
+- [ ] CZ/EN lokalizácia
