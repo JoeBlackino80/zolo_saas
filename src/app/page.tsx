@@ -73,8 +73,13 @@ export default async function Home() {
       </section>
 
       <footer className="bg-slate-900 text-slate-400 py-8">
-        <div className="max-w-6xl mx-auto px-6 text-sm">
-          © 2026 ZOLO · Hostované v EÚ · GDPR compliant
+        <div className="max-w-6xl mx-auto px-6 text-sm flex flex-wrap items-center justify-between gap-3">
+          <div>© 2026 ZOLO · Hostované v EÚ · GDPR compliant</div>
+          <div className="flex gap-4">
+            <Link href="/terms" className="hover:text-white">Obchodné podmienky</Link>
+            <Link href="/privacy" className="hover:text-white">Ochrana údajov</Link>
+            <Link href="/cookies" className="hover:text-white">Cookies</Link>
+          </div>
         </div>
       </footer>
     </div>

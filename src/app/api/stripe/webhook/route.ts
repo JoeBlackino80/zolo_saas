@@ -1,26 +1,35 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import Stripe from 'stripe';
 
 // POST /api/stripe/webhook
-// Listens for Stripe events (payment.completed) → marks invoice as paid
+// Verifies Stripe signature → marks invoices paid on payment_intent.succeeded
 export async function POST(request: Request) {
   const sig = request.headers.get('stripe-signature');
-  if (!sig) return NextResponse.json({ ok: false, error: 'No signature' }, { status: 400 });
+  if (!sig) return NextResponse.json({ ok: false, error: 'Missing signature' }, { status: 400 });
 
   const body = await request.text();
-  // TODO: Verify signature with STRIPE_WEBHOOK_SECRET via Stripe SDK
-  // For now, parse the event
-  let event;
+  const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+  const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+
+  if (!STRIPE_WEBHOOK_SECRET || !STRIPE_SECRET_KEY) {
+    return NextResponse.json({ ok: false, error: 'Stripe not configured' }, { status: 500 });
+  }
+
+  const stripe = new Stripe(STRIPE_SECRET_KEY);
+
+  let event: Stripe.Event;
   try {
-    event = JSON.parse(body);
-  } catch {
-    return NextResponse.json({ ok: false, error: 'Invalid JSON' }, { status: 400 });
+    event = await stripe.webhooks.constructEventAsync(body, sig, STRIPE_WEBHOOK_SECRET);
+  } catch (e) {
+    return NextResponse.json({ ok: false, error: 'Signature verification failed: ' + (e as Error).message }, { status: 400 });
   }
 
   const sb = await createClient();
 
   if (event.type === 'checkout.session.completed' || event.type === 'payment_intent.succeeded') {
-    const invoiceId = event.data?.object?.metadata?.invoice_id;
+    const obj = event.data.object as Stripe.Checkout.Session | Stripe.PaymentIntent;
+    const invoiceId = obj.metadata?.invoice_id;
     if (invoiceId) {
       const { data: invoice } = await sb.from('invoices').select('total').eq('id', invoiceId).single();
       if (invoice) {
@@ -39,5 +48,5 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, received: true });
+  return NextResponse.json({ ok: true, received: true, type: event.type });
 }

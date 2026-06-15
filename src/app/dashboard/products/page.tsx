@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
-import { PageHeader, Card, EmptyState } from '@/components/ui';
-import { Tag } from 'lucide-react';
+import { PageHeader, Card, EmptyState, Button } from '@/components/ui';
+import { Tag, Plus } from 'lucide-react';
 import { fmtEur } from '@/lib/utils';
+import Link from 'next/link';
 
 export default async function ProductsPage() {
   const sb = await createClient();
@@ -9,9 +10,18 @@ export default async function ProductsPage() {
 
   return (
     <div className="p-8 max-w-7xl">
-      <PageHeader title="Cenník" subtitle={`${products?.length || 0} položiek`} />
+      <PageHeader
+        title="Cenník"
+        subtitle={`${products?.length || 0} položiek`}
+        actions={<Link href="/dashboard/products/new"><Button variant="primary"><Plus size={14} /> Nová položka</Button></Link>}
+      />
       {!products?.length ? (
-        <Card><EmptyState icon={<Tag size={24} />} title="Prázdny cenník" description="Pridaj produkty alebo služby." /></Card>
+        <Card><EmptyState
+          icon={<Tag size={24} />}
+          title="Prázdny cenník"
+          description="Pridaj produkty alebo služby pre používanie pri vystavovaní dokladov."
+          action={<Link href="/dashboard/products/new"><Button variant="primary"><Plus size={14} /> Pridať položku</Button></Link>}
+        /></Card>
       ) : (
         <Card>
           <table className="w-full text-sm">

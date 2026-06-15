@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import CommandPalette from '@/components/CommandPalette';
+import MobileTopbar from '@/components/MobileTopbar';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const sb = await createClient();
@@ -16,9 +17,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .order('name');
 
   return (
-    <div className="grid md:grid-cols-[256px_1fr] min-h-screen bg-slate-50 text-slate-900">
-      <Sidebar companies={companies || []} userEmail={user.email || ''} />
-      <main className="overflow-auto">{children}</main>
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="md:grid md:grid-cols-[256px_1fr] min-h-screen">
+        <Sidebar companies={companies || []} userEmail={user.email || ''} />
+        <div className="flex flex-col">
+          <MobileTopbar />
+          <main className="overflow-auto flex-1">{children}</main>
+        </div>
+      </div>
       <CommandPalette />
     </div>
   );

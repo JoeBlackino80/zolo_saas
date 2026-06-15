@@ -68,7 +68,7 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
   }
 
   return (
-    <aside className="bg-slate-950 text-slate-300 flex flex-col h-screen sticky top-0 border-r border-white/5">
+    <aside className="sidebar-aside bg-slate-950 text-slate-300 flex flex-col h-screen md:sticky md:top-0 border-r border-white/5 md:!relative md:!block md:!w-auto md:!z-auto md:!hidden-false hidden md:flex">
       <div className="p-3.5 pb-3 border-b border-white/5 space-y-2">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-extrabold text-base shadow-md shadow-blue-500/40">

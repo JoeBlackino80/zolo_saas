@@ -1,10 +1,17 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { rateLimit, getClientIp } from '@/lib/ratelimit';
 
 // POST /api/send-invoice
 // Body: { invoiceId: string, to: string, subject?: string, body?: string }
 // Returns: { ok: boolean, error?: string }
+// Rate limit: 30 emails per IP per minute
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`send-invoice:${ip}`, 30, 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json({ ok: false, error: 'Rate limit exceeded' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
+  }
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
