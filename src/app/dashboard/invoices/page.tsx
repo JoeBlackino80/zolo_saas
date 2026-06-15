@@ -76,11 +76,17 @@ export default async function InvoicesPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {invoices.map((i) => (
-                  <tr key={i.id} className="hover:bg-slate-50 transition">
+                  <tr key={i.id} className="hover:bg-slate-50 transition cursor-pointer" onClick={undefined as never}>
                     <td className="px-5 py-3">
-                      <Badge variant="blue">{TYPE_LABEL[i.type] || i.type}</Badge>
+                      <Link href={`/dashboard/invoices/${i.id}`}>
+                        <Badge variant="blue">{TYPE_LABEL[i.type] || i.type}</Badge>
+                      </Link>
                     </td>
-                    <td className="px-3 py-3 font-mono text-xs font-medium text-slate-900">{i.number}</td>
+                    <td className="px-3 py-3">
+                      <Link href={`/dashboard/invoices/${i.id}`} className="font-mono text-xs font-medium text-blue-600 hover:underline">
+                        {i.number}
+                      </Link>
+                    </td>
                     <td className="px-3 py-3 text-slate-700">{i.customer_name || '—'}</td>
                     <td className="px-3 py-3 text-right font-mono text-slate-900 font-medium">
                       {fmtEur(Number(i.total || 0))}

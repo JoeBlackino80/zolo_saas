@@ -12,7 +12,16 @@ export default async function PayrollPage() {
 
   return (
     <div className="p-8 max-w-7xl">
-      <PageHeader title="Mzdy" subtitle={`${employees?.length || 0} zamestnancov`} actions={<Badge variant="amber">BETA</Badge>} />
+      <PageHeader
+        title="Mzdy"
+        subtitle={`${employees?.length || 0} zamestnancov`}
+        actions={
+          <>
+            <Badge variant="amber">BETA</Badge>
+            <a href="/dashboard/payroll/calc" className="text-sm text-blue-600 hover:underline ml-3">Mzdová kalkulačka →</a>
+          </>
+        }
+      />
 
       {!employees?.length ? (
         <Card>
