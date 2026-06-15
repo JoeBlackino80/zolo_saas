@@ -69,7 +69,7 @@ export function Card({ children, className }: { children: React.ReactNode; class
   return <div className={cn('bg-white border border-slate-200 rounded-xl shadow-sm', className)}>{children}</div>;
 }
 
-export function CardHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
+export function CardHeader({ title, subtitle, action }: { title: React.ReactNode; subtitle?: string; action?: React.ReactNode }) {
   return (
     <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between">
       <div>

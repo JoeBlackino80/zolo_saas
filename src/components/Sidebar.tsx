@@ -27,6 +27,9 @@ import {
   History,
   Send,
   ShoppingBag,
+  BarChart3,
+  TrendingUp,
+  Briefcase,
 } from 'lucide-react';
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { useState } from 'react';
@@ -109,6 +112,8 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
         <NavItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" active={!segment} />
         <NavItem icon={FileText} label="Fakturácia" href="/dashboard/invoices" active={segment === 'invoices'} />
         <NavItem icon={Clock} label="Pohľadávky" href="/dashboard/receivables" active={segment === 'receivables'} />
+        <NavItem icon={TrendingUp} label="Cash flow 90d" href="/dashboard/cashflow" active={segment === 'cashflow'} />
+        <NavItem icon={BarChart3} label="Reporty" href="/dashboard/reports" active={segment === 'reports'} />
         <NavItem icon={Link2} label="Prepojenia" href="/dashboard/links" active={segment === 'links'} />
 
         <Section label="DPH" />
@@ -125,6 +130,8 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
 
         <Section label="Denné účtovníctvo" />
         <NavItem icon={Book} label="Denník & hlavná kniha" href="/dashboard/journal" active={segment === 'journal'} />
+        <NavItem icon={Wallet} label="Pokladnica" href="/dashboard/cash-book" active={segment === 'cash-book'} />
+        <NavItem icon={Briefcase} label="Projekty" href="/dashboard/projects" active={segment === 'projects'} />
         <NavItem icon={Building2} label="Majetok" href="/dashboard/assets" active={segment === 'assets'} />
         <NavItem icon={Wallet} label="Mzdy" href="/dashboard/payroll" active={segment === 'payroll'} beta />
         <NavItem icon={Boxes} label="Sklady" href="/dashboard/stock" active={segment === 'stock'} />
