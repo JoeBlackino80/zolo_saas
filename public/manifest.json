@@ -1,0 +1,23 @@
+{
+  "name": "ZOLO — Slovak Tax & Accounting",
+  "short_name": "ZOLO",
+  "description": "Cloud-first účtovníctvo, fakturácia, DPH pre slovenský trh",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1c",
+  "theme_color": "#3b82f6",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%233b82f6'/><stop offset='1' stop-color='%238b5cf6'/></linearGradient></defs><rect width='192' height='192' fill='url(%23g)' rx='40'/><text x='96' y='128' font-size='90' text-anchor='middle' fill='%23fff' font-family='-apple-system,sans-serif' font-weight='800' letter-spacing='-4'>Z</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%233b82f6'/><stop offset='1' stop-color='%238b5cf6'/></linearGradient></defs><rect width='512' height='512' fill='url(%23g)' rx='100'/><text x='256' y='340' font-size='240' text-anchor='middle' fill='%23fff' font-family='-apple-system,sans-serif' font-weight='800' letter-spacing='-10'>Z</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

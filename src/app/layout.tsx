@@ -9,6 +9,8 @@ const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin']
 export const metadata: Metadata = {
   title: 'ZOLO — Slovak Tax & Accounting',
   description: 'Cloud-first účtovníctvo, fakturácia, DPH, mzdy pre slovenský trh.',
+  manifest: '/manifest.json',
+  themeColor: '#3b82f6',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -22,6 +22,9 @@ import {
   LogOut,
   Plus,
   Search,
+  Sparkles,
+  Repeat,
+  History,
 } from 'lucide-react';
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { useState } from 'react';
@@ -131,11 +134,14 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
         <NavItem icon={Users} label="Zákazníci" href="/dashboard/customers" active={segment === 'customers'} />
         <NavItem icon={Tag} label="Cenník" href="/dashboard/products" active={segment === 'products'} />
 
-        <Section label="Import" />
+        <Section label="Import & nástroje" />
+        <NavItem icon={Sparkles} label="AI Vision import" href="/dashboard/import" active={segment === 'import'} />
         <NavItem icon={Wallet} label="Bankový výpis" href="/dashboard/bank" active={segment === 'bank'} />
+        <NavItem icon={Repeat} label="Recurring faktúry" href="/dashboard/recurring" active={segment === 'recurring'} />
 
         <Section label="Systém" />
         <NavItem icon={Users} label="Tím & pozvánky" href="/dashboard/team" active={segment === 'team'} />
+        <NavItem icon={History} label="Audit log" href="/dashboard/audit" active={segment === 'audit'} />
         <NavItem icon={Settings} label="Nastavenia" href="/dashboard/settings" active={segment === 'settings'} />
       </nav>
 

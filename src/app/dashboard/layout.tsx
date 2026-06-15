@@ -16,7 +16,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .order('name');
 
   return (
-    <div className="grid grid-cols-[256px_1fr] min-h-screen bg-slate-50 text-slate-900">
+    <div className="grid md:grid-cols-[256px_1fr] min-h-screen bg-slate-50 text-slate-900">
       <Sidebar companies={companies || []} userEmail={user.email || ''} />
       <main className="overflow-auto">{children}</main>
       <CommandPalette />

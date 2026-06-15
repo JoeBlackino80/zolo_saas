@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { PageHeader, Card, CardHeader, Badge, EmptyState, Button } from '@/components/ui';
 import Link from 'next/link';
-import { Building2, Plus } from 'lucide-react';
+import { Building2, Plus, Palette, CreditCard, Mail, History } from 'lucide-react';
 
 export default async function SettingsPage() {
   const sb = await createClient();
@@ -24,6 +24,13 @@ export default async function SettingsPage() {
           </Link>
         }
       />
+
+      <div className="grid grid-cols-4 gap-3 mb-6">
+        <SettingCard href="/dashboard/settings/branding" icon={<Palette size={20} />} title="Branding" desc="Logo · farby · pätička" />
+        <SettingCard href="/dashboard/settings/payments" icon={<CreditCard size={20} />} title="Platby" desc="Stripe payment links" />
+        <SettingCard href="/dashboard/team" icon={<Mail size={20} />} title="Tím" desc="Pozvi účtovníčku" />
+        <SettingCard href="/dashboard/audit" icon={<History size={20} />} title="Audit log" desc="História zmien" />
+      </div>
 
       <Card>
         <CardHeader title="Moje firmy" subtitle={`${companies?.length || 0} firiem pod tvojím účtom`} />
@@ -69,5 +76,15 @@ export default async function SettingsPage() {
         )}
       </Card>
     </div>
+  );
+}
+
+function SettingCard({ href, icon, title, desc }: { href: string; icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <Link href={href} className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-md hover:border-blue-300 transition group">
+      <div className="text-slate-400 group-hover:text-blue-500 transition mb-3">{icon}</div>
+      <div className="font-semibold text-slate-900 text-sm">{title}</div>
+      <div className="text-xs text-slate-500 mt-0.5">{desc}</div>
+    </Link>
   );
 }
