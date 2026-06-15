@@ -25,6 +25,8 @@ import {
   Sparkles,
   Repeat,
   History,
+  Send,
+  ShoppingBag,
 } from 'lucide-react';
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { useState } from 'react';
@@ -116,7 +118,9 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
         <NavItem icon={Code} label="Kontrolný výkaz (KV)" href="/dashboard/control-statement" active={segment === 'control-statement'} />
         <NavItem icon={Code} label="Súhrnný výkaz (SV)" href="/dashboard/summary-statement" active={segment === 'summary-statement'} />
 
-        <Section label="Plánovanie" />
+        <Section label="Podanie" />
+        <NavItem icon={Send} label="eDane" href="/dashboard/edane" active={segment === 'edane'} />
+        <NavItem icon={ShoppingBag} label="eKasa" href="/dashboard/ekasa" active={segment === 'ekasa'} />
         <NavItem icon={Calendar} label="Daňový kalendár" href="/dashboard/calendar" active={segment === 'calendar'} />
 
         <Section label="Denné účtovníctvo" />
