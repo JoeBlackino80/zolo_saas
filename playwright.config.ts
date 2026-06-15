@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: process.env.BASE_URL || 'https://app2.zolo.sk',
+    baseURL: process.env.BASE_URL || 'https://zolo.sk',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },

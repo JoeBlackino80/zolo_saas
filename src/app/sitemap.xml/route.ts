@@ -1,5 +1,5 @@
 export async function GET() {
-  const base = 'https://app2.zolo.sk';
+  const base = 'https://zolo.sk';
   const today = new Date().toISOString().slice(0, 10);
   const pages = [
     { loc: '', priority: '1.0' },
