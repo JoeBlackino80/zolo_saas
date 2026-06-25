@@ -28,10 +28,10 @@ export default function MobileTopbar() {
 
   return (
     <>
-      <div className="md:hidden flex items-center justify-between bg-slate-950 text-white p-3 sticky top-0 z-40 h-12">
+      <div className="md:hidden flex items-center justify-between bg-zinc-950 text-white p-3 sticky top-0 z-40 h-12">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-extrabold text-sm">Z</div>
-          <span className="font-semibold text-sm">ZOLO</span>
+          <div className="w-7 h-7 rounded-lg bg-white text-zinc-900 flex items-center justify-center font-black text-sm tracking-tight">Z</div>
+          <span className="font-semibold text-sm tracking-tight">ZOLO</span>
         </div>
         <button
           onClick={() => setOpen(!open)}

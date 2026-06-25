@@ -14,36 +14,46 @@ export default async function Image() {
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          background: '#09090b',
           fontFamily: 'sans-serif',
-          padding: 64,
+          padding: 80,
+          color: '#fff',
         }}
       >
-        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 24, fontWeight: 600, letterSpacing: 4, textTransform: 'uppercase' }}>
-          ZOLO Cenník
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 14,
+              background: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 36,
+              fontWeight: 900,
+              color: '#09090b',
+              letterSpacing: -1,
+            }}
+          >
+            Z
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 600, letterSpacing: -0.5 }}>ZOLO</div>
         </div>
-        <div style={{ color: 'white', fontSize: 88, fontWeight: 900, marginTop: 20, letterSpacing: -2 }}>
-          Od €4,99 / mesiac
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ fontSize: 28, color: '#71717a', fontWeight: 500, marginBottom: 8 }}>Začni zadarmo.</div>
+          <div style={{ fontSize: 100, fontWeight: 800, letterSpacing: -4, lineHeight: 0.95 }}>Vyber si plán.</div>
         </div>
-        <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 32, marginTop: 16 }}>
-          Free · Pro · Business
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            gap: 16,
-            marginTop: 56,
-          }}
-        >
-          {['DPH XML', 'Mzdy 2026', 'eDane', 'Stripe', 'Multi-firma'].map((t) => (
+        <div style={{ display: 'flex', gap: 12 }}>
+          {['Free · €0', 'Pro · €15', 'Business · €49'].map((t) => (
             <div
               key={t}
               style={{
-                background: 'rgba(255,255,255,0.1)',
-                color: 'white',
-                padding: '12px 20px',
+                background: 'rgba(255,255,255,0.08)',
+                color: '#fff',
+                padding: '12px 22px',
                 borderRadius: 999,
                 fontSize: 22,
                 fontWeight: 600,
@@ -52,9 +62,6 @@ export default async function Image() {
               {t}
             </div>
           ))}
-        </div>
-        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 22, marginTop: 64 }}>
-          zolo.sk
         </div>
       </div>
     ),

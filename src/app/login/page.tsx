@@ -166,7 +166,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || mfaCode.length !== 6}
-              className="w-full py-3 bg-gradient-to-br from-blue-500 to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/25 hover:translate-y-[-1px] transition disabled:opacity-50"
+              className="w-full py-3 bg-white text-zinc-900 font-medium rounded-full hover:bg-zinc-100 transition-colors disabled:opacity-50"
             >
               Overiť kód
             </button>
@@ -178,7 +178,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-br from-blue-500 to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/25 hover:translate-y-[-1px] transition disabled:opacity-50"
+              className="w-full py-3 bg-white text-zinc-900 font-medium rounded-full hover:bg-zinc-100 transition-colors disabled:opacity-50"
             >
               Prihlásiť sa
             </button>
@@ -195,7 +195,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-br from-blue-500 to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/25 hover:translate-y-[-1px] transition disabled:opacity-50"
+              className="w-full py-3 bg-white text-zinc-900 font-medium rounded-full hover:bg-zinc-100 transition-colors disabled:opacity-50"
             >
               Vytvoriť účet
             </button>

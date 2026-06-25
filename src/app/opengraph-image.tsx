@@ -14,38 +14,68 @@ export default async function Image() {
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%)',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          background: '#fff',
           fontFamily: 'sans-serif',
-          padding: 64,
+          padding: 80,
         }}
       >
         <div
           style={{
-            width: 140,
-            height: 140,
-            borderRadius: 28,
-            background: 'white',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 96,
-            fontWeight: 900,
-            color: '#3b82f6',
-            boxShadow: '0 30px 60px rgba(0,0,0,0.15)',
+            gap: 16,
           }}
         >
-          Z
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 14,
+              background: '#09090b',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 36,
+              fontWeight: 900,
+              color: '#fff',
+              letterSpacing: -1,
+            }}
+          >
+            Z
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 600, color: '#09090b', letterSpacing: -0.5 }}>ZOLO</div>
         </div>
-        <div style={{ color: 'white', fontSize: 96, fontWeight: 900, marginTop: 40, letterSpacing: -2 }}>
-          ZOLO
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              color: '#09090b',
+              fontSize: 100,
+              fontWeight: 800,
+              letterSpacing: -4,
+              lineHeight: 0.95,
+            }}
+          >
+            Účtovníctvo,
+          </div>
+          <div
+            style={{
+              color: '#a1a1aa',
+              fontSize: 100,
+              fontWeight: 800,
+              letterSpacing: -4,
+              lineHeight: 0.95,
+            }}
+          >
+            znovu navrhnuté.
+          </div>
         </div>
-        <div style={{ color: 'rgba(255,255,255,0.95)', fontSize: 36, marginTop: 8, fontWeight: 600 }}>
-          Účtovníctvo · Fakturácia · DPH · Mzdy
-        </div>
-        <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 26, marginTop: 36 }}>
-          Cloud-first pre slovenský trh · zolo.sk
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-end' }}>
+          <div style={{ color: '#71717a', fontSize: 22, fontWeight: 500 }}>
+            Fakturácia · DPH · Mzdy · Cloud-first pre slovenský trh
+          </div>
+          <div style={{ color: '#a1a1aa', fontSize: 20, fontWeight: 500 }}>zolo.sk</div>
         </div>
       </div>
     ),
