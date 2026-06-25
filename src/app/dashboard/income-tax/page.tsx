@@ -1,24 +1,97 @@
 'use client';
 
-import { useState } from 'react';
-import { PageHeader, Card, CardHeader, Input, Field, Select } from '@/components/ui';
-import { calcDzp } from '@/lib/dzp';
+import { useState, useEffect } from 'react';
+import { PageHeader, Card, CardHeader, Input, Field, Select, Button } from '@/components/ui';
+import { calcDzp, generateDppoXml, generateDpfoBXml } from '@/lib/dzp';
 import { fmtEur } from '@/lib/utils';
+import { Download, Wand2 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { useToast } from '@/components/Toast';
 
 export default function IncomeTaxPage() {
+  const toast = useToast();
   const [type, setType] = useState<'FO-A' | 'FO-B' | 'PO'>('PO');
+  const [year, setYear] = useState(new Date().getFullYear() - 1);
   const [revenue, setRevenue] = useState(50000);
   const [expenses, setExpenses] = useState(30000);
   const [prepaid, setPrepaid] = useState(0);
   const [children, setChildren] = useState(0);
+  const [firms, setFirms] = useState<{ id: string; name: string; dic: string | null; ic_dph: string | null }[]>([]);
+  const [firmId, setFirmId] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const sb = createClient();
+      const { data } = await sb.from('companies').select('id, name, dic, ic_dph').is('deleted_at', null).order('name');
+      setFirms(data || []);
+      const cid = (typeof window !== 'undefined' && localStorage.getItem('zolo_firm')) || data?.[0]?.id || '';
+      setFirmId(cid);
+    })();
+  }, []);
+
+  async function loadFromAccounting() {
+    if (!firmId) { toast('Vyber firmu', 'error'); return; }
+    setLoading(true);
+    const sb = createClient();
+    const yStart = `${year}-01-01`;
+    const yEnd = `${year}-12-31`;
+    const [{ data: out }, { data: inb }] = await Promise.all([
+      sb.from('invoices').select('subtotal').eq('company_id', firmId).eq('type', 'invoice').gte('delivery_date', yStart).lte('delivery_date', yEnd).is('deleted_at', null),
+      sb.from('invoices').select('subtotal').eq('company_id', firmId).eq('type', 'received_invoice').gte('delivery_date', yStart).lte('delivery_date', yEnd).is('deleted_at', null),
+    ]);
+    const rev = (out || []).reduce((s, r) => s + Number(r.subtotal || 0), 0);
+    const exp = (inb || []).reduce((s, r) => s + Number(r.subtotal || 0), 0);
+    setRevenue(+rev.toFixed(2));
+    setExpenses(+exp.toFixed(2));
+    setLoading(false);
+    toast(`Načítané: ${(out || []).length} výnosov + ${(inb || []).length} nákladov za ${year}`, 'success');
+  }
 
   const res = calcDzp({ type, revenue, expenses, prepaid, childCount: children });
+  const firm = firms.find((f) => f.id === firmId);
+
+  function downloadXml() {
+    if (!firm) { toast('Vyber firmu', 'error'); return; }
+    const xml = type === 'PO'
+      ? generateDppoXml({ dic: firm.dic, ic_dph: firm.ic_dph, name: firm.name }, year, res)
+      : generateDpfoBXml({ dic: firm.dic, name: firm.name }, year, res, { childCount: children });
+    const blob = new Blob([xml], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${type === 'PO' ? 'DPPO' : 'DPFO-B'}_${year}.xml`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
-    <div className="p-8 max-w-5xl">
-      <PageHeader title="Daň z príjmov" subtitle="DZP FO (typ A/B) alebo DZP PO — výpočet 2026" />
+    <div className="p-4 sm:p-8 max-w-5xl">
+      <PageHeader
+        title="Daň z príjmov"
+        subtitle="DZP FO (typ A/B) alebo DZP PO — výpočet + XML pre Daňový portál"
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <Button variant="secondary" onClick={loadFromAccounting} disabled={loading || !firmId}><Wand2 size={14} /> Načítať z účtovníctva</Button>
+            <Button variant="primary" onClick={downloadXml} disabled={!firm}><Download size={14} /> Stiahnuť XML</Button>
+          </div>
+        }
+      />
 
-      <div className="grid grid-cols-2 gap-4">
+      <Card className="mb-4">
+        <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Field label="Firma">
+            <Select value={firmId} onChange={(e) => setFirmId(e.target.value)}>
+              {firms.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </Select>
+          </Field>
+          <Field label="Zdaňovacie obdobie (rok)">
+            <Input type="number" value={year} onChange={(e) => setYear(+e.target.value)} min={2020} max={2030} />
+          </Field>
+        </div>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader title="Vstupy" />
           <div className="p-5 space-y-4">
