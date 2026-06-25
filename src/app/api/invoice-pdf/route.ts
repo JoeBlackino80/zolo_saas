@@ -2,12 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { InvoicePdfDoc, type InvoiceForPdf } from '@/lib/invoice-pdf';
+import { rateLimit, getClientIp } from '@/lib/ratelimit';
 import React from 'react';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit(`invoice-pdf:${ip}`, 60, 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
+  }
+
   const id = req.nextUrl.searchParams.get('id');
   const token = req.nextUrl.searchParams.get('token');
   const inline = req.nextUrl.searchParams.get('inline') === '1';

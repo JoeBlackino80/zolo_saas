@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 // Sends invoice with PDF attachment via Resend, logs to email_queue/email_log.
 export async function POST(request: Request) {
   const ip = getClientIp(request);
-  const rl = rateLimit(`send-invoice:${ip}`, 30, 60_000);
+  const rl = await rateLimit(`send-invoice:${ip}`, 30, 60_000);
   if (!rl.allowed) {
     return NextResponse.json({ ok: false, error: 'Rate limit exceeded' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
   }

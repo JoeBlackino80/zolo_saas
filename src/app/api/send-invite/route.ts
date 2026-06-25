@@ -9,8 +9,8 @@ export const dynamic = 'force-dynamic';
 // Body: { invitationId }  (the form first inserts to team_invitations, then calls this with row id)
 export async function POST(request: Request) {
   const ip = getClientIp(request);
-  const rl = rateLimit(`send-invite:${ip}`, 20, 60_000);
-  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Rate limit' }, { status: 429 });
+  const rl = await rateLimit(`send-invite:${ip}`, 20, 60_000);
+  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Rate limit' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
 
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();

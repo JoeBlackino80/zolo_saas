@@ -1,11 +1,18 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { rateLimit, getClientIp } from '@/lib/ratelimit';
 
 // POST /api/payment-link
 // Body: { invoiceId: string }
 // Returns: { ok, url, error? }
 // Generates Stripe Payment Link for the invoice
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const rl = await rateLimit(`payment-link:${ip}`, 30, 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json({ ok: false, error: 'Rate limit exceeded' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
+  }
+
   const sb = await createClient();
   const { invoiceId, token } = await request.json();
 
