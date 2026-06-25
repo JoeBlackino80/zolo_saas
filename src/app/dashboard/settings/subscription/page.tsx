@@ -68,7 +68,7 @@ export default async function SubscriptionPage() {
               </ul>
               <SubscriptionActions plan="free" isPaid={false} targetPlan="pro" />
             </div>
-            <div className="border-2 border-blue-500 rounded-xl p-5 bg-gradient-to-br from-blue-50 to-purple-50">
+            <div className="border border-zinc-900 rounded-xl p-5 bg-zinc-50">
               <div className="font-bold text-lg">Business · 49 €/mes</div>
               <div className="text-sm text-slate-500 mt-1">Pre holdingy a viac firiem</div>
               <ul className="text-sm text-slate-700 mt-3 space-y-1.5">

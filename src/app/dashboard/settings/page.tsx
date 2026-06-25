@@ -62,7 +62,7 @@ export default async function SettingsPage() {
                 className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold flex items-center justify-center text-sm">
+                  <div className="w-9 h-9 rounded-lg bg-zinc-900 text-white font-bold flex items-center justify-center text-sm tracking-tight">
                     {c.name[0]?.toUpperCase()}
                   </div>
                   <div>

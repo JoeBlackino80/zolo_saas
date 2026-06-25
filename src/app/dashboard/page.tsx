@@ -49,23 +49,23 @@ export default async function DashboardPage() {
       </div>
 
       {showFirstInvoiceCoach && (
-        <div className="mb-6 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl p-7 shadow-xl shadow-blue-500/20">
+        <div className="mb-6 bg-zinc-950 text-white rounded-2xl p-7">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div className="max-w-xl">
-              <div className="text-xs font-semibold uppercase tracking-wider opacity-80">Posledný krok</div>
-              <h2 className="text-2xl font-bold mt-1">Vystav svoju prvú faktúru za 30 sekúnd</h2>
-              <p className="opacity-90 mt-2 leading-relaxed text-sm">Pridaj zákazníka (alebo IČO a zvyšok doplníme z ORSR), vyber položky a pošli mailom rovno z aplikácie — vrátane PDF prílohy.</p>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-zinc-400">Posledný krok</div>
+              <h2 className="text-[26px] sm:text-3xl font-bold mt-2 tracking-[-0.02em] leading-tight">Vystav svoju prvú faktúru za 30 sekúnd</h2>
+              <p className="text-zinc-400 mt-3 leading-relaxed text-[14px]">Pridaj zákazníka (alebo IČO a zvyšok doplníme z ORSR), vyber položky a pošli mailom rovno z aplikácie — vrátane PDF prílohy.</p>
               <div className="flex gap-2 mt-5">
-                <Link href="/dashboard/invoices/new" className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-white text-blue-600 font-semibold rounded-lg text-sm hover:bg-blue-50 transition">
-                  <Plus size={14} /> Vystaviť prvú faktúru
+                <Link href="/dashboard/invoices/new" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-zinc-900 font-medium rounded-full text-[13px] hover:bg-zinc-100 transition-colors">
+                  <Plus size={14} strokeWidth={2.5} /> Vystaviť prvú faktúru
                 </Link>
-                <Link href="/dashboard/customers/new" className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white/15 hover:bg-white/25 text-white font-semibold rounded-lg text-sm transition">
+                <Link href="/dashboard/customers/new" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-medium rounded-full text-[13px] transition-colors">
                   Najprv pridať zákazníka
                 </Link>
               </div>
             </div>
-            <div className="hidden md:flex items-center justify-center w-28 h-28 rounded-2xl bg-white/15 backdrop-blur-sm">
-              <FileText size={48} className="opacity-90" />
+            <div className="hidden md:flex items-center justify-center w-28 h-28 rounded-2xl bg-white/[0.06] border border-white/10">
+              <FileText size={44} className="text-zinc-400" strokeWidth={1.5} />
             </div>
           </div>
         </div>
@@ -123,12 +123,12 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <Link href="/dashboard/invoices/new" className="block bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl p-5 hover:shadow-xl hover:scale-[1.02] transition">
-          <Plus size={20} className="mb-2" />
-          <div className="text-sm font-semibold">Nový doklad</div>
-          <div className="text-xs opacity-80 mt-0.5">FA · ZF · DO · DL · PPD · CP</div>
+        <Link href="/dashboard/invoices/new" className="block bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl p-5 transition-colors">
+          <Plus size={20} strokeWidth={2.2} className="mb-2" />
+          <div className="text-sm font-semibold tracking-tight">Nový doklad</div>
+          <div className="text-xs text-zinc-400 mt-0.5">FA · ZF · DO · DL · PPD · CP</div>
         </Link>
-        <Link href="/dashboard/calendar" className="block bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md hover:border-blue-300 transition">
+        <Link href="/dashboard/calendar" className="block bg-white border border-zinc-100 rounded-xl p-5 hover:border-zinc-200 hover:bg-zinc-50 transition-colors">
           <Calendar size={20} className="text-amber-500 mb-2" />
           <div className="text-sm font-semibold text-slate-900">Daňový kalendár</div>
           <div className="text-xs text-slate-500 mt-0.5">DPH 25. · DZP 31.3.</div>

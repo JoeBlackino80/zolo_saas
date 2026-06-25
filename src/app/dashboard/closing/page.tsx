@@ -36,7 +36,7 @@ export default async function ClosingPage() {
             <div className="text-sm font-mono text-slate-600">{done} / {CHECKLIST.length}</div>
           </div>
           <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 transition-all" style={{ width: `${pct}%` }} />
+            <div className="h-full bg-zinc-900 transition-all" style={{ width: `${pct}%` }} />
           </div>
         </div>
       </Card>

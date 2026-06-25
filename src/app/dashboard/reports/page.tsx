@@ -123,7 +123,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                         <span className="font-mono font-medium ml-3">{fmtEur(sum)}</span>
                       </div>
                       <div className="h-1.5 bg-slate-100 rounded-full">
-                        <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style={{ width: `${pct}%` }} />
+                        <div className="h-full bg-zinc-900 rounded-full" style={{ width: `${pct}%` }} />
                       </div>
                     </div>
                   );

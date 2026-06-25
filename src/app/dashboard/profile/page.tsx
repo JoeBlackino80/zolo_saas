@@ -52,7 +52,7 @@ export default async function ProfilePage() {
             return (
               <div key={r.company_id} className="flex items-center justify-between px-5 py-3.5">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold flex items-center justify-center text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-zinc-900 text-white font-bold flex items-center justify-center text-sm tracking-tight">
                     {(company?.name || '?')[0].toUpperCase()}
                   </div>
                   <div>

@@ -36,7 +36,7 @@ export default function SubscriptionActions({ plan, isPaid, targetPlan }: { plan
   if (targetPlan) {
     return (
       <>
-        <button onClick={() => checkout(targetPlan)} disabled={loading} className="w-full mt-4 py-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold rounded-lg disabled:opacity-60 inline-flex items-center justify-center gap-1.5">
+        <button onClick={() => checkout(targetPlan)} disabled={loading} className="w-full mt-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg text-[13px] tracking-tight disabled:opacity-60 inline-flex items-center justify-center gap-1.5 transition-colors">
           {loading ? <Loader2 size={14} className="animate-spin" /> : <CreditCard size={14} />}
           Vyskúšať 14 dní zadarmo
         </button>

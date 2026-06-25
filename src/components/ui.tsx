@@ -7,12 +7,12 @@ export const Button = forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'danger' | 'ghost' }
 >(function Button({ variant = 'secondary', className, ...props }, ref) {
-  const base = 'inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50';
+  const base = 'inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium tracking-tight transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
   const variants = {
-    primary: 'bg-blue-500 text-white hover:bg-blue-600 shadow-sm shadow-blue-500/30',
-    secondary: 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50',
-    danger: 'bg-red-500 text-white hover:bg-red-600',
-    ghost: 'text-slate-600 hover:bg-slate-100',
+    primary: 'bg-zinc-900 text-white hover:bg-zinc-700',
+    secondary: 'bg-white border border-zinc-200 text-zinc-800 hover:bg-zinc-50 hover:border-zinc-300',
+    danger: 'bg-red-600 text-white hover:bg-red-700',
+    ghost: 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100',
   };
   return <button ref={ref} className={cn(base, variants[variant], className)} {...props} />;
 });
@@ -21,7 +21,7 @@ export function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInp
   return (
     <input
       className={cn(
-        'w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition',
+        'w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-[13px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10 transition-colors',
         className
       )}
       {...props}
@@ -33,7 +33,7 @@ export function Select({ className, children, ...props }: React.SelectHTMLAttrib
   return (
     <select
       className={cn(
-        'w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition',
+        'w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-[13px] text-zinc-900 focus:outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10 transition-colors',
         className
       )}
       {...props}
@@ -47,7 +47,7 @@ export function Textarea({ className, ...props }: React.TextareaHTMLAttributes<H
   return (
     <textarea
       className={cn(
-        'w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition',
+        'w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-[13px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10 transition-colors',
         className
       )}
       {...props}
@@ -58,59 +58,59 @@ export function Textarea({ className, ...props }: React.TextareaHTMLAttributes<H
 export function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-slate-700">{label}</label>
+      <label className="text-[12px] font-medium text-zinc-700 tracking-tight">{label}</label>
       {children}
-      {hint && <span className="text-[11px] text-slate-500">{hint}</span>}
+      {hint && <span className="text-[11px] text-zinc-500">{hint}</span>}
     </div>
   );
 }
 
 export function Card({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn('bg-white border border-slate-200 rounded-xl shadow-sm', className)}>{children}</div>;
+  return <div className={cn('bg-white border border-zinc-100 rounded-2xl', className)}>{children}</div>;
 }
 
 export function CardHeader({ title, subtitle, action }: { title: React.ReactNode; subtitle?: string; action?: React.ReactNode }) {
   return (
-    <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between">
-      <div>
-        <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
-        {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+    <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between gap-3">
+      <div className="min-w-0">
+        <h3 className="text-[14px] font-semibold text-zinc-900 tracking-tight truncate">{title}</h3>
+        {subtitle && <p className="text-[12px] text-zinc-500 mt-0.5 truncate">{subtitle}</p>}
       </div>
-      {action}
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: React.ReactNode }) {
   return (
-    <div className="flex items-start justify-between mb-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{title}</h1>
-        {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
+    <div className="flex items-start justify-between gap-4 mb-7">
+      <div className="min-w-0">
+        <h1 className="text-[26px] sm:text-[28px] font-bold text-zinc-900 tracking-[-0.02em] leading-tight">{title}</h1>
+        {subtitle && <p className="text-[14px] text-zinc-500 mt-1.5">{subtitle}</p>}
       </div>
-      {actions && <div className="flex gap-2">{actions}</div>}
+      {actions && <div className="flex gap-2 shrink-0">{actions}</div>}
     </div>
   );
 }
 
 export function Badge({ children, variant = 'gray' }: { children: React.ReactNode; variant?: 'gray' | 'green' | 'red' | 'amber' | 'blue' }) {
   const variants = {
-    gray: 'bg-slate-100 text-slate-700',
-    green: 'bg-emerald-100 text-emerald-700',
-    red: 'bg-red-100 text-red-700',
-    amber: 'bg-amber-100 text-amber-800',
-    blue: 'bg-blue-100 text-blue-700',
+    gray: 'bg-zinc-100 text-zinc-700',
+    green: 'bg-emerald-50 text-emerald-700',
+    red: 'bg-red-50 text-red-700',
+    amber: 'bg-amber-50 text-amber-800',
+    blue: 'bg-zinc-900 text-white',
   };
-  return <span className={cn('inline-flex px-2 py-0.5 text-[10px] font-semibold rounded uppercase tracking-wider', variants[variant])}>{children}</span>;
+  return <span className={cn('inline-flex px-2 py-0.5 text-[10px] font-semibold rounded-md uppercase tracking-[0.05em]', variants[variant])}>{children}</span>;
 }
 
 export function EmptyState({ icon, title, description, action }: { icon?: React.ReactNode; title: string; description?: string; action?: React.ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      {icon && <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-4">{icon}</div>}
-      <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-      {description && <p className="text-sm text-slate-500 mt-1 max-w-md">{description}</p>}
-      {action && <div className="mt-4">{action}</div>}
+      {icon && <div className="w-14 h-14 rounded-2xl bg-zinc-100 text-zinc-400 flex items-center justify-center mb-4">{icon}</div>}
+      <h3 className="text-[15px] font-semibold text-zinc-900 tracking-tight">{title}</h3>
+      {description && <p className="text-[13px] text-zinc-500 mt-1.5 max-w-md leading-relaxed">{description}</p>}
+      {action && <div className="mt-5">{action}</div>}
     </div>
   );
 }
