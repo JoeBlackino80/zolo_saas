@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { fmtEur } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 
-type Invoice = Record<string, unknown> & { id: string; company_id: string; type: string; number: string; customer_name: string | null; customer_ico: string | null; customer_ic_dph: string | null; issue_date: string; due_date: string; currency: string; notes: string | null };
+type Invoice = Record<string, unknown> & { id: string; company_id: string; type: string; number: string; customer_name: string | null; customer_ico: string | null; customer_ic_dph: string | null; issue_date: string; delivery_date: string | null; due_date: string; currency: string; notes: string | null };
 type Item = { id?: string; position: number; description: string; quantity: number; unit: string; unit_price: number; vat_rate: number; subtotal?: number; vat_amount?: number; total?: number };
 type Company = { id: string; name: string };
 
@@ -24,6 +24,7 @@ export default function EditInvoiceClient({ invoice, items: initItems, companies
     customer_ico: invoice.customer_ico || '',
     customer_ic_dph: invoice.customer_ic_dph || '',
     issue_date: invoice.issue_date,
+    delivery_date: invoice.delivery_date || invoice.issue_date,
     due_date: invoice.due_date,
     currency: invoice.currency || 'EUR',
     notes: invoice.notes || '',
@@ -77,7 +78,7 @@ export default function EditInvoiceClient({ invoice, items: initItems, companies
   }
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-8 max-w-5xl">
       <Link href={`/dashboard/invoices/${invoice.id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na detail
       </Link>
@@ -91,6 +92,7 @@ export default function EditInvoiceClient({ invoice, items: initItems, companies
             <Field label="Číslo"><Input value={form.number} onChange={(e) => setForm({ ...form, number: e.target.value })} /></Field>
             <Field label="Mena"><Select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })}><option value="EUR">EUR</option><option value="CZK">CZK</option><option value="USD">USD</option></Select></Field>
             <Field label="Vystavená"><Input type="date" value={form.issue_date} onChange={(e) => setForm({ ...form, issue_date: e.target.value })} /></Field>
+            <Field label="DZP (dátum dodania)"><Input type="date" value={form.delivery_date} onChange={(e) => setForm({ ...form, delivery_date: e.target.value })} /></Field>
             <Field label="Splatná"><Input type="date" value={form.due_date} onChange={(e) => setForm({ ...form, due_date: e.target.value })} /></Field>
           </div>
         </Card>

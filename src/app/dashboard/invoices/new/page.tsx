@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input, Field, Card, CardHeader, PageHeader, Select } from '@/components/ui';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, RotateCcw, UserPlus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { fmtEur } from '@/lib/utils';
 
@@ -17,25 +17,92 @@ type Item = {
 };
 
 type Company = { id: string; name: string };
+type Contact = { id: string; name: string; ico: string | null; dic: string | null; ic_dph: string | null; street: string | null; city: string | null; zip: string | null; email: string | null };
+
+const DUE_PRESETS = [0, 3, 7, 14, 30, 60];
+
+function addDays(base: string, days: number): string {
+  const d = new Date(base);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
 
 export default function NewInvoicePage() {
   const router = useRouter();
+  const search = useSearchParams();
+  const cloneFromId = search.get('from');
+  const presetType = search.get('type');
   const [companies, setCompanies] = useState<Company[]>([]);
   const [form, setForm] = useState({
     company_id: '',
-    type: 'invoice',
+    type: presetType || 'invoice',
     number: '',
     customer_name: '',
     customer_ico: '',
     customer_ic_dph: '',
+    customer_email: '',
+    reminders_enabled: true,
     issue_date: new Date().toISOString().slice(0, 10),
+    delivery_date: new Date().toISOString().slice(0, 10),
     due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })(),
     currency: 'EUR',
     notes: '',
+    parent_invoice_id: search.get('parent') || null as string | null,
   });
   const [items, setItems] = useState<Item[]>([{ description: '', quantity: 1, unit: 'ks', unit_price: 0, vat_rate: 23 }]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [autoNumber, setAutoNumber] = useState(true); // true = use peeked, false = user typed their own
+  const [peekedNumber, setPeekedNumber] = useState('');
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [contactQuery, setContactQuery] = useState('');
+  const [showContactDropdown, setShowContactDropdown] = useState(false);
+
+  // Fetch contacts when company changes
+  useEffect(() => {
+    if (!form.company_id) return;
+    (async () => {
+      const sb = createClient();
+      const { data } = await sb.from('contacts')
+        .select('id, name, ico, dic, ic_dph, street, city, zip, email')
+        .eq('company_id', form.company_id)
+        .in('type', ['customer', 'both'])
+        .is('deleted_at', null)
+        .order('name')
+        .limit(500);
+      setContacts((data as Contact[]) || []);
+    })();
+  }, [form.company_id]);
+
+  const filteredContacts = contactQuery.trim()
+    ? contacts.filter((c) => {
+        const q = contactQuery.toLowerCase();
+        return c.name.toLowerCase().includes(q) || (c.ico || '').includes(q) || (c.ic_dph || '').toLowerCase().includes(q);
+      }).slice(0, 8)
+    : contacts.slice(0, 8);
+
+  function pickContact(c: Contact) {
+    setForm((f) => ({
+      ...f,
+      customer_name: c.name,
+      customer_ico: c.ico || '',
+      customer_ic_dph: c.ic_dph || '',
+      customer_email: c.email || f.customer_email,
+    }));
+    setContactQuery(c.name);
+    setShowContactDropdown(false);
+  }
+
+  // Fetch next number from RPC for current company + type
+  const peekNumber = useCallback(async (company_id: string, type: string) => {
+    if (!company_id) return;
+    const sb = createClient();
+    const { data } = await sb.rpc('peek_next_document_number', { p_company_id: company_id, p_type: type });
+    if (typeof data === 'string') {
+      setPeekedNumber(data);
+      setForm((f) => (f.number === '' || autoNumber ? { ...f, number: data } : f));
+    }
+  }, [autoNumber]);
 
   useEffect(() => {
     (async () => {
@@ -43,9 +110,51 @@ export default function NewInvoicePage() {
       const { data } = await sb.from('companies').select('id, name').is('deleted_at', null).order('name');
       setCompanies(data || []);
       const firmFromStorage = typeof window !== 'undefined' ? localStorage.getItem('zolo_firm') : '';
-      if (data?.length) setForm((f) => ({ ...f, company_id: firmFromStorage || data[0].id }));
+      const cid = firmFromStorage && data?.some((c) => c.id === firmFromStorage) ? firmFromStorage : (data?.[0]?.id ?? '');
+      if (cid) {
+        // Optionally clone from existing invoice
+        if (cloneFromId) {
+          const { data: parent } = await sb.from('invoices').select('*, invoice_items(*)').eq('id', cloneFromId).single();
+          if (parent) {
+            const signFlip = presetType === 'credit_note' || presetType === 'storno' ? -1 : 1;
+            setForm((f) => ({
+              ...f,
+              company_id: parent.company_id || cid,
+              type: presetType || f.type,
+              customer_name: parent.customer_name || '',
+              customer_ico: parent.customer_ico || '',
+              customer_ic_dph: parent.customer_ic_dph || '',
+              currency: parent.currency || 'EUR',
+              customer_email: parent.customer_email || f.customer_email,
+              notes: presetType === 'credit_note' ? `Dobropis k ${parent.number}` : presetType === 'storno' ? `Storno ${parent.number}` : presetType === 'proforma' ? `Zálohová k ${parent.number}` : parent.notes || f.notes,
+              // parent_invoice_id only when this is a derivative doc, NOT plain duplicate
+              parent_invoice_id: search.get('parent') ? parent.id : null,
+            }));
+            if (Array.isArray(parent.invoice_items) && parent.invoice_items.length) {
+              setItems(parent.invoice_items.map((it: { description: string; quantity: number; unit: string; unit_price: number; vat_rate: number }) => ({
+                description: it.description,
+                quantity: it.quantity * signFlip,
+                unit: it.unit,
+                unit_price: it.unit_price,
+                vat_rate: it.vat_rate,
+              })));
+            }
+            await peekNumber(parent.company_id || cid, presetType || 'invoice');
+            return;
+          }
+        }
+        setForm((f) => ({ ...f, company_id: cid }));
+        await peekNumber(cid, presetType || 'invoice');
+      }
     })();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cloneFromId, presetType]);
+
+  // Re-peek when type or company changes
+  useEffect(() => {
+    if (form.company_id) peekNumber(form.company_id, form.type);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.company_id, form.type]);
 
   function setItem(i: number, key: keyof Item, val: string | number) {
     const next = [...items];
@@ -66,15 +175,27 @@ export default function NewInvoicePage() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!form.company_id) { setError('Vyber firmu'); return; }
-    if (!form.number.trim()) { setError('Číslo dokladu je povinné'); return; }
     setSaving(true);
     setError(null);
     const sb = createClient();
     const { data: { user } } = await sb.auth.getUser();
     if (!user) { setError('Nie si prihlásený'); setSaving(false); return; }
 
+    // Determine final number: either RPC-assigned (auto) or user override (validated/bumped)
+    let finalNumber = form.number.trim();
+    if (autoNumber || !finalNumber || finalNumber === peekedNumber) {
+      const { data: assigned, error: rpcErr } = await sb.rpc('assign_document_number', { p_company_id: form.company_id, p_type: form.type });
+      if (rpcErr || typeof assigned !== 'string') { setError(rpcErr?.message || 'Nepodarilo sa získať číslo dokladu'); setSaving(false); return; }
+      finalNumber = assigned;
+    } else {
+      // User typed their own — bump sequence if it's a numeric format like "PREFIX-YYYY-NNNN"
+      const m = finalNumber.match(/(\d+)\s*$/);
+      if (m) await sb.rpc('bump_document_number', { p_company_id: form.company_id, p_type: form.type, p_used_number: parseInt(m[1], 10) });
+    }
+
     const invoice = {
       ...form,
+      number: finalNumber,
       subtotal: +totals.subtotal.toFixed(2),
       vat_amount: +totals.vat.toFixed(2),
       total: +totals.total.toFixed(2),
@@ -106,7 +227,7 @@ export default function NewInvoicePage() {
   }
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-8 max-w-5xl">
       <Link href="/dashboard/invoices" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na zoznam
       </Link>
@@ -115,7 +236,7 @@ export default function NewInvoicePage() {
       <form onSubmit={save} className="space-y-4">
         <Card>
           <CardHeader title="Doklad" />
-          <div className="p-5 grid grid-cols-3 gap-4">
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <Field label="Firma (dodávateľ)">
               <Select value={form.company_id} onChange={(e) => setForm({ ...form, company_id: e.target.value })}>
                 {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -124,21 +245,65 @@ export default function NewInvoicePage() {
             <Field label="Typ dokladu">
               <Select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
                 <option value="invoice">Faktúra (FA)</option>
+                <option value="received_invoice">Prijatá FA (PFA)</option>
                 <option value="proforma">Zálohová (ZF)</option>
-                <option value="credit_note">Dobropis (DO)</option>
+                <option value="credit_note">Dobropis (DOB)</option>
+                <option value="storno">Storno (STO)</option>
                 <option value="delivery_note">Dodací list (DL)</option>
                 <option value="cash_receipt">Pokladnica (PPD)</option>
                 <option value="quote">Cenová ponuka (CP)</option>
               </Select>
             </Field>
             <Field label="Číslo dokladu *">
-              <Input value={form.number} onChange={(e) => setForm({ ...form, number: e.target.value })} placeholder="FA-2026-001" required />
+              <div className="flex gap-1">
+                <Input
+                  value={form.number}
+                  onChange={(e) => { setForm({ ...form, number: e.target.value }); setAutoNumber(false); }}
+                  placeholder={peekedNumber || 'FA-2026-0001'}
+                  required
+                />
+                {!autoNumber && peekedNumber && (
+                  <button
+                    type="button"
+                    onClick={() => { setForm({ ...form, number: peekedNumber }); setAutoNumber(true); }}
+                    className="px-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg border border-slate-200"
+                    title={`Obnoviť na navrhované: ${peekedNumber}`}
+                  >
+                    <RotateCcw size={14} />
+                  </button>
+                )}
+              </div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                {autoNumber ? `Auto: ${peekedNumber || '…'} — pridelí sa pri uložení` : 'Manuálne — sekvencia sa upraví podľa tvojho čísla'}
+              </div>
             </Field>
             <Field label="Dátum vystavenia">
-              <Input type="date" value={form.issue_date} onChange={(e) => setForm({ ...form, issue_date: e.target.value })} />
+              <Input type="date" value={form.issue_date} onChange={(e) => {
+                const v = e.target.value;
+                setForm((f) => ({ ...f, issue_date: v, delivery_date: f.delivery_date === f.issue_date ? v : f.delivery_date }));
+              }} />
+            </Field>
+            <Field label="DZP (dátum dodania)">
+              <Input type="date" value={form.delivery_date} onChange={(e) => setForm({ ...form, delivery_date: e.target.value })} />
             </Field>
             <Field label="Dátum splatnosti">
               <Input type="date" value={form.due_date} onChange={(e) => setForm({ ...form, due_date: e.target.value })} />
+              <div className="flex flex-wrap gap-1 mt-1.5">
+                {DUE_PRESETS.map((d) => {
+                  const target = addDays(form.issue_date, d);
+                  const active = form.due_date === target;
+                  return (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, due_date: target }))}
+                      className={`text-[11px] px-2 py-0.5 rounded border transition ${active ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'}`}
+                    >
+                      {d === 0 ? 'Hneď' : `+${d}d`}
+                    </button>
+                  );
+                })}
+              </div>
             </Field>
             <Field label="Mena">
               <Select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })}>
@@ -151,17 +316,75 @@ export default function NewInvoicePage() {
         </Card>
 
         <Card>
-          <CardHeader title="Odberateľ" />
-          <div className="p-5 grid grid-cols-3 gap-4">
-            <Field label="Názov zákazníka">
-              <Input value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} />
+          <CardHeader
+            title="Odberateľ"
+            action={
+              <Link href={`/dashboard/customers/new?return=${encodeURIComponent('/dashboard/invoices/new')}`} target="_blank">
+                <Button type="button" variant="ghost"><UserPlus size={14} /> Pridať nového</Button>
+              </Link>
+            }
+          />
+          <div className="p-5 space-y-4">
+            <Field label={`Vybrať z existujúcich (${contacts.length})`}>
+              <div className="relative">
+                <div className="relative">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={contactQuery}
+                    onChange={(e) => { setContactQuery(e.target.value); setShowContactDropdown(true); }}
+                    onFocus={() => setShowContactDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowContactDropdown(false), 200)}
+                    placeholder="Hľadaj podľa názvu, IČO alebo IČ DPH…"
+                    className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                {showContactDropdown && filteredContacts.length > 0 && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-64 overflow-auto">
+                    {filteredContacts.map((c) => (
+                      <button
+                        type="button"
+                        key={c.id}
+                        onClick={() => pickContact(c)}
+                        className="w-full text-left px-3 py-2 hover:bg-blue-50 border-b border-slate-100 last:border-0"
+                      >
+                        <div className="text-sm font-medium text-slate-900">{c.name}</div>
+                        <div className="text-xs text-slate-500 flex gap-3">
+                          {c.ico && <span>IČO: {c.ico}</span>}
+                          {c.ic_dph && <span>IČ DPH: {c.ic_dph}</span>}
+                          {c.city && <span>{c.city}</span>}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {showContactDropdown && filteredContacts.length === 0 && contactQuery && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg p-3 text-sm text-slate-500">
+                    Žiadny zákazník &quot;{contactQuery}&quot;. <Link href={`/dashboard/customers/new`} target="_blank" className="text-blue-600 hover:underline">Pridať nového →</Link>
+                  </div>
+                )}
+              </div>
             </Field>
-            <Field label="IČO">
-              <Input value={form.customer_ico} onChange={(e) => setForm({ ...form, customer_ico: e.target.value })} />
-            </Field>
-            <Field label="IČ DPH">
-              <Input value={form.customer_ic_dph} onChange={(e) => setForm({ ...form, customer_ic_dph: e.target.value })} placeholder="SK1234567890" />
-            </Field>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Field label="Názov zákazníka">
+                <Input value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} />
+              </Field>
+              <Field label="IČO">
+                <Input value={form.customer_ico} onChange={(e) => setForm({ ...form, customer_ico: e.target.value })} />
+              </Field>
+              <Field label="IČ DPH">
+                <Input value={form.customer_ic_dph} onChange={(e) => setForm({ ...form, customer_ic_dph: e.target.value })} placeholder="SK1234567890" />
+              </Field>
+              <Field label="Email zákazníka" hint="Sem chodia pripomienky platby">
+                <Input type="email" value={form.customer_email} onChange={(e) => setForm({ ...form, customer_email: e.target.value })} placeholder="zakaznik@firma.sk" />
+              </Field>
+              <div className="sm:col-span-2 lg:col-span-2">
+                <label className="flex items-center gap-2 text-sm pt-7">
+                  <input type="checkbox" checked={form.reminders_enabled} onChange={(e) => setForm({ ...form, reminders_enabled: e.target.checked })} />
+                  <span>Automatické pripomienky platby <span className="text-slate-500">(3 dni pred splatnosťou · v deň splatnosti · +7 dní · +30 dní)</span></span>
+                </label>
+              </div>
+            </div>
           </div>
         </Card>
 
