@@ -48,7 +48,9 @@ export default function NotificationsPage() {
     const sb = createClient();
     const { data: { user } } = await sb.auth.getUser();
     if (!user) return;
-    const { error, data } = await sb.from('notification_rules').insert([{ ...newRule, created_by: user.id }]).select().single();
+    const companyId = typeof window !== 'undefined' ? localStorage.getItem('zolo_firm') : null;
+    if (!companyId) { toast('Najprv vyber firmu v sidebare', 'error'); return; }
+    const { error, data } = await sb.from('notification_rules').insert([{ ...newRule, company_id: companyId, type: newRule.rule_type, enabled: newRule.is_active, created_by: user.id }]).select().single();
     if (error) { toast(error.message, 'error'); return; }
     setRules([data, ...rules]);
     toast('Pravidlo pridané', 'success');
@@ -61,7 +63,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 sm:p-8 max-w-4xl">
       <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
@@ -69,7 +71,7 @@ export default function NotificationsPage() {
 
       <Card className="mb-4">
         <CardHeader title="Pridať pravidlo" />
-        <div className="p-5 grid grid-cols-2 gap-4">
+        <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Typ">
             <Select value={newRule.rule_type} onChange={(e) => setNewRule({ ...newRule, rule_type: e.target.value })}>
               {TYPES.map((t) => <option key={t.key} value={t.key}>{t.label}</option>)}

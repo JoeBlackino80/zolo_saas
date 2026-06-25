@@ -15,7 +15,7 @@ export default async function StockMovementsPage() {
   const rows = (moves || []) as M[];
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader title="Skladové pohyby" subtitle={`${rows.length} pohybov · príjemky, výdajky, prevody`} />
       {rows.length === 0 ? (
         <Card><EmptyState icon={<TrendingUp size={24} />} title="Žiadne pohyby" description="Vytvor príjemku alebo výdajku v sklade." /></Card>

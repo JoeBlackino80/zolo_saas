@@ -16,7 +16,7 @@ export default async function ProfilePage() {
   const rows = (roles || []) as RoleRow[];
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 sm:p-8 max-w-4xl">
       <PageHeader title="Môj profil" subtitle="Účet, MFA, prístupy" />
 
       <Card className="mb-4 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-none">

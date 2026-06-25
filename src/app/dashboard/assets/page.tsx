@@ -9,7 +9,7 @@ export default async function AssetsPage() {
   const { data: assets } = await sb.from('assets').select('id, name, inventory_number, acquisition_price, acquisition_date, depreciation_category').is('deleted_at', null);
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader
         title="Majetok"
         subtitle={`${assets?.length || 0} aktív · odpisy podľa § 26 ZDP`}

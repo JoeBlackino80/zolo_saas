@@ -64,7 +64,7 @@ export default function BrandingPage() {
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-4 sm:p-8 max-w-3xl">
       <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
@@ -94,7 +94,7 @@ export default function BrandingPage() {
                 <Button type="button" variant="secondary"><Upload size={14} /> Nahrať</Button>
               </label>
             </Field>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Hlavná farba">
                 <div className="flex gap-2">
                   <input type="color" value={form.primary_color} onChange={(e) => setForm({ ...form, primary_color: e.target.value })} className="w-12 h-10 rounded border border-slate-200" />

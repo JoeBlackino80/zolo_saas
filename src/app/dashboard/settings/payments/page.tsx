@@ -29,9 +29,9 @@ export default function PaymentsSettingsPage() {
     if (!firmId) return;
     (async () => {
       const sb = createClient();
-      const { data } = await sb.from('payment_settings').select('stripe_secret_key, stripe_account_id').eq('company_id', firmId).maybeSingle();
+      const { data } = await sb.from('payment_settings').select('stripe_key, stripe_account_id').eq('company_id', firmId).maybeSingle();
       if (data) {
-        setStripeKey(data.stripe_secret_key || '');
+        setStripeKey(data.stripe_key || '');
         setAccountId(data.stripe_account_id || '');
       } else {
         setStripeKey('');
@@ -45,14 +45,14 @@ export default function PaymentsSettingsPage() {
     const sb = createClient();
     const { error } = await sb
       .from('payment_settings')
-      .upsert({ company_id: firmId, stripe_secret_key: stripeKey, stripe_account_id: accountId }, { onConflict: 'company_id' });
+      .upsert({ company_id: firmId, stripe_key: stripeKey, stripe_account_id: accountId }, { onConflict: 'company_id' });
     if (error) { toast(error.message, 'error'); setSaving(false); return; }
     toast('Stripe nastavený', 'success');
     setSaving(false);
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-4 sm:p-8 max-w-3xl">
       <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>

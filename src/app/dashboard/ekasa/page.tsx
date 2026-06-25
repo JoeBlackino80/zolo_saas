@@ -14,7 +14,7 @@ export default async function EkasaPage() {
   const recs = (receipts || []) as RecRow[];
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader title="eKasa" subtitle="Pokladničné doklady podľa zákona č. 289/2008 Z.z." />
 
       <Card className="mb-4 bg-amber-50 border-amber-200">

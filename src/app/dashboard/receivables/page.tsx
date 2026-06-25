@@ -38,7 +38,7 @@ export default async function ReceivablesPage() {
   const overdueSum = sum([...buckets.d30, ...buckets.d60, ...buckets.d90, ...buckets.d90plus]);
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Pohľadávky" subtitle={`${rows.length} nezaplatených faktúr · ${fmtEur(total)} celkom`} />
 
       {rows.length === 0 ? (

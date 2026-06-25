@@ -28,7 +28,7 @@ export default async function ChartOfAccountsPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader
         title="Účtová osnova"
         subtitle={`${rows.length} účtov · podľa SK štandardu`}

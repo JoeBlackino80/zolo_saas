@@ -21,7 +21,7 @@ export default async function CashBookPage() {
   const balance = totalIn - totalOut;
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader
         title="Pokladničná kniha"
         subtitle={`${rows.length} zápisov · zostatok ${fmtEur(balance)}`}

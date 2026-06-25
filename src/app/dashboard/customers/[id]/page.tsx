@@ -26,13 +26,13 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
   const totalUnpaid = totalRevenue - totalPaid;
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-8 max-w-5xl">
       <Link href="/dashboard/customers" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na zákazníkov
       </Link>
       <PageHeader title={contact.name} subtitle={`IČO ${contact.ico || '—'} · ${contact.city || ''}`} />
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <Card><div className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Tržby s týmto klientom</div>
           <div className="text-2xl font-bold mt-2">{fmtEur(totalRevenue)}</div>
@@ -50,7 +50,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
 
       <Card className="mb-4">
         <CardHeader title="Kontaktné údaje" />
-        <div className="p-5 grid grid-cols-2 gap-4 text-sm">
+        <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           {contact.email && <div className="flex items-center gap-2"><Mail size={14} className="text-slate-400" /><a href={`mailto:${contact.email}`} className="text-blue-600 hover:underline">{contact.email}</a></div>}
           {contact.phone && <div className="flex items-center gap-2"><Phone size={14} className="text-slate-400" /><a href={`tel:${contact.phone}`} className="text-blue-600 hover:underline">{contact.phone}</a></div>}
           {contact.web && <div className="flex items-center gap-2"><Globe size={14} className="text-slate-400" /><a href={contact.web} target="_blank" rel="noopener" className="text-blue-600 hover:underline">{contact.web}</a></div>}

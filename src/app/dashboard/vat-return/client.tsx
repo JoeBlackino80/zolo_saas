@@ -29,18 +29,18 @@ export default function VatReturnClient({ companies, kind, title }: { companies:
 
       const { data: outRaw } = await sb
         .from('invoices')
-        .select('id, number, issue_date, customer_name, customer_ic_dph, invoice_items(vat_rate, subtotal, vat_amount)')
+        .select('id, number, issue_date, delivery_date, customer_name, customer_ic_dph, invoice_items(vat_rate, subtotal, vat_amount)')
         .eq('company_id', firmId)
         .in('type', ['invoice', 'credit_note'])
-        .gte('issue_date', monthStart)
-        .lt('issue_date', nextMonth);
+        .gte('delivery_date', monthStart)
+        .lt('delivery_date', nextMonth);
       const { data: inRaw } = await sb
         .from('invoices')
-        .select('id, number, issue_date, supplier_name, supplier_ic_dph, invoice_items(vat_rate, subtotal, vat_amount)')
+        .select('id, number, issue_date, delivery_date, supplier_name, supplier_ic_dph, invoice_items(vat_rate, subtotal, vat_amount)')
         .eq('company_id', firmId)
         .in('type', ['received_invoice'])
-        .gte('issue_date', monthStart)
-        .lt('issue_date', nextMonth);
+        .gte('delivery_date', monthStart)
+        .lt('delivery_date', nextMonth);
 
       type RawItem = { vat_rate: number; subtotal: number; vat_amount: number };
       const outInvoices = (outRaw || []).map((i) => ({
@@ -98,7 +98,7 @@ export default function VatReturnClient({ companies, kind, title }: { companies:
   }
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-8 max-w-5xl">
       <PageHeader title={title} subtitle="Generuje XML pre podanie na Finančnú správu SR" />
 
       <Card>

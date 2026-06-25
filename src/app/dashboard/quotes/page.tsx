@@ -16,7 +16,7 @@ export default async function QuotesPage() {
   const rows = (quotes || []) as Q[];
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Cenové ponuky" subtitle={`${rows.length} ponúk`} actions={<Link href="/dashboard/invoices/new"><Button variant="primary"><Plus size={14} /> Nová ponuka</Button></Link>} />
       {rows.length === 0 ? (
         <Card><EmptyState icon={<Plus size={24} />} title="Žiadne cenové ponuky" description="Vytvor cenovú ponuku — neskôr ju konvertuješ na faktúru." /></Card>

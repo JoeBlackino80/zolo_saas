@@ -9,7 +9,7 @@ export default async function ProductsPage() {
   const { data: products } = await sb.from('products').select('id, name, sku, unit, selling_price, vat_rate, category').is('deleted_at', null).order('name');
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader
         title="Cenník"
         subtitle={`${products?.length || 0} položiek`}

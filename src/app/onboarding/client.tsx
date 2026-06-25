@@ -24,22 +24,41 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
     setLoading(true);
     try {
       const r = await fetch('https://orsr-lookup.joeblackino.workers.dev?ico=' + form.ico);
-      if (r.ok) {
-        const data = await r.json();
-        setForm({
-          ...form,
-          name: data.name || form.name,
-          dic: data.dic || form.dic,
-          ic_dph: data.icDph || form.ic_dph,
-          street: data.street || form.street,
-          city: data.city || form.city,
-          zip: data.zip || form.zip,
-          is_vat_payer: !!data.icDph,
-        });
-        toast('Údaje doplnené z ORSR', 'success');
+      if (!r.ok) throw new Error('Worker HTTP ' + r.status);
+      const payload = await r.json();
+      // Worker returns { success, source, data: {...} } — extract .data
+      const data = payload.data || payload;
+      if (!data.name) {
+        toast('IČO ' + form.ico + ' sa nenašlo v ORSR/Finstat. Vyplň údaje ručne.', 'error');
         setStep(2);
+        return;
       }
-    } catch { toast('Lookup zlyhal', 'error'); }
+      // Try to parse address into street/city/zip ("Karpatske namestie 10A, 831 06 Bratislava - mestska cast Raca")
+      let street = '', city = '', zip = '';
+      if (data.address) {
+        const parts = String(data.address).split(',').map((s: string) => s.trim());
+        if (parts.length >= 2) {
+          street = parts[0];
+          const zipMatch = parts[1].match(/(\d{3}\s?\d{2})/);
+          zip = zipMatch ? zipMatch[1].replace(/\s/g, ' ') : '';
+          city = parts[1].replace(/\d{3}\s?\d{2}/, '').replace(/-\s.*/, '').trim();
+        } else {
+          street = String(data.address);
+        }
+      }
+      setForm({
+        ...form,
+        name: data.name || form.name,
+        dic: data.dic || form.dic,
+        ic_dph: data.icDph || form.ic_dph,
+        street: street || form.street,
+        city: city || form.city,
+        zip: zip || form.zip,
+        is_vat_payer: !!data.icDph,
+      });
+      toast('Údaje doplnené: ' + data.name, 'success');
+      setStep(2);
+    } catch (e) { toast('Lookup zlyhal: ' + (e as Error).message, 'error'); }
     finally { setLoading(false); }
   }
 
@@ -51,7 +70,8 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
     if (!user) { setLoading(false); return; }
     const { data, error } = await sb.from('companies').insert([{ ...form, created_by: user.id }]).select().single();
     if (error) { toast(error.message, 'error'); setLoading(false); return; }
-    await sb.from('user_company_roles').insert([{ user_id: user.id, company_id: data.id, role: 'admin' }]);
+    // admin role is granted automatically by auto_grant_company_admin_trigger
+    if (data?.id && typeof window !== 'undefined') localStorage.setItem('zolo_firm', data.id);
     setStep(3);
     setTimeout(() => router.push('/dashboard'), 1500);
   }

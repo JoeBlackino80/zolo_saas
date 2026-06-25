@@ -8,7 +8,7 @@ export default async function StockPage() {
   const { data: products } = await sb.from('products').select('id, name, sku, unit, selling_price, vat_rate').is('deleted_at', null);
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Sklady" subtitle={`${products?.length || 0} produktov`} />
       {!products?.length ? (
         <Card><EmptyState icon={<Boxes size={24} />} title="Prázdny sklad" description="Pridaj produkty pre evidenciu zásob." /></Card>

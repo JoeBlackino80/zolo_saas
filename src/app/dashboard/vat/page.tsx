@@ -21,15 +21,15 @@ export default async function VatPage({ searchParams }: { searchParams: Promise<
         .select('id, invoice_items(vat_rate, subtotal, vat_amount)')
         .eq('company_id', c.id)
         .in('type', ['invoice', 'credit_note'])
-        .gte('issue_date', monthStart)
-        .lt('issue_date', nextMonth);
+        .gte('delivery_date', monthStart)
+        .lt('delivery_date', nextMonth);
       const { data: inInvoices } = await sb
         .from('invoices')
         .select('id, invoice_items(vat_rate, subtotal, vat_amount)')
         .eq('company_id', c.id)
         .in('type', ['received_invoice'])
-        .gte('issue_date', monthStart)
-        .lt('issue_date', nextMonth);
+        .gte('delivery_date', monthStart)
+        .lt('delivery_date', nextMonth);
       const outItems = (outInvoices || []).flatMap((i) => (i.invoice_items as { vat_rate: number; subtotal: number; vat_amount: number }[]) || []);
       const inItems = (inInvoices || []).flatMap((i) => (i.invoice_items as { vat_rate: number; subtotal: number; vat_amount: number }[]) || []);
       const t = aggregateVat(outItems, inItems);
@@ -40,7 +40,7 @@ export default async function VatPage({ searchParams }: { searchParams: Promise<
   const totalObligation = rows.reduce((s, r) => s + r.t.obligation, 0);
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Zadávanie DPH" subtitle={`Obdobie ${period} · spolu ${rows.length} firiem`} />
 
       <div className="grid grid-cols-3 gap-4 mb-6">

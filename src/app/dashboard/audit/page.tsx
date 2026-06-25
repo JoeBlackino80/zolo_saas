@@ -21,7 +21,7 @@ export default async function AuditPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader title="Audit log" subtitle={`Posledných ${rows.length} akcií · ${rows.length === 200 ? 'limit 200' : 'všetky'}`} />
 
       {rows.length === 0 ? (

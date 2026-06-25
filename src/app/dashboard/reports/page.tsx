@@ -53,7 +53,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
   const maxMonth = Math.max(...Object.values(months).map((m) => Math.max(m.revenue, m.costs)), 1);
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader
         title="Reporty & analytika"
         subtitle={`Ročný prehľad ${year}`}
@@ -66,7 +66,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         }
       />
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card><div className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Výnosy</div>
           <div className="text-2xl font-bold mt-2">{fmtEur(totalRevenue)}</div>
@@ -85,7 +85,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         </div></Card>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <Card>
           <CardHeader title={<><BarChart3 className="inline mr-2" size={14} /> Výnosy vs náklady — mesačne</>} />
           <div className="p-5">
@@ -136,7 +136,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
       <Card>
         <CardHeader title={<><TrendingUp className="inline mr-2" size={14} /> DPH agregát — ročne</>} />
-        <div className="p-5 grid grid-cols-4 gap-4 text-center">
+        <div className="p-5 grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
           <div><div className="text-xs text-slate-500">DPH výstup</div><div className="text-xl font-mono font-bold">{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_out, 0))}</div></div>
           <div><div className="text-xs text-slate-500">DPH vstup</div><div className="text-xl font-mono font-bold">{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_in, 0))}</div></div>
           <div><div className="text-xs text-slate-500">Net DPH</div><div className={`text-xl font-mono font-bold ${(Object.values(months).reduce((s, m) => s + m.vat_out - m.vat_in, 0)) >= 0 ? 'text-red-600' : 'text-emerald-600'}`}>{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_out - m.vat_in, 0))}</div></div>

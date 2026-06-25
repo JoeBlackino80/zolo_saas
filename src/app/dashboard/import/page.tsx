@@ -74,7 +74,7 @@ kind="out" ak my sme dodávateľ, "in" ak my sme odberateľ.`;
             'anthropic-dangerous-direct-browser-access': 'true',
           },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-sonnet-4-6',
             max_tokens: 1200,
             messages: [{
               role: 'user',
@@ -138,7 +138,7 @@ kind="out" ak my sme dodávateľ, "in" ak my sme odberateľ.`;
   }
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-8 max-w-5xl">
       <PageHeader title="AI Vision import" subtitle="Foto / PDF faktúry → Claude Sonnet → automaticky extrahované údaje" />
 
       <Card className="mb-4">

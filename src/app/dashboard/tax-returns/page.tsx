@@ -15,7 +15,7 @@ export default async function TaxReturnsPage() {
   const rows = (returns || []) as R[];
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Daňové priznania — história" subtitle={`${rows.length} podaní · DPH, DZP, KV, SV`} />
       {rows.length === 0 ? (
         <Card><EmptyState icon={<FileCheck size={24} />} title="Žiadne podania" description="Vygeneruj prvé daňové priznanie cez DP DPH alebo Income Tax." /></Card>

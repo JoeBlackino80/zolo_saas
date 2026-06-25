@@ -7,7 +7,7 @@ export default async function CostCentersPage() {
   const { data: cc } = await sb.from('cost_centers').select('id, name, code, description').is('deleted_at', null);
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader title="Nákladové strediská" subtitle={`${cc?.length || 0} stredísk · vnútorná organizácia výdavkov`} />
       {!cc?.length ? (
         <Card><EmptyState icon={<Target size={24} />} title="Žiadne nákladové strediská" description="Rozdeľ náklady podľa oddelenia, pobočky alebo strediska." /></Card>

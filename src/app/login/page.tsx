@@ -61,6 +61,19 @@ export default function LoginPage() {
     }
   }
 
+  async function handleForgot() {
+    if (!email) { setStatus({ msg: 'Zadaj svoj email a klikni znova', kind: 'error' }); return; }
+    setLoading(true);
+    setStatus({ msg: 'Posielam email na obnovu hesla…', kind: 'muted' });
+    const sb = createClient();
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback?next=/auth/reset`,
+    });
+    setLoading(false);
+    if (error) { setStatus({ msg: 'Chyba: ' + error.message, kind: 'error' }); return; }
+    setStatus({ msg: '✓ Ak účet existuje, poslali sme email s odkazom na obnovu hesla.', kind: 'success' });
+  }
+
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     if (password.length < 8) {
@@ -70,13 +83,26 @@ export default function LoginPage() {
     setLoading(true);
     setStatus({ msg: 'Vytváram účet…', kind: 'muted' });
     const sb = createClient();
-    const { error } = await sb.auth.signUp({ email, password });
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding` },
+    });
     if (error) {
       setStatus({ msg: 'Chyba: ' + error.message, kind: 'error' });
       setLoading(false);
       return;
     }
-    setStatus({ msg: '✓ Účet vytvorený. Skontroluj email pre potvrdenie.', kind: 'success' });
+    // Email confirmation OFF in Supabase → session is created immediately. Go straight to onboarding.
+    if (data.session) {
+      setStatus({ msg: '✓ Účet vytvorený, presmerovávam…', kind: 'success' });
+      router.push('/onboarding');
+      router.refresh();
+      return;
+    }
+    // Email confirmation ON → wait for user to click link in mail
+    setStatus({ msg: '✓ Účet vytvorený. Skontroluj email pre potvrdenie a potom sa prihlás.', kind: 'success' });
+    setMode('login');
     setLoading(false);
   }
 
@@ -147,6 +173,11 @@ export default function LoginPage() {
             >
               Prihlásiť sa
             </button>
+            <div className="text-center">
+              <button type="button" onClick={handleForgot} className="text-xs text-slate-400 hover:text-blue-300 underline">
+                Zabudol som heslo
+              </button>
+            </div>
           </form>
         ) : (
           <form onSubmit={handleSignup} className="space-y-3">

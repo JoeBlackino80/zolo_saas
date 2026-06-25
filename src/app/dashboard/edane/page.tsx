@@ -16,7 +16,7 @@ export default async function EDanePage() {
   const rows = (subs || []) as Row[];
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader title="eDane — Finančná správa SR" subtitle="História podaní a workflow návod" />
 
       <Card className="mb-4 bg-amber-50 border-amber-200">

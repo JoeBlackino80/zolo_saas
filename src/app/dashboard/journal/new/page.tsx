@@ -73,7 +73,7 @@ export default function NewJournalEntryPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 sm:p-8 max-w-4xl">
       <Link href="/dashboard/journal" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3"><ArrowLeft size={14} /> Späť na denník</Link>
       <PageHeader title="Nový účtovný zápis" subtitle="Podvojné účtovanie: MD = Dal" />
 

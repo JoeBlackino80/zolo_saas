@@ -20,7 +20,8 @@ export default function BankImportClient() {
     setLoading(true);
     try {
       const text = await file.text();
-      const txs = parseCsv(text);
+      const isXml = file.name.toLowerCase().endsWith('.xml') || text.trimStart().startsWith('<');
+      const txs = isXml ? parseCamt(text) : parseCsv(text);
       if (txs.length === 0) { toast('Žiadne transakcie v súbore', 'error'); setLoading(false); return; }
       const sb = createClient();
       const { data: invoices } = await sb
@@ -68,7 +69,7 @@ export default function BankImportClient() {
   }
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Bankový výpis" subtitle="Import CSV výpisu + automatické párovanie k faktúram cez VS" />
 
       <Card className="mb-4">
@@ -76,10 +77,10 @@ export default function BankImportClient() {
           <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-10 cursor-pointer transition">
             <Upload size={32} className="text-slate-400 mb-3" />
             <div className="text-sm font-semibold text-slate-700">{loading ? 'Spracovávam…' : 'Klikni alebo pretiahni CSV výpis'}</div>
-            <div className="text-xs text-slate-500 mt-1">Tatra · SLSP · VÚB · Slovenská sporiteľňa · iné CSV</div>
+            <div className="text-xs text-slate-500 mt-1">CSV alebo CAMT.053 XML · Tatra · SLSP · VÚB · iné</div>
             <input
               type="file"
-              accept=".csv,text/csv"
+              accept=".csv,.xml,text/csv,application/xml"
               className="hidden"
               disabled={loading}
               onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
@@ -186,4 +187,43 @@ function parseDate(s: string): string {
 
 function parseAmount(s: string): number {
   return parseFloat(s.replace(/\s/g, '').replace(',', '.')) || 0;
+}
+
+// CAMT.053 (SEPA bank statement XML) parser — works for SLSP, Tatra, VÚB internet banking exports
+function parseCamt(xml: string): Tx[] {
+  if (typeof DOMParser === 'undefined') return [];
+  const doc = new DOMParser().parseFromString(xml, 'application/xml');
+  const txs: Tx[] = [];
+  const entries = Array.from(doc.getElementsByTagName('Ntry'));
+  for (const e of entries) {
+    const amtEl = e.getElementsByTagName('Amt')[0];
+    const cdtDbt = e.getElementsByTagName('CdtDbtInd')[0]?.textContent || 'CRDT';
+    const dateEl = e.getElementsByTagName('BookgDt')[0]?.getElementsByTagName('Dt')[0]
+              || e.getElementsByTagName('ValDt')[0]?.getElementsByTagName('Dt')[0];
+    const amount = parseFloat(amtEl?.textContent || '0') * (cdtDbt === 'DBIT' ? -1 : 1);
+    const date = dateEl?.textContent || '';
+    if (!date || amount === 0) continue;
+    // VS / KS / SS sit under RmtInf/Strd/CdtrRefInf or under <Prtry> or as structured Refs
+    const refs = Array.from(e.getElementsByTagName('Strd'));
+    let vs = '', ks = '', ss = '';
+    for (const r of refs) {
+      const t = r.textContent || '';
+      const mVS = t.match(/VS[:/=]?\s*(\d{1,10})/i);
+      const mKS = t.match(/KS[:/=]?\s*(\d{1,10})/i);
+      const mSS = t.match(/SS[:/=]?\s*(\d{1,10})/i);
+      if (mVS) vs = mVS[1];
+      if (mKS) ks = mKS[1];
+      if (mSS) ss = mSS[1];
+    }
+    // Slovak banks often put symbols in AddtlNtryInf or Prtry tags
+    if (!vs) {
+      const addl = e.getElementsByTagName('AddtlNtryInf')[0]?.textContent || '';
+      const m = addl.match(/VS[:/= ]\s*(\d{1,10})/i);
+      if (m) vs = m[1];
+    }
+    const description = e.getElementsByTagName('AddtlNtryInf')[0]?.textContent
+      || Array.from(e.getElementsByTagName('Ustrd')).map((u) => u.textContent).join(' ') || '';
+    txs.push({ date, amount, vs, ks, ss, description: description.trim().slice(0, 200) });
+  }
+  return txs;
 }

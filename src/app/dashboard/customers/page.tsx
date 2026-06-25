@@ -13,7 +13,7 @@ export default async function CustomersPage() {
     .order('name');
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader
         title="Zákazníci"
         subtitle={`${contacts?.length || 0} zákazníkov`}

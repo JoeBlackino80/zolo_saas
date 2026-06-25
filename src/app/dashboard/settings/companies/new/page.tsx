@@ -44,21 +44,35 @@ export default function NewCompanyPage() {
     try {
       const url = 'https://orsr-lookup.joeblackino.workers.dev?ico=' + form.ico;
       const r = await fetch(url);
-      if (r.ok) {
-        const data = await r.json();
-        setForm({
-          ...form,
-          name: data.name || form.name,
-          dic: data.dic || form.dic,
-          ic_dph: data.icDph || form.ic_dph,
-          street: data.street || form.street,
-          city: data.city || form.city,
-          zip: data.zip || form.zip,
-          is_vat_payer: !!data.icDph || form.is_vat_payer,
-        });
-      } else {
-        setError('Lookup zlyhal');
+      if (!r.ok) throw new Error('Worker HTTP ' + r.status);
+      const payload = await r.json();
+      const data = payload.data || payload;
+      if (!data.name) {
+        setError('IČO sa nenašlo v ORSR/Finstat. Vyplň údaje ručne.');
+        return;
       }
+      let street = '', city = '', zip = '';
+      if (data.address) {
+        const parts = String(data.address).split(',').map((s: string) => s.trim());
+        if (parts.length >= 2) {
+          street = parts[0];
+          const zipMatch = parts[1].match(/(\d{3}\s?\d{2})/);
+          zip = zipMatch ? zipMatch[1] : '';
+          city = parts[1].replace(/\d{3}\s?\d{2}/, '').replace(/-\s.*/, '').trim();
+        } else {
+          street = String(data.address);
+        }
+      }
+      setForm({
+        ...form,
+        name: data.name || form.name,
+        dic: data.dic || form.dic,
+        ic_dph: data.icDph || form.ic_dph,
+        street: street || form.street,
+        city: city || form.city,
+        zip: zip || form.zip,
+        is_vat_payer: !!data.icDph || form.is_vat_payer,
+      });
     } catch (e: unknown) {
       setError((e as Error).message);
     } finally {
@@ -81,7 +95,7 @@ export default function NewCompanyPage() {
       setSaving(false);
       return;
     }
-    const { data, error } = await sb
+    const { error } = await sb
       .from('companies')
       .insert([{ ...form, created_by: user.id }])
       .select()
@@ -91,14 +105,13 @@ export default function NewCompanyPage() {
       setSaving(false);
       return;
     }
-    // Auto-grant admin role
-    await sb.from('user_company_roles').insert([{ user_id: user.id, company_id: data.id, role: 'admin' }]);
+    // admin role granted automatically by auto_grant_company_admin_trigger
     router.push('/dashboard/settings');
     router.refresh();
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-4 sm:p-8 max-w-3xl">
       <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
@@ -107,7 +120,7 @@ export default function NewCompanyPage() {
       <form onSubmit={save} className="space-y-4">
         <Card>
           <CardHeader title="Základné údaje" />
-          <div className="p-5 grid grid-cols-2 gap-4">
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="IČO">
               <div className="flex gap-2">
                 <Input value={form.ico} onChange={(e) => set('ico', e.target.value.trim())} placeholder="12345678" maxLength={8} />
@@ -148,7 +161,7 @@ export default function NewCompanyPage() {
 
         <Card>
           <CardHeader title="Adresa" />
-          <div className="p-5 grid grid-cols-2 gap-4">
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Ulica">
               <Input value={form.street} onChange={(e) => set('street', e.target.value)} placeholder="Hlavná 123" />
             </Field>
@@ -166,7 +179,7 @@ export default function NewCompanyPage() {
 
         <Card>
           <CardHeader title="Bankové údaje" subtitle="Použijú sa na faktúrach" />
-          <div className="p-5 grid grid-cols-2 gap-4">
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="IBAN">
               <Input value={form.iban} onChange={(e) => set('iban', e.target.value.toUpperCase().replace(/\s/g, ''))} placeholder="SK..." />
             </Field>

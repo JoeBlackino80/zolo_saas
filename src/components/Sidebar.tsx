@@ -33,7 +33,8 @@ import {
   CreditCard,
 } from 'lucide-react';
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 type Company = {
@@ -51,6 +52,17 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
   const [currentFirmId, setCurrentFirmId] = useState<string>(
     typeof window !== 'undefined' ? localStorage.getItem('zolo_firm') || '' : ''
   );
+  const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') setShowAdvanced(localStorage.getItem('zolo_sidebar_advanced') === '1');
+  }, []);
+
+  function toggleAdvanced() {
+    const next = !showAdvanced;
+    setShowAdvanced(next);
+    if (typeof window !== 'undefined') localStorage.setItem('zolo_sidebar_advanced', next ? '1' : '0');
+  }
 
   async function logout() {
     if (!confirm('Odhlásiť sa?')) return;
@@ -109,60 +121,71 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
       </div>
 
       <nav className="flex-1 overflow-y-auto p-2 space-y-0.5 [&_a]:block [&_a]:text-current">
-        <Section label="Prehľad & fakturácia" />
+        {/* CORE — vždy viditeľné (5 položiek) */}
         <NavItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" active={!segment} />
         <NavItem icon={FileText} label="Fakturácia" href="/dashboard/invoices" active={segment === 'invoices'} />
-        <NavItem icon={FileText} label="Cenové ponuky" href="/dashboard/quotes" active={segment === 'quotes'} />
-        <NavItem icon={Clock} label="Schvaľovanie" href="/dashboard/approvals" active={segment === 'approvals'} />
-        <NavItem icon={Clock} label="Pohľadávky" href="/dashboard/receivables" active={segment === 'receivables'} />
-        <NavItem icon={TrendingUp} label="Cash flow 90d" href="/dashboard/cashflow" active={segment === 'cashflow'} />
-        <NavItem icon={BarChart3} label="Reporty" href="/dashboard/reports" active={segment === 'reports'} />
-        <NavItem icon={Link2} label="Prepojenia" href="/dashboard/links" active={segment === 'links'} />
-
-        <Section label="DPH" />
-        <NavItem icon={Edit3} label="Zadávanie DPH" href="/dashboard/vat" active={segment === 'vat'} />
-        <NavItem icon={Target} label="Optimalizácia" href="/dashboard/optimize" active={segment === 'optimize'} />
-        <NavItem icon={Code} label="DP DPH — priznanie" href="/dashboard/vat-return" active={segment === 'vat-return'} />
-        <NavItem icon={Code} label="Kontrolný výkaz (KV)" href="/dashboard/control-statement" active={segment === 'control-statement'} />
-        <NavItem icon={Code} label="Súhrnný výkaz (SV)" href="/dashboard/summary-statement" active={segment === 'summary-statement'} />
-        <NavItem icon={History} label="História podaní" href="/dashboard/tax-returns" active={segment === 'tax-returns'} />
-
-        <Section label="Podanie" />
-        <NavItem icon={Send} label="eDane" href="/dashboard/edane" active={segment === 'edane'} />
-        <NavItem icon={ShoppingBag} label="eKasa" href="/dashboard/ekasa" active={segment === 'ekasa'} />
-        <NavItem icon={Calendar} label="Daňový kalendár" href="/dashboard/calendar" active={segment === 'calendar'} />
-
-        <Section label="Denné účtovníctvo" />
-        <NavItem icon={Book} label="Denník & hlavná kniha" href="/dashboard/journal" active={segment === 'journal'} />
-        <NavItem icon={Book} label="Účtová osnova" href="/dashboard/chart-of-accounts" active={segment === 'chart-of-accounts'} />
-        <NavItem icon={Wallet} label="Pokladnica" href="/dashboard/cash-book" active={segment === 'cash-book'} />
-        <NavItem icon={CreditCard} label="Bankové účty" href="/dashboard/bank-accounts" active={segment === 'bank-accounts'} />
-        <NavItem icon={Briefcase} label="Projekty" href="/dashboard/projects" active={segment === 'projects'} />
-        <NavItem icon={Target} label="Nákladové strediská" href="/dashboard/cost-centers" active={segment === 'cost-centers'} />
-        <NavItem icon={Building2} label="Majetok" href="/dashboard/assets" active={segment === 'assets'} />
-        <NavItem icon={Wallet} label="Mzdy" href="/dashboard/payroll" active={segment === 'payroll'} beta />
-        <NavItem icon={Boxes} label="Sklady" href="/dashboard/stock" active={segment === 'stock'} />
-        <NavItem icon={Boxes} label="Skladové pohyby" href="/dashboard/stock-movements" active={segment === 'stock-movements'} />
-        <NavItem icon={Plane} label="Cestovné príkazy" href="/dashboard/travel" active={segment === 'travel'} />
-
-        <Section label="Koncoročné" />
-        <NavItem icon={Receipt} label="Daň z príjmov" href="/dashboard/income-tax" active={segment === 'income-tax'} />
-        <NavItem icon={Archive} label="Závierka & podanie" href="/dashboard/closing" active={segment === 'closing'} />
-
-        <Section label="Číselníky" />
         <NavItem icon={Users} label="Zákazníci" href="/dashboard/customers" active={segment === 'customers'} />
-        <NavItem icon={Tag} label="Cenník" href="/dashboard/products" active={segment === 'products'} />
-
-        <Section label="Import & nástroje" />
-        <NavItem icon={Sparkles} label="AI Vision import" href="/dashboard/import" active={segment === 'import'} />
-        <NavItem icon={Wallet} label="Bankový výpis" href="/dashboard/bank" active={segment === 'bank'} />
-        <NavItem icon={Repeat} label="Recurring faktúry" href="/dashboard/recurring" active={segment === 'recurring'} />
-
-        <Section label="Systém" />
-        <NavItem icon={Users} label="Tím & pozvánky" href="/dashboard/team" active={segment === 'team'} />
-        <NavItem icon={History} label="Audit log" href="/dashboard/audit" active={segment === 'audit'} />
+        <NavItem icon={Wallet} label="Banka & cashflow" href="/dashboard/bank" active={segment === 'bank' || segment === 'cashflow'} />
+        <NavItem icon={Edit3} label="DPH" href="/dashboard/vat" active={segment === 'vat' || segment === 'vat-return'} />
         <NavItem icon={Settings} label="Nastavenia" href="/dashboard/settings" active={segment === 'settings'} />
-        <NavItem icon={Search} label="Pomoc" href="/dashboard/help" active={segment === 'help'} />
+
+        {/* ADVANCED toggle */}
+        <button
+          onClick={toggleAdvanced}
+          className="w-full mt-3 flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[11px] text-slate-500 hover:text-slate-300 uppercase tracking-wider font-semibold"
+        >
+          {showAdvanced ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+          Pokročilé
+        </button>
+
+        {showAdvanced && (
+          <div className="space-y-0.5 mt-1">
+            <Section label="Fakturácia +" />
+            <NavItem icon={FileText} label="Cenové ponuky" href="/dashboard/quotes" active={segment === 'quotes'} />
+            <NavItem icon={Clock} label="Schvaľovanie" href="/dashboard/approvals" active={segment === 'approvals'} />
+            <NavItem icon={Clock} label="Pohľadávky" href="/dashboard/receivables" active={segment === 'receivables'} />
+            <NavItem icon={TrendingUp} label="Cash flow 90d" href="/dashboard/cashflow" active={segment === 'cashflow'} />
+            <NavItem icon={BarChart3} label="Reporty" href="/dashboard/reports" active={segment === 'reports'} />
+            <NavItem icon={Link2} label="Prepojenia" href="/dashboard/links" active={segment === 'links'} />
+            <NavItem icon={Repeat} label="Recurring faktúry" href="/dashboard/recurring" active={segment === 'recurring'} />
+            <NavItem icon={Tag} label="Cenník" href="/dashboard/products" active={segment === 'products'} />
+
+            <Section label="DPH a podania" />
+            <NavItem icon={Target} label="Optimalizácia" href="/dashboard/optimize" active={segment === 'optimize'} />
+            <NavItem icon={Code} label="DP DPH — priznanie" href="/dashboard/vat-return" active={segment === 'vat-return'} />
+            <NavItem icon={Code} label="Kontrolný výkaz (KV)" href="/dashboard/control-statement" active={segment === 'control-statement'} />
+            <NavItem icon={Code} label="Súhrnný výkaz (SV)" href="/dashboard/summary-statement" active={segment === 'summary-statement'} />
+            <NavItem icon={History} label="História podaní" href="/dashboard/tax-returns" active={segment === 'tax-returns'} />
+            <NavItem icon={Send} label="eDane" href="/dashboard/edane" active={segment === 'edane'} />
+            <NavItem icon={ShoppingBag} label="eKasa" href="/dashboard/ekasa" active={segment === 'ekasa'} />
+            <NavItem icon={Calendar} label="Daňový kalendár" href="/dashboard/calendar" active={segment === 'calendar'} />
+
+            <Section label="Účtovníctvo" />
+            <NavItem icon={Book} label="Denník & hlavná kniha" href="/dashboard/journal" active={segment === 'journal'} />
+            <NavItem icon={Book} label="Účtová osnova" href="/dashboard/chart-of-accounts" active={segment === 'chart-of-accounts'} />
+            <NavItem icon={Wallet} label="Pokladnica" href="/dashboard/cash-book" active={segment === 'cash-book'} />
+            <NavItem icon={CreditCard} label="Bankové účty" href="/dashboard/bank-accounts" active={segment === 'bank-accounts'} />
+            <NavItem icon={Briefcase} label="Projekty" href="/dashboard/projects" active={segment === 'projects'} />
+            <NavItem icon={Target} label="Nákladové strediská" href="/dashboard/cost-centers" active={segment === 'cost-centers'} />
+            <NavItem icon={Building2} label="Majetok" href="/dashboard/assets" active={segment === 'assets'} />
+            <NavItem icon={Wallet} label="Mzdy" href="/dashboard/payroll" active={segment === 'payroll'} beta />
+            <NavItem icon={Boxes} label="Sklady" href="/dashboard/stock" active={segment === 'stock'} />
+            <NavItem icon={Boxes} label="Skladové pohyby" href="/dashboard/stock-movements" active={segment === 'stock-movements'} />
+            <NavItem icon={Plane} label="Cestovné príkazy" href="/dashboard/travel" active={segment === 'travel'} />
+
+            <Section label="Koncoročné" />
+            <NavItem icon={Receipt} label="Daň z príjmov" href="/dashboard/income-tax" active={segment === 'income-tax'} />
+            <NavItem icon={Archive} label="Závierka & podanie" href="/dashboard/closing" active={segment === 'closing'} />
+
+            <Section label="Nástroje" />
+            <NavItem icon={Sparkles} label="AI Vision import" href="/dashboard/import" active={segment === 'import'} />
+
+            <Section label="Systém" />
+            <NavItem icon={Users} label="Tím & pozvánky" href="/dashboard/team" active={segment === 'team'} />
+            <NavItem icon={History} label="Audit log" href="/dashboard/audit" active={segment === 'audit'} />
+            <NavItem icon={Search} label="Pomoc" href="/dashboard/help" active={segment === 'help'} />
+          </div>
+        )}
       </nav>
 
       <div className="border-t border-white/5 bg-black/15 p-2 space-y-1.5">

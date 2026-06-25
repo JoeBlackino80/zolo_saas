@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 import { Card, CardHeader } from '@/components/ui';
 import { fmtEur, fmtDate } from '@/lib/utils';
 import Link from 'next/link';
@@ -33,26 +34,44 @@ export default async function DashboardPage() {
   const overdueRows = (overdue || []) as Due[];
 
   if (totalCompanies === 0) {
-    return (
-      <div className="p-8 max-w-5xl">
-        <div className="bg-gradient-to-br from-white to-slate-50 border border-slate-200 rounded-2xl p-12 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white"><Plus size={32} /></div>
-          <h2 className="text-2xl font-bold text-slate-900">Vitaj v ZOLO, {user?.email?.split('@')[0]}</h2>
-          <p className="text-slate-500 mt-2 max-w-md mx-auto">Vytvor svoju prvú firmu a začni vystavovať faktúry, viesť účtovníctvo, generovať DPH výkazy.</p>
-          <Link href="/dashboard/settings/companies/new" className="inline-block mt-5 px-5 py-2.5 bg-gradient-to-br from-blue-500 to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/25 hover:translate-y-[-1px] transition">Vytvoriť prvú firmu</Link>
-        </div>
-      </div>
-    );
+    redirect('/onboarding');
   }
 
+  // First-FA coaching: ak má firmu ale 0 FA → silný CTA banner navrchu
+  const totalInvoices = allInv.length;
+  const showFirstInvoiceCoach = totalCompanies > 0 && totalInvoices === 0;
+
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Vitaj späť, {user?.email?.split('@')[0]}</h1>
         <p className="text-slate-500 mt-1 text-sm">{totalCompanies} firiem pod tvojím účtom · {thisMonth}</p>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      {showFirstInvoiceCoach && (
+        <div className="mb-6 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl p-7 shadow-xl shadow-blue-500/20">
+          <div className="flex items-start justify-between gap-6 flex-wrap">
+            <div className="max-w-xl">
+              <div className="text-xs font-semibold uppercase tracking-wider opacity-80">Posledný krok</div>
+              <h2 className="text-2xl font-bold mt-1">Vystav svoju prvú faktúru za 30 sekúnd</h2>
+              <p className="opacity-90 mt-2 leading-relaxed text-sm">Pridaj zákazníka (alebo IČO a zvyšok doplníme z ORSR), vyber položky a pošli mailom rovno z aplikácie — vrátane PDF prílohy.</p>
+              <div className="flex gap-2 mt-5">
+                <Link href="/dashboard/invoices/new" className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-white text-blue-600 font-semibold rounded-lg text-sm hover:bg-blue-50 transition">
+                  <Plus size={14} /> Vystaviť prvú faktúru
+                </Link>
+                <Link href="/dashboard/customers/new" className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white/15 hover:bg-white/25 text-white font-semibold rounded-lg text-sm transition">
+                  Najprv pridať zákazníka
+                </Link>
+              </div>
+            </div>
+            <div className="hidden md:flex items-center justify-center w-28 h-28 rounded-2xl bg-white/15 backdrop-blur-sm">
+              <FileText size={48} className="opacity-90" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card>
           <div className="p-5">
             <div className="flex items-center justify-between mb-2">
@@ -103,7 +122,7 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <Link href="/dashboard/invoices/new" className="block bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl p-5 hover:shadow-xl hover:scale-[1.02] transition">
           <Plus size={20} className="mb-2" />
           <div className="text-sm font-semibold">Nový doklad</div>
@@ -121,7 +140,7 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader title="Posledné doklady" action={<Link href="/dashboard/invoices" className="text-xs text-blue-600 hover:underline">Všetky →</Link>} />
           <div className="divide-y divide-slate-100">

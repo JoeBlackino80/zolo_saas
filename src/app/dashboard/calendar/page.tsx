@@ -97,7 +97,7 @@ export default function CalendarPage() {
   const sevColor: Record<string, 'red' | 'amber' | 'gray'> = { high: 'red', medium: 'amber', low: 'gray' };
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader
         title="Daňový kalendár"
         subtitle="Nadchádzajúce DPH, DZP, mzdové a iné termíny"

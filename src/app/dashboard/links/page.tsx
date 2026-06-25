@@ -50,7 +50,7 @@ export default async function LinksPage() {
   }
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Prepojenia" subtitle={`Inter-firm faktúry medzi tvojimi firmami v portfóliu`} />
 
       {interFirm.length === 0 ? (

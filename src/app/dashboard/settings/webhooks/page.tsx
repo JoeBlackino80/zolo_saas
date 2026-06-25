@@ -14,7 +14,7 @@ type Hook = {
   is_active: boolean;
 };
 
-const EVENTS = ['invoice.created', 'invoice.sent', 'invoice.paid', 'invoice.overdue', 'company.created', 'payment.received'];
+const EVENTS = ['invoice.created', 'invoice.status_changed', 'invoice.paid', 'invoice.overdue', 'all'];
 
 export default function WebhooksPage() {
   const toast = useToast();
@@ -35,7 +35,9 @@ export default function WebhooksPage() {
     const sb = createClient();
     const { data: { user } } = await sb.auth.getUser();
     if (!user) return;
-    const { error, data } = await sb.from('webhook_configs').insert([{ ...newHook, created_by: user.id }]).select().single();
+    const companyId = typeof window !== 'undefined' ? localStorage.getItem('zolo_firm') : null;
+    if (!companyId) { toast('Najprv vyber firmu v sidebare', 'error'); return; }
+    const { error, data } = await sb.from('webhook_configs').insert([{ ...newHook, company_id: companyId, created_by: user.id }]).select().single();
     if (error) { toast(error.message, 'error'); return; }
     setHooks([data, ...hooks]);
     setNewHook({ webhook_url: '', events: [], is_active: true });
@@ -51,7 +53,7 @@ export default function WebhooksPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 sm:p-8 max-w-4xl">
       <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>

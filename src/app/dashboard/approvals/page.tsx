@@ -17,7 +17,7 @@ export default async function ApprovalsPage() {
   const rows = (pending || []) as R[];
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader title="Schvaľovanie faktúr" subtitle={`${rows.length} čaká na schválenie`} />
       {rows.length === 0 ? (
         <Card><EmptyState icon={<CheckSquare size={24} className="text-emerald-500" />} title="Všetko schválené" description="Žiadne faktúry nečakajú na schválenie." /></Card>

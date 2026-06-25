@@ -64,7 +64,7 @@ export default async function CashflowPage() {
   const maxVal = Math.max(...Object.values(buckets).map((b) => Math.max(b.income, b.outflow)), 1);
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Cash flow forecast" subtitle="Predikcia hotovostných tokov 13 týždňov (90 dní)" />
 
       <div className="grid grid-cols-3 gap-4 mb-6">

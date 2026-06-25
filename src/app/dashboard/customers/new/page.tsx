@@ -43,19 +43,30 @@ export default function NewCustomerPage() {
     setLookingUp(true);
     try {
       const r = await fetch('https://orsr-lookup.joeblackino.workers.dev?ico=' + form.ico);
-      if (r.ok) {
-        const data = await r.json();
-        setForm((f) => ({
-          ...f,
-          name: data.name || f.name,
-          dic: data.dic || f.dic,
-          ic_dph: data.icDph || f.ic_dph,
-          street: data.street || f.street,
-          city: data.city || f.city,
-          zip: data.zip || f.zip,
-        }));
-        toast('Údaje doplnené z ORSR', 'success');
-      } else toast('Lookup zlyhal', 'error');
+      if (!r.ok) throw new Error('Worker HTTP ' + r.status);
+      const payload = await r.json();
+      const data = payload.data || payload;
+      if (!data.name) { toast('IČO sa nenašlo', 'error'); return; }
+      let street = '', city = '', zip = '';
+      if (data.address) {
+        const parts = String(data.address).split(',').map((s: string) => s.trim());
+        if (parts.length >= 2) {
+          street = parts[0];
+          const zipMatch = parts[1].match(/(\d{3}\s?\d{2})/);
+          zip = zipMatch ? zipMatch[1] : '';
+          city = parts[1].replace(/\d{3}\s?\d{2}/, '').replace(/-\s.*/, '').trim();
+        } else street = String(data.address);
+      }
+      setForm((f) => ({
+        ...f,
+        name: data.name || f.name,
+        dic: data.dic || f.dic,
+        ic_dph: data.icDph || f.ic_dph,
+        street: street || f.street,
+        city: city || f.city,
+        zip: zip || f.zip,
+      }));
+      toast('Údaje doplnené: ' + data.name, 'success');
     } catch (e) { toast((e as Error).message, 'error'); }
     finally { setLookingUp(false); }
   }
@@ -75,7 +86,7 @@ export default function NewCustomerPage() {
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-4 sm:p-8 max-w-3xl">
       <Link href="/dashboard/customers" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na zoznam
       </Link>
@@ -84,7 +95,7 @@ export default function NewCustomerPage() {
       <form onSubmit={save} className="space-y-4">
         <Card>
           <CardHeader title="Údaje zákazníka" />
-          <div className="p-5 grid grid-cols-2 gap-4">
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Patrí pod firmu">
               <Select value={form.company_id} onChange={(e) => setForm({ ...form, company_id: e.target.value })}>
                 {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -125,7 +136,7 @@ export default function NewCustomerPage() {
 
         <Card>
           <CardHeader title="Adresa" />
-          <div className="p-5 grid grid-cols-2 gap-4">
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Ulica">
               <Input value={form.street} onChange={(e) => setForm({ ...form, street: e.target.value })} />
             </Field>

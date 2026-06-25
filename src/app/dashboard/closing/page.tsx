@@ -26,7 +26,7 @@ export default async function ClosingPage() {
   const pct = CHECKLIST.length > 0 ? Math.round((done / CHECKLIST.length) * 100) : 0;
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-8 max-w-5xl">
       <PageHeader title="Závierka & podanie" subtitle="Krok za krokom — koncoročná uzávierka pre účtovnú jednotku" />
 
       <Card className="mb-4">
