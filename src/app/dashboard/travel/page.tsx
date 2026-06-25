@@ -17,7 +17,7 @@ export default async function TravelPage() {
   const rows = (orders || []) as R[];
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader
         title="Cestovné príkazy"
         subtitle={`${rows.length} príkazov`}

@@ -13,7 +13,7 @@ export default function PayrollCalcPage() {
   const calc = calcPayroll(gross, { childCount: children });
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-8 max-w-5xl">
       <Link href="/dashboard/payroll" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
         <ArrowLeft size={14} /> Späť na mzdy
       </Link>
