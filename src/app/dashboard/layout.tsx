@@ -29,7 +29,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="md:grid md:grid-cols-[256px_1fr] min-h-screen">
-        <Sidebar companies={companies || []} userEmail={user.email || ''} />
+        <div className="bg-zinc-950 md:min-h-screen">
+          <Sidebar companies={companies || []} userEmail={user.email || ''} />
+        </div>
         <div className="flex flex-col">
           <MobileTopbar />
           <main className="overflow-auto flex-1">

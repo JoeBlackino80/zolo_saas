@@ -197,7 +197,7 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
   const currentSegment = segment || '';
 
   return (
-    <aside className="sidebar-aside bg-zinc-950 text-zinc-300 flex flex-col h-screen md:sticky md:top-0 border-r border-white/[0.06] md:!relative md:!block md:!w-auto md:!z-auto md:!hidden-false hidden md:flex">
+    <aside className="sidebar-aside bg-zinc-950 text-zinc-300 flex flex-col h-screen md:sticky md:top-0 border-r border-white/[0.06] md:!w-auto md:!z-auto hidden md:flex">
       {/* Header — logo + firm + search */}
       <div className="px-3 pt-4 pb-3 space-y-3">
         <div className="flex items-center gap-2.5 px-1">
