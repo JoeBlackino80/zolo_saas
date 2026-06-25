@@ -12,7 +12,7 @@ export default async function SettingsPage() {
     .order('name');
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader
         title="Nastavenia"
         subtitle="Profil, firmy, tím a branding"
@@ -25,7 +25,8 @@ export default async function SettingsPage() {
         }
       />
 
-      <div className="grid grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <SettingCard href="/dashboard/settings/subscription" icon={<CreditCard size={20} />} title="Predplatné ZOLO" desc="Plán · fakturácia" />
         <SettingCard href="/dashboard/settings/branding" icon={<Palette size={20} />} title="Branding" desc="Logo · farby · pätička" />
         <SettingCard href="/dashboard/settings/payments" icon={<CreditCard size={20} />} title="Platby" desc="Stripe payment links" />
         <SettingCard href="/dashboard/settings/email" icon={<Mail size={20} />} title="Email šablóny" desc="Texty notifikácií" />

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Check, X } from 'lucide-react';
+import PlanCTA from './cta';
 
 export const metadata = { title: 'Cenník · ZOLO' };
 
@@ -104,9 +105,7 @@ export default function PricingPage() {
                   <span className="text-4xl font-extrabold tracking-tight">€{p.price}</span>
                   <span className="text-slate-500">{p.period}</span>
                 </div>
-                <Link href={p.href} className={`block mt-5 w-full text-center py-2.5 rounded-lg font-semibold text-sm transition ${p.highlighted ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 hover:translate-y-[-1px]' : 'bg-slate-900 text-white hover:bg-slate-800'}`}>
-                  {p.cta}
-                </Link>
+                <PlanCTA plan={p.name.toLowerCase() as 'free' | 'pro' | 'business'} ctaText={p.cta} href={p.href} highlighted={p.highlighted} />
               </div>
               <ul className="p-6 space-y-2.5">
                 {p.features.map((f, i) => (
