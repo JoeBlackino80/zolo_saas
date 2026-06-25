@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -33,4 +34,13 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: 'sorb-xt',
+  project: 'javascript-nextjs',
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  tunnelRoute: '/monitoring',
+  sourcemaps: { deleteSourcemapsAfterUpload: true },
+  disableLogger: true,
+  automaticVercelMonitors: true,
+});
