@@ -70,14 +70,16 @@ export default function PrivacyPage() {
           <div>
             <h2 className="text-xl font-semibold text-slate-900 mt-8 mb-3">6. Komu odovzdávame údaje</h2>
             <ul className="list-disc pl-6 space-y-1">
-              <li><strong>Supabase Inc.</strong> (databáza + auth) — EU hosting</li>
-              <li><strong>Vercel Inc.</strong> (CDN, hosting) — EU edge (Frankfurt)</li>
-              <li><strong>Resend Inc.</strong> (email delivery)</li>
-              <li><strong>Stripe Inc.</strong> (platby — iba ak používateľ nastaví)</li>
-              <li><strong>Cloudflare Inc.</strong> (DNS + DDoS protection)</li>
+              <li><strong>Supabase Inc.</strong> (databáza + auth) — EU hosting · <a href="https://supabase.com/legal/dpa" target="_blank" rel="noopener" className="text-blue-600 hover:underline">DPA</a></li>
+              <li><strong>Vercel Inc.</strong> (CDN, hosting) — EU edge (Frankfurt) · <a href="https://vercel.com/legal/dpa" target="_blank" rel="noopener" className="text-blue-600 hover:underline">DPA</a></li>
+              <li><strong>Resend Inc.</strong> (email delivery) · <a href="https://resend.com/legal/dpa" target="_blank" rel="noopener" className="text-blue-600 hover:underline">DPA</a></li>
+              <li><strong>Stripe Inc.</strong> (platby — iba ak používateľ nastaví) · <a href="https://stripe.com/legal/dpa" target="_blank" rel="noopener" className="text-blue-600 hover:underline">DPA</a></li>
+              <li><strong>Upstash Inc.</strong> (rate limiting) · <a href="https://upstash.com/trust/dpa.pdf" target="_blank" rel="noopener" className="text-blue-600 hover:underline">DPA</a></li>
+              <li><strong>Sentry (Functional Software, Inc.)</strong> (error monitoring) · <a href="https://sentry.io/legal/dpa/" target="_blank" rel="noopener" className="text-blue-600 hover:underline">DPA</a></li>
+              <li><strong>Cloudflare Inc.</strong> (DNS + DDoS protection) · <a href="https://www.cloudflare.com/cloudflare-customer-dpa/" target="_blank" rel="noopener" className="text-blue-600 hover:underline">DPA</a></li>
               <li><strong>Orgány verejnej moci</strong> na základe zákonnej povinnosti</li>
             </ul>
-            <p className="mt-2">So všetkými spracovateľmi máme uzavretú spracovateľskú zmluvu (DPA) v súlade s čl. 28 GDPR.</p>
+            <p className="mt-2">So všetkými spracovateľmi máme uzavretú spracovateľskú zmluvu (DPA) v súlade s čl. 28 GDPR (linky vyššie).</p>
           </div>
 
           <div>
