@@ -24,7 +24,7 @@ export default async function TeamPage() {
   const mem = (members || []) as Mem[];
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-8 max-w-5xl">
       <PageHeader title="Tím & pozvánky" subtitle="Pozvi účtovníčku alebo kolegu na prácu s tvojimi firmami" />
 
       <Card className="mb-4">

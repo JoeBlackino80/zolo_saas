@@ -26,9 +26,15 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const isPublic = path.startsWith('/portal/') || path === '/' || path === '/terms' || path === '/privacy' || path === '/cookies' || path === '/contact' || path === '/pricing' || path === '/robots.txt' || path === '/sitemap.xml';
+  const url = request.nextUrl;
+  // /api/invoice-pdf and /api/payment-link allow ?token= unauthenticated; require auth only when id= used
+  const isTokenisedApi =
+    (path.startsWith('/api/invoice-pdf') && url.searchParams.has('token')) ||
+    path.startsWith('/api/payment-link') ||
+    path.startsWith('/api/send-invite');
+  const isPublic = path.startsWith('/portal/') || path.startsWith('/invite/') || path.startsWith('/auth/callback') || path.startsWith('/auth/reset') || isTokenisedApi || path === '/' || path === '/terms' || path === '/privacy' || path === '/cookies' || path === '/contact' || path === '/pricing' || path === '/robots.txt' || path === '/sitemap.xml';
   const isAuthPage = path.startsWith('/login');
-  const isProtectedPage = (path.startsWith('/dashboard') || path.startsWith('/api/')) && !path.startsWith('/api/portal') && !path.startsWith('/api/stripe') && !path.startsWith('/api/exchange-rates') && !path.startsWith('/api/validate-vat') && !path.startsWith('/api/health');
+  const isProtectedPage = (path.startsWith('/dashboard') || path.startsWith('/api/')) && !path.startsWith('/api/portal') && !path.startsWith('/api/stripe') && !path.startsWith('/api/exchange-rates') && !path.startsWith('/api/validate-vat') && !path.startsWith('/api/health') && !isTokenisedApi;
   if (isPublic) return supabaseResponse;
 
   if (!user && isProtectedPage) {

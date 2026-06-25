@@ -28,19 +28,30 @@ export default function TeamInviteForm({ companies }: { companies: { id: string;
       company_id: cid,
       role,
       invited_by: user.id,
-      status: 'pending',
     }));
-    const { error } = await sb.from('team_invitations').insert(rows);
+    // 1) Insert pending invitations (token + expires set by DB defaults)
+    const { data: inserted, error } = await sb.from('team_invitations').insert(rows).select('id');
     if (error) { toast(error.message, 'error'); setSending(false); return; }
-    toast(`Pozvánka odoslaná pre ${targetFirms.length} firiem`, 'success');
+
+    // 2) Trigger Resend email per invitation
+    let sent = 0, failed = 0;
+    for (const inv of inserted || []) {
+      try {
+        const r = await fetch('/api/send-invite', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ invitationId: inv.id }) });
+        if (r.ok) sent++; else failed++;
+      } catch { failed++; }
+    }
+    if (failed === 0) toast(`Pozvánka odoslaná na ${email} pre ${sent} firiem`, 'success');
+    else toast(`Odoslané ${sent}/${sent + failed} pozvánok — ${failed} zlyhalo`, 'error');
     setEmail('');
     setSelectedFirms([]);
+    setSending(false);
     router.refresh();
   }
 
   return (
     <form onSubmit={send} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Email člena tímu">
           <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="uctovnicka@firma.sk" required />
         </Field>
