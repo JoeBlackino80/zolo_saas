@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
@@ -14,6 +14,13 @@ export default function LoginPage() {
   const [requiresMfa, setRequiresMfa] = useState(false);
   const [status, setStatus] = useState<{ msg: string; kind: 'error' | 'success' | 'muted' } | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const reason = new URLSearchParams(window.location.search).get('reason');
+    if (reason === 'idle') {
+      setStatus({ msg: 'Odhlásili sme ťa kvôli neaktivite. Prihlás sa znova.', kind: 'muted' });
+    }
+  }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
