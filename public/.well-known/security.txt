@@ -1,0 +1,6 @@
+Contact: mailto:security@zolo.sk
+Contact: mailto:privacy@zolo.sk
+Expires: 2027-06-25T00:00:00.000Z
+Preferred-Languages: sk, en
+Canonical: https://zolo.sk/.well-known/security.txt
+Policy: https://github.com/JoeBlackino80/zolo_saas/blob/main/SECURITY.md
