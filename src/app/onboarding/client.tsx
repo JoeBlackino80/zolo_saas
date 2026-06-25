@@ -77,17 +77,17 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-6">
       <div className="w-full max-w-xl">
         {/* Progress */}
         <div className="flex items-center justify-between mb-8 px-2">
           {STEPS.map((label, i) => (
             <div key={i} className="flex flex-col items-center flex-1">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition ${i <= step ? 'bg-gradient-to-br from-blue-500 to-purple-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${i <= step ? 'bg-zinc-900 text-white' : 'bg-zinc-200 text-zinc-500'}`}>
                 {i + 1}
               </div>
-              <div className={`text-[10px] uppercase tracking-wider mt-1.5 font-semibold ${i <= step ? 'text-slate-900' : 'text-slate-400'}`}>{label}</div>
-              {i < STEPS.length - 1 && <div className={`absolute h-0.5 top-4 ${i < step ? 'bg-blue-500' : 'bg-slate-200'}`} style={{ width: '20%' }} />}
+              <div className={`text-[10px] uppercase tracking-wider mt-1.5 font-semibold ${i <= step ? 'text-zinc-900' : 'text-zinc-400'}`}>{label}</div>
+              {i < STEPS.length - 1 && <div className={`absolute h-0.5 top-4 ${i < step ? 'bg-zinc-900' : 'bg-zinc-200'}`} style={{ width: '20%' }} />}
             </div>
           ))}
         </div>
@@ -96,8 +96,8 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
           <div className="p-8">
             {step === 0 && (
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white">
-                  <Sparkles size={28} />
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-zinc-900 text-white flex items-center justify-center">
+                  <Sparkles size={28} strokeWidth={1.8} />
                 </div>
                 <h1 className="text-2xl font-bold text-slate-900">Vitaj v ZOLO!</h1>
                 <p className="text-slate-600 mt-2">Si prihlásený ako <strong>{userEmail}</strong></p>

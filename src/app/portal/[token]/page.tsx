@@ -35,8 +35,8 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-6">
           <a href="https://zolo.sk" className="inline-flex items-center gap-2 text-slate-700">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-extrabold text-base">Z</div>
-            <span className="text-sm font-semibold">ZOLO</span>
+            <div className="w-7 h-7 rounded-md bg-zinc-900 text-white flex items-center justify-center font-black text-[14px] tracking-tight">Z</div>
+            <span className="text-sm font-semibold tracking-tight">ZOLO</span>
           </a>
         </div>
 

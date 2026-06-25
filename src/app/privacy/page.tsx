@@ -8,8 +8,8 @@ export default function PrivacyPage() {
       <header className="bg-white border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-extrabold">Z</div>
-            <span className="font-bold text-slate-900">ZOLO</span>
+            <div className="w-6 h-6 rounded-md bg-zinc-900 text-white flex items-center justify-center font-black text-[13px] tracking-tight">Z</div>
+            <span className="font-semibold text-zinc-900 tracking-tight">ZOLO</span>
           </Link>
           <Link href="/login" className="text-sm text-blue-600 hover:underline">Prihlásiť sa</Link>
         </div>

@@ -17,9 +17,9 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
   const roleLabel: Record<string, string> = { admin: 'Admin (plný prístup)', accountant: 'Účtovník', viewer: 'Iba čítanie' };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-extrabold text-xl mb-5">Z</div>
+    <div className="min-h-screen flex items-center justify-center p-6 bg-zinc-50">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-zinc-100 p-8">
+        <div className="w-11 h-11 rounded-xl bg-zinc-900 text-white flex items-center justify-center font-black text-xl tracking-tight mb-5">Z</div>
 
         {!invite && (
           <>
@@ -61,7 +61,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                     Si prihlásený(á) ako <strong>{user.email}</strong>, no pozvánka je pre <strong>{invite.invited_email}</strong>. Odhlás sa a prihlás správnym účtom, alebo si ho vytvor.
                   </div>
             ) : (
-              <Link href={`/login?next=${encodeURIComponent('/invite/' + token)}`} className="block w-full text-center mt-5 py-2.5 bg-gradient-to-br from-blue-500 to-indigo-500 text-white font-semibold rounded-lg">
+              <Link href={`/login?next=${encodeURIComponent('/invite/' + token)}`} className="block w-full text-center mt-5 py-2 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-full text-[14px] transition-colors">
                 Prihlásiť alebo registrovať
               </Link>
             )}

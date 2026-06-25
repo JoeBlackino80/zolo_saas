@@ -30,7 +30,7 @@ export default function AcceptButton({ token }: { token: string }) {
       <button
         onClick={accept}
         disabled={loading}
-        className="w-full mt-5 py-2.5 bg-gradient-to-br from-blue-500 to-indigo-500 text-white font-semibold rounded-lg disabled:opacity-50"
+        className="w-full mt-5 py-2 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-full text-[14px] transition-colors disabled:opacity-50"
       >
         {loading ? 'Prijímam…' : 'Prijať pozvánku'}
       </button>
