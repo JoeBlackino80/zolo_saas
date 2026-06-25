@@ -3,38 +3,50 @@
 import {
   LayoutDashboard,
   FileText,
-  Clock,
-  Edit3,
-  Target,
-  Code,
-  Book,
-  Building2,
-  Wallet,
-  Boxes,
-  Plane,
-  Receipt,
-  Archive,
   Users,
   Tag,
-  Link2,
-  Settings,
-  Calendar,
-  LogOut,
-  Plus,
-  Search,
-  Sparkles,
   Repeat,
+  ReceiptText,
+  Landmark,
+  Wallet,
+  PiggyBank,
+  CircleDollarSign,
+  Banknote,
+  ClipboardList,
+  Clock,
+  Percent,
+  FileSpreadsheet,
+  Globe,
+  Target,
+  BookOpen,
+  Library,
+  Briefcase,
+  LayoutGrid,
+  Boxes,
+  Plane,
+  HardHat,
+  CalendarDays,
   History,
   Send,
   ShoppingBag,
-  BarChart3,
+  Coins,
+  Archive,
+  Sparkles,
+  Link2,
   TrendingUp,
-  Briefcase,
-  CreditCard,
+  BarChart3,
+  Users2,
+  ShieldCheck,
+  Activity,
+  HelpCircle,
+  Settings as SettingsIcon,
+  Plus,
+  Search,
+  LogOut,
+  ChevronDown,
 } from 'lucide-react';
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 type Company = {
@@ -46,22 +58,125 @@ type Company = {
   is_vat_payer: boolean | null;
 };
 
+type NavItemDef = {
+  icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
+  label: string;
+  href: string;
+  segments: string[];
+  beta?: boolean;
+};
+
+type NavSection = {
+  label: string;
+  items: NavItemDef[];
+};
+
+const SECTIONS: NavSection[] = [
+  {
+    label: 'Prehľad',
+    items: [
+      { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', segments: [''] },
+    ],
+  },
+  {
+    label: 'Predaj',
+    items: [
+      { icon: FileText, label: 'Faktúry', href: '/dashboard/invoices', segments: ['invoices'] },
+      { icon: ReceiptText, label: 'Ponuky', href: '/dashboard/quotes', segments: ['quotes'] },
+      { icon: Repeat, label: 'Opakované', href: '/dashboard/recurring', segments: ['recurring'] },
+      { icon: Users, label: 'Zákazníci', href: '/dashboard/customers', segments: ['customers'] },
+      { icon: Tag, label: 'Cenník', href: '/dashboard/products', segments: ['products'] },
+    ],
+  },
+  {
+    label: 'Financie',
+    items: [
+      { icon: Landmark, label: 'Banka', href: '/dashboard/bank', segments: ['bank'] },
+      { icon: TrendingUp, label: 'Cashflow', href: '/dashboard/cashflow', segments: ['cashflow'] },
+      { icon: Wallet, label: 'Pokladnica', href: '/dashboard/cash-book', segments: ['cash-book'] },
+      { icon: Banknote, label: 'Účty', href: '/dashboard/bank-accounts', segments: ['bank-accounts'] },
+      { icon: Clock, label: 'Pohľadávky', href: '/dashboard/receivables', segments: ['receivables'] },
+      { icon: ClipboardList, label: 'Schvaľovanie', href: '/dashboard/approvals', segments: ['approvals'] },
+    ],
+  },
+  {
+    label: 'DPH',
+    items: [
+      { icon: Percent, label: 'Zápisy', href: '/dashboard/vat', segments: ['vat'] },
+      { icon: FileSpreadsheet, label: 'Priznanie', href: '/dashboard/vat-return', segments: ['vat-return'] },
+      { icon: FileSpreadsheet, label: 'KV DPH', href: '/dashboard/control-statement', segments: ['control-statement'] },
+      { icon: Globe, label: 'SV DPH', href: '/dashboard/summary-statement', segments: ['summary-statement'] },
+      { icon: Target, label: 'Optimalizácia', href: '/dashboard/optimize', segments: ['optimize'] },
+    ],
+  },
+  {
+    label: 'Účtovníctvo',
+    items: [
+      { icon: BookOpen, label: 'Denník', href: '/dashboard/journal', segments: ['journal'] },
+      { icon: Library, label: 'Osnova', href: '/dashboard/chart-of-accounts', segments: ['chart-of-accounts'] },
+      { icon: Briefcase, label: 'Projekty', href: '/dashboard/projects', segments: ['projects'] },
+      { icon: LayoutGrid, label: 'Strediská', href: '/dashboard/cost-centers', segments: ['cost-centers'] },
+      { icon: PiggyBank, label: 'Majetok', href: '/dashboard/assets', segments: ['assets'] },
+      { icon: Boxes, label: 'Sklady', href: '/dashboard/stock', segments: ['stock', 'stock-movements'] },
+      { icon: HardHat, label: 'Mzdy', href: '/dashboard/payroll', segments: ['payroll'], beta: true },
+      { icon: Plane, label: 'Cestovné', href: '/dashboard/travel', segments: ['travel'] },
+    ],
+  },
+  {
+    label: 'Podania a koniec roka',
+    items: [
+      { icon: Send, label: 'eDane', href: '/dashboard/edane', segments: ['edane'] },
+      { icon: ShoppingBag, label: 'eKasa', href: '/dashboard/ekasa', segments: ['ekasa'] },
+      { icon: CalendarDays, label: 'Kalendár', href: '/dashboard/calendar', segments: ['calendar'] },
+      { icon: History, label: 'História', href: '/dashboard/tax-returns', segments: ['tax-returns'] },
+      { icon: Coins, label: 'Daň z príjmov', href: '/dashboard/income-tax', segments: ['income-tax'] },
+      { icon: Archive, label: 'Závierka', href: '/dashboard/closing', segments: ['closing'] },
+    ],
+  },
+  {
+    label: 'Reporty a nástroje',
+    items: [
+      { icon: BarChart3, label: 'Reporty', href: '/dashboard/reports', segments: ['reports'] },
+      { icon: Sparkles, label: 'AI Import', href: '/dashboard/import', segments: ['import'], beta: true },
+      { icon: Link2, label: 'Prepojenia', href: '/dashboard/links', segments: ['links'] },
+    ],
+  },
+  {
+    label: 'Účet',
+    items: [
+      { icon: Users2, label: 'Tím', href: '/dashboard/team', segments: ['team'] },
+      { icon: ShieldCheck, label: 'Bezpečnosť', href: '/dashboard/settings/security', segments: [] },
+      { icon: Activity, label: 'Audit', href: '/dashboard/audit', segments: ['audit'] },
+      { icon: HelpCircle, label: 'Pomoc', href: '/dashboard/help', segments: ['help'] },
+      { icon: SettingsIcon, label: 'Nastavenia', href: '/dashboard/settings', segments: ['settings'] },
+    ],
+  },
+];
+
+const COLLAPSED_KEY = 'zolo_sidebar_collapsed';
+
 export default function Sidebar({ companies, userEmail }: { companies: Company[]; userEmail: string }) {
   const router = useRouter();
   const segment = useSelectedLayoutSegment();
   const [currentFirmId, setCurrentFirmId] = useState<string>(
     typeof window !== 'undefined' ? localStorage.getItem('zolo_firm') || '' : ''
   );
-  const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    if (typeof window !== 'undefined') setShowAdvanced(localStorage.getItem('zolo_sidebar_advanced') === '1');
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(COLLAPSED_KEY);
+      if (raw) setCollapsed(JSON.parse(raw));
+    } catch {}
   }, []);
 
-  function toggleAdvanced() {
-    const next = !showAdvanced;
-    setShowAdvanced(next);
-    if (typeof window !== 'undefined') localStorage.setItem('zolo_sidebar_advanced', next ? '1' : '0');
+  function toggleSection(label: string) {
+    setCollapsed((c) => {
+      const next = { ...c, [label]: !c[label] };
+      if (typeof window !== 'undefined') localStorage.setItem(COLLAPSED_KEY, JSON.stringify(next));
+      return next;
+    });
   }
 
   async function logout() {
@@ -79,134 +194,106 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
     router.refresh();
   }
 
+  const currentSegment = segment || '';
+
   return (
-    <aside className="sidebar-aside bg-slate-950 text-slate-300 flex flex-col h-screen md:sticky md:top-0 border-r border-white/5 md:!relative md:!block md:!w-auto md:!z-auto md:!hidden-false hidden md:flex">
-      <div className="p-3.5 pb-3 border-b border-white/5 space-y-2">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-extrabold text-base shadow-md shadow-blue-500/40">
+    <aside className="sidebar-aside bg-zinc-950 text-zinc-300 flex flex-col h-screen md:sticky md:top-0 border-r border-white/[0.06] md:!relative md:!block md:!w-auto md:!z-auto md:!hidden-false hidden md:flex">
+      {/* Header — logo + firm + search */}
+      <div className="px-3 pt-4 pb-3 space-y-3">
+        <div className="flex items-center gap-2.5 px-1">
+          <div className="w-7 h-7 rounded-lg bg-white text-zinc-900 flex items-center justify-center font-black text-base tracking-tight">
             Z
           </div>
-          <div className="leading-tight">
-            <div className="font-semibold text-white text-sm">ZOLO</div>
-            <div className="text-[10px] text-slate-500">Tax & Accounting</div>
+          <div className="leading-none">
+            <div className="font-semibold text-white text-[15px] tracking-tight">ZOLO</div>
           </div>
         </div>
 
-        <div className="bg-white/[0.04] border border-white/[0.06] rounded-lg p-2 space-y-1.5">
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
-            <span>Firma</span>
-          </div>
+        <button
+          onClick={() => router.push('/dashboard/search')}
+          className="w-full flex items-center gap-2 bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.06] rounded-lg px-2.5 py-2 text-[13px] text-zinc-400 hover:text-zinc-200 transition-colors"
+        >
+          <Search size={13} strokeWidth={2.2} />
+          <span className="flex-1 text-left">Hľadať</span>
+          <span className="text-[10px] bg-white/[0.06] px-1.5 py-0.5 rounded font-mono text-zinc-400">⌘K</span>
+        </button>
+
+        <div className="relative">
           <select
             value={currentFirmId}
             onChange={(e) => selectFirm(e.target.value)}
-            className="w-full bg-transparent text-slate-100 text-sm font-medium border-none outline-none cursor-pointer appearance-none"
+            className="w-full appearance-none bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.06] rounded-lg pl-2.5 pr-7 py-2 text-[13px] text-zinc-200 font-medium cursor-pointer outline-none transition-colors"
           >
-            <option value="" className="bg-slate-900">Všetky firmy ({companies.length})</option>
+            <option value="" className="bg-zinc-900">Všetky firmy ({companies.length})</option>
             {companies.map((c) => (
-              <option key={c.id} value={c.id} className="bg-slate-900">
+              <option key={c.id} value={c.id} className="bg-zinc-900">
                 {c.name}
               </option>
             ))}
           </select>
+          <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
         </div>
-
-        <button
-          className="w-full bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.06] rounded-lg px-2.5 py-2 flex items-center gap-2 text-slate-400 text-xs"
-          onClick={() => router.push('/dashboard/search')}
-        >
-          <Search size={13} />
-          <span className="flex-1 text-left">Hľadať…</span>
-          <span className="text-[10px] bg-white/5 px-1.5 py-0.5 rounded font-mono">⌘K</span>
-        </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-2 space-y-0.5 [&_a]:block [&_a]:text-current">
-        {/* CORE — vždy viditeľné (5 položiek) */}
-        <NavItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" active={!segment} />
-        <NavItem icon={FileText} label="Fakturácia" href="/dashboard/invoices" active={segment === 'invoices'} />
-        <NavItem icon={Users} label="Zákazníci" href="/dashboard/customers" active={segment === 'customers'} />
-        <NavItem icon={Wallet} label="Banka & cashflow" href="/dashboard/bank" active={segment === 'bank' || segment === 'cashflow'} />
-        <NavItem icon={Edit3} label="DPH" href="/dashboard/vat" active={segment === 'vat' || segment === 'vat-return'} />
-        <NavItem icon={Settings} label="Nastavenia" href="/dashboard/settings" active={segment === 'settings'} />
-
-        {/* ADVANCED toggle */}
-        <button
-          onClick={toggleAdvanced}
-          className="w-full mt-3 flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[11px] text-slate-500 hover:text-slate-300 uppercase tracking-wider font-semibold"
-        >
-          {showAdvanced ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-          Pokročilé
-        </button>
-
-        {showAdvanced && (
-          <div className="space-y-0.5 mt-1">
-            <Section label="Fakturácia +" />
-            <NavItem icon={FileText} label="Cenové ponuky" href="/dashboard/quotes" active={segment === 'quotes'} />
-            <NavItem icon={Clock} label="Schvaľovanie" href="/dashboard/approvals" active={segment === 'approvals'} />
-            <NavItem icon={Clock} label="Pohľadávky" href="/dashboard/receivables" active={segment === 'receivables'} />
-            <NavItem icon={TrendingUp} label="Cash flow 90d" href="/dashboard/cashflow" active={segment === 'cashflow'} />
-            <NavItem icon={BarChart3} label="Reporty" href="/dashboard/reports" active={segment === 'reports'} />
-            <NavItem icon={Link2} label="Prepojenia" href="/dashboard/links" active={segment === 'links'} />
-            <NavItem icon={Repeat} label="Recurring faktúry" href="/dashboard/recurring" active={segment === 'recurring'} />
-            <NavItem icon={Tag} label="Cenník" href="/dashboard/products" active={segment === 'products'} />
-
-            <Section label="DPH a podania" />
-            <NavItem icon={Target} label="Optimalizácia" href="/dashboard/optimize" active={segment === 'optimize'} />
-            <NavItem icon={Code} label="DP DPH — priznanie" href="/dashboard/vat-return" active={segment === 'vat-return'} />
-            <NavItem icon={Code} label="Kontrolný výkaz (KV)" href="/dashboard/control-statement" active={segment === 'control-statement'} />
-            <NavItem icon={Code} label="Súhrnný výkaz (SV)" href="/dashboard/summary-statement" active={segment === 'summary-statement'} />
-            <NavItem icon={History} label="História podaní" href="/dashboard/tax-returns" active={segment === 'tax-returns'} />
-            <NavItem icon={Send} label="eDane" href="/dashboard/edane" active={segment === 'edane'} />
-            <NavItem icon={ShoppingBag} label="eKasa" href="/dashboard/ekasa" active={segment === 'ekasa'} />
-            <NavItem icon={Calendar} label="Daňový kalendár" href="/dashboard/calendar" active={segment === 'calendar'} />
-
-            <Section label="Účtovníctvo" />
-            <NavItem icon={Book} label="Denník & hlavná kniha" href="/dashboard/journal" active={segment === 'journal'} />
-            <NavItem icon={Book} label="Účtová osnova" href="/dashboard/chart-of-accounts" active={segment === 'chart-of-accounts'} />
-            <NavItem icon={Wallet} label="Pokladnica" href="/dashboard/cash-book" active={segment === 'cash-book'} />
-            <NavItem icon={CreditCard} label="Bankové účty" href="/dashboard/bank-accounts" active={segment === 'bank-accounts'} />
-            <NavItem icon={Briefcase} label="Projekty" href="/dashboard/projects" active={segment === 'projects'} />
-            <NavItem icon={Target} label="Nákladové strediská" href="/dashboard/cost-centers" active={segment === 'cost-centers'} />
-            <NavItem icon={Building2} label="Majetok" href="/dashboard/assets" active={segment === 'assets'} />
-            <NavItem icon={Wallet} label="Mzdy" href="/dashboard/payroll" active={segment === 'payroll'} beta />
-            <NavItem icon={Boxes} label="Sklady" href="/dashboard/stock" active={segment === 'stock'} />
-            <NavItem icon={Boxes} label="Skladové pohyby" href="/dashboard/stock-movements" active={segment === 'stock-movements'} />
-            <NavItem icon={Plane} label="Cestovné príkazy" href="/dashboard/travel" active={segment === 'travel'} />
-
-            <Section label="Koncoročné" />
-            <NavItem icon={Receipt} label="Daň z príjmov" href="/dashboard/income-tax" active={segment === 'income-tax'} />
-            <NavItem icon={Archive} label="Závierka & podanie" href="/dashboard/closing" active={segment === 'closing'} />
-
-            <Section label="Nástroje" />
-            <NavItem icon={Sparkles} label="AI Vision import" href="/dashboard/import" active={segment === 'import'} />
-
-            <Section label="Systém" />
-            <NavItem icon={Users} label="Tím & pozvánky" href="/dashboard/team" active={segment === 'team'} />
-            <NavItem icon={History} label="Audit log" href="/dashboard/audit" active={segment === 'audit'} />
-            <NavItem icon={Search} label="Pomoc" href="/dashboard/help" active={segment === 'help'} />
-          </div>
-        )}
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto px-2 pb-2 [&_a]:block [&_a]:text-current scrollbar-thin">
+        {SECTIONS.map((section) => {
+          const isCollapsed = collapsed[section.label];
+          return (
+            <div key={section.label} className="mb-1">
+              <button
+                onClick={() => toggleSection(section.label)}
+                className="w-full px-2.5 pt-3 pb-1.5 flex items-center justify-between text-[10px] uppercase font-semibold text-zinc-500 hover:text-zinc-300 tracking-[0.1em] transition-colors"
+              >
+                <span>{section.label}</span>
+                <ChevronDown
+                  size={10}
+                  className={`transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`}
+                />
+              </button>
+              {!isCollapsed && (
+                <div className="space-y-px">
+                  {section.items.map((item) => (
+                    <NavLink
+                      key={item.href}
+                      icon={item.icon}
+                      label={item.label}
+                      href={item.href}
+                      active={item.segments.includes(currentSegment)}
+                      beta={item.beta}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </nav>
 
-      <div className="border-t border-white/5 bg-black/15 p-2 space-y-1.5">
+      {/* Footer — primary action + user */}
+      <div className="border-t border-white/[0.06] p-2 space-y-1.5">
         <button
           onClick={() => router.push('/dashboard/invoices/new')}
-          className="w-full bg-blue-500/15 hover:bg-blue-500/25 text-blue-300 hover:text-white font-semibold rounded-md py-2 flex items-center justify-center gap-2 text-xs"
+          className="w-full bg-white text-zinc-900 hover:bg-zinc-100 font-semibold rounded-lg py-2 flex items-center justify-center gap-2 text-[13px] tracking-tight transition-colors"
         >
-          <Plus size={14} /> Nový doklad
+          <Plus size={14} strokeWidth={2.5} /> Nová faktúra
         </button>
-        <div className="flex items-center gap-2 px-2 py-2 bg-white/[0.04] border border-white/[0.06] rounded-lg">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center text-white font-bold text-xs">
+        <div className="flex items-center gap-2 px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg">
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-zinc-300 to-zinc-500 text-zinc-900 flex items-center justify-center font-bold text-[11px]">
             {(userEmail[0] || '?').toUpperCase()}
           </div>
           <div className="flex-1 min-w-0 leading-tight">
-            <div className="text-xs text-slate-200 font-medium truncate">{userEmail}</div>
-            <div className="text-[10px] text-slate-500 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" /> Cloud · synced
+            <div className="text-[12px] text-zinc-200 font-medium truncate">{userEmail}</div>
+            <div className="text-[10px] text-zinc-500 flex items-center gap-1">
+              <span className="w-1 h-1 bg-emerald-400 rounded-full" /> online
             </div>
           </div>
-          <button onClick={logout} className="text-slate-400 hover:text-white p-1.5 rounded" title="Odhlásiť">
-            <LogOut size={13} />
+          <button
+            onClick={logout}
+            className="text-zinc-500 hover:text-zinc-200 p-1.5 rounded transition-colors"
+            title="Odhlásiť"
+          >
+            <LogOut size={13} strokeWidth={2} />
           </button>
         </div>
       </div>
@@ -214,22 +301,14 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
   );
 }
 
-function Section({ label }: { label: string }) {
-  return (
-    <div className="px-2.5 pt-3 pb-1 text-[10px] uppercase tracking-wider text-slate-600 font-semibold first:pt-1">
-      {label}
-    </div>
-  );
-}
-
-function NavItem({
+function NavLink({
   icon: Icon,
   label,
   href,
   active,
   beta,
 }: {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
   label: string;
   href: string;
   active?: boolean;
@@ -239,16 +318,25 @@ function NavItem({
   return (
     <button
       onClick={() => router.push(href)}
-      className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition ${
+      className={`w-full group relative flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
         active
-          ? 'bg-blue-500/20 text-white font-semibold shadow-[inset_0_0_0_1px_rgba(59,130,246,0.25)]'
-          : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-100'
+          ? 'bg-white/[0.08] text-white font-medium'
+          : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-100 font-normal'
       }`}
     >
-      <Icon size={15} className={active ? 'opacity-100 text-blue-400' : 'opacity-70'} />
-      <span className="flex-1 text-left">{label}</span>
+      {active && (
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-0.5 bg-white rounded-r-full" />
+      )}
+      <Icon
+        size={14}
+        strokeWidth={active ? 2.2 : 1.8}
+        className={active ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'}
+      />
+      <span className="flex-1 text-left tracking-tight">{label}</span>
       {beta && (
-        <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded font-semibold">BETA</span>
+        <span className="text-[9px] uppercase tracking-wider bg-white/[0.08] text-zinc-300 px-1.5 py-0.5 rounded font-semibold">
+          Beta
+        </span>
       )}
     </button>
   );
