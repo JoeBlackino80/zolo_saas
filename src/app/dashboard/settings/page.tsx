@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { PageHeader, Card, CardHeader, Badge, EmptyState, Button } from '@/components/ui';
 import Link from 'next/link';
-import { Building2, Plus, Palette, CreditCard, Mail, History } from 'lucide-react';
+import { Building2, Plus, Palette, CreditCard, Mail, History, Shield } from 'lucide-react';
 
 export default async function SettingsPage() {
   const sb = await createClient();
@@ -35,6 +35,7 @@ export default async function SettingsPage() {
         <SettingCard href="/dashboard/settings/preferences" icon={<Palette size={20} />} title="Preferencie" desc="Jazyk · formát · téma" />
         <SettingCard href="/dashboard/team" icon={<Mail size={20} />} title="Tím" desc="Pozvi účtovníčku" />
         <SettingCard href="/dashboard/audit" icon={<History size={20} />} title="Audit log" desc="História zmien" />
+        <SettingCard href="/dashboard/settings/security" icon={<Shield size={20} />} title="Bezpečnosť" desc="História prihlásení" />
       </div>
 
       <Card>

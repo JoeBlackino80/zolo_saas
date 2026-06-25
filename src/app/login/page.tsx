@@ -46,6 +46,7 @@ export default function LoginPage() {
       }
     }
     setStatus({ msg: '✓ Prihlásený', kind: 'success' });
+    fetch('/api/auth/log-login', { method: 'POST' }).catch(() => undefined);
     router.push('/dashboard');
     router.refresh();
   }
@@ -59,6 +60,7 @@ export default function LoginPage() {
       if (chErr) throw chErr;
       const { error } = await sb.auth.mfa.verify({ factorId: mfaFactorId, challengeId: ch.id, code: mfaCode });
       if (error) throw error;
+      fetch('/api/auth/log-login', { method: 'POST' }).catch(() => undefined);
       router.push('/dashboard');
       router.refresh();
     } catch (e: unknown) {
