@@ -51,8 +51,8 @@ export default async function TravelPage() {
               {rows.map((o) => {
                 const emp = Array.isArray(o.employees) ? o.employees[0] : o.employees;
                 return (
-                  <tr key={o.id} className="hover:bg-slate-50">
-                    <td className="px-5 py-3 text-slate-700">{emp ? `${emp.name} ${emp.surname}` : '—'}</td>
+                  <tr key={o.id} className="hover:bg-slate-50 cursor-pointer" onClick={undefined}>
+                    <td className="px-5 py-3 text-slate-700"><Link href={`/dashboard/travel/${o.id}`} className="hover:underline">{emp ? `${emp.name} ${emp.surname}` : '—'}</Link></td>
                     <td className="px-3 py-3 text-slate-700">{o.destination}{o.country ? `, ${o.country}` : ''}</td>
                     <td className="px-3 py-3 text-slate-600 text-xs truncate max-w-[200px]">{o.purpose || '—'}</td>
                     <td className="px-3 py-3 text-center font-mono text-xs">{o.departure_date ? fmtDate(o.departure_date) : '—'}</td>
