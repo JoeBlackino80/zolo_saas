@@ -25,6 +25,7 @@ export type InvoiceForPdf = {
   total: number;
   variable_symbol: string | null;
   notes: string | null;
+  qr_data_url?: string | null;
   customer_name: string | null;
   customer_ico: string | null;
   customer_dic: string | null;
@@ -102,12 +103,16 @@ const styles = StyleSheet.create({
   grandTotalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, marginTop: 4, borderTop: '2 solid #2563eb' },
   grandTotalLabel: { fontSize: 12, fontWeight: 700, color: '#0f172a' },
   grandTotalValue: { fontSize: 14, fontWeight: 700, color: '#2563eb' },
-  payment: { marginTop: 22, padding: 14, backgroundColor: '#f8fafc', borderRadius: 6 },
+  payment: { marginTop: 22, padding: 14, backgroundColor: '#f8fafc', borderRadius: 6, flexDirection: 'row', gap: 12 },
+  paymentLeft: { flex: 1 },
   paymentTitle: { fontSize: 9, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.6, fontWeight: 700, marginBottom: 7 },
-  paymentGrid: { flexDirection: 'row', gap: 14 },
-  paymentCol: { flex: 1 },
+  paymentGrid: { flexDirection: 'row', gap: 14, flexWrap: 'wrap' },
+  paymentCol: { flexBasis: '48%' },
   paymentKey: { fontSize: 8, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 1 },
   paymentVal: { fontSize: 10, color: '#0f172a', fontWeight: 700, fontFamily: 'Courier' },
+  qrBox: { width: 100, alignItems: 'center', justifyContent: 'center' },
+  qrImg: { width: 96, height: 96 },
+  qrLabel: { fontSize: 7, color: '#94a3b8', marginTop: 3, textAlign: 'center' },
   notes: { marginTop: 16, fontSize: 9, color: '#475569', fontStyle: 'italic' },
   footer: { position: 'absolute', bottom: 24, left: 38, right: 38, textAlign: 'center', fontSize: 8, color: '#94a3b8', borderTop: '1 solid #e2e8f0', paddingTop: 8 },
 });
@@ -207,13 +212,21 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
 
         {(co.iban || co.bank_name) && (
           <View style={styles.payment}>
-            <Text style={styles.paymentTitle}>Platobné údaje</Text>
-            <View style={styles.paymentGrid}>
-              <View style={styles.paymentCol}><Text style={styles.paymentKey}>IBAN</Text><Text style={styles.paymentVal}>{co.iban || '—'}</Text></View>
-              <View style={styles.paymentCol}><Text style={styles.paymentKey}>BIC / SWIFT</Text><Text style={styles.paymentVal}>{co.bic || '—'}</Text></View>
-              <View style={styles.paymentCol}><Text style={styles.paymentKey}>Banka</Text><Text style={styles.paymentVal}>{co.bank_name || '—'}</Text></View>
-              <View style={styles.paymentCol}><Text style={styles.paymentKey}>Variabilný symbol</Text><Text style={styles.paymentVal}>{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</Text></View>
+            <View style={styles.paymentLeft}>
+              <Text style={styles.paymentTitle}>Platobné údaje</Text>
+              <View style={styles.paymentGrid}>
+                <View style={styles.paymentCol}><Text style={styles.paymentKey}>IBAN</Text><Text style={styles.paymentVal}>{co.iban || '—'}</Text></View>
+                <View style={styles.paymentCol}><Text style={styles.paymentKey}>BIC / SWIFT</Text><Text style={styles.paymentVal}>{co.bic || '—'}</Text></View>
+                <View style={styles.paymentCol}><Text style={styles.paymentKey}>Banka</Text><Text style={styles.paymentVal}>{co.bank_name || '—'}</Text></View>
+                <View style={styles.paymentCol}><Text style={styles.paymentKey}>Variabilný symbol</Text><Text style={styles.paymentVal}>{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</Text></View>
+              </View>
             </View>
+            {invoice.qr_data_url && (
+              <View style={styles.qrBox}>
+                <Image src={invoice.qr_data_url} style={styles.qrImg} />
+                <Text style={styles.qrLabel}>PAY by square</Text>
+              </View>
+            )}
           </View>
         )}
 

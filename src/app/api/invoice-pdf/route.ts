@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { InvoicePdfDoc, type InvoiceForPdf } from '@/lib/invoice-pdf';
 import { rateLimit, getClientIp } from '@/lib/ratelimit';
+import { generatePayBySquareQR } from '@/lib/pay-by-square';
 import React from 'react';
 
 export const runtime = 'nodejs';
@@ -73,6 +74,14 @@ export async function GET(req: NextRequest) {
     total: Number(invoice.total || 0),
     variable_symbol: invoice.variable_symbol,
     notes: invoice.notes,
+    qr_data_url: co?.iban ? await generatePayBySquareQR({
+      iban: co.iban,
+      amount: Number(invoice.total || 0),
+      currency: invoice.currency || 'EUR',
+      beneficiaryName: co.name || 'Príjemca',
+      variableSymbol: invoice.variable_symbol || invoice.number.replace(/\D/g, ''),
+      message: invoice.number,
+    }) : null,
     customer_name: invoice.customer_name,
     customer_ico: invoice.customer_ico,
     customer_dic: invoice.customer_dic,
