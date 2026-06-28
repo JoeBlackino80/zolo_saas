@@ -33,9 +33,13 @@ export default function NewCashEntryPage() {
     setSaving(true);
     const sb = createClient();
     const { data: { user } } = await sb.auth.getUser();
-    const { error } = await sb.from('cash_book_entries').insert([{ ...form, created_by: user?.id }]);
+    const { data: inserted, error } = await sb.from('cash_book_entries').insert([{ ...form, created_by: user?.id }]).select('id').single();
     if (error) { toast(error.message, 'error'); setSaving(false); return; }
-    toast('Zápis pridaný', 'success');
+    if (inserted?.id) {
+      const { error: jeErr } = await sb.rpc('post_cashbook_journal', { p_entry_id: inserted.id });
+      if (jeErr) console.warn('Cashbook journal skipped:', jeErr.message);
+    }
+    toast('Zápis pridaný · denníkový zápis vytvorený', 'success');
     router.push('/dashboard/cash-book');
     router.refresh();
   }
