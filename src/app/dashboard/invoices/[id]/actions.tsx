@@ -18,9 +18,15 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; tot
 
   async function markPaid() {
     const sb = createClient();
-    const { error } = await sb.from('invoices').update({ paid_amount: invoice.total, status: 'paid' }).eq('id', invoice.id);
+    const remaining = Number(invoice.total) - Number(invoice.paid_amount || 0);
+    const { error } = await sb.rpc('mark_invoice_paid', {
+      p_invoice_id: invoice.id,
+      p_amount: remaining,
+      p_method: 'bank',
+      p_notes: 'Manuálne označené ako zaplatené',
+    });
     if (error) { toast(error.message, 'error'); return; }
-    toast('Označené ako zaplatené', 'success');
+    toast('Zaplatené · denníkový zápis vytvorený', 'success');
     router.refresh();
   }
 

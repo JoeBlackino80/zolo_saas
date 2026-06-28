@@ -50,11 +50,15 @@ export default function InvoicesListClient({ invoices }: { invoices: Row[] }) {
     const toUpdate = invoices.filter((i) => selected.has(i.id));
     let ok = 0;
     for (const inv of toUpdate) {
-      const { error } = await sb.from('invoices').update({ paid_amount: Number(inv.total), status: 'paid' }).eq('id', inv.id);
-      if (!error) {
-        await sb.from('invoice_payments').insert([{ invoice_id: inv.id, payment_date: new Date().toISOString().slice(0, 10), amount: Number(inv.total), payment_method: 'manual', notes: 'Bulk mark paid' }]);
-        ok++;
-      }
+      const remaining = Number(inv.total) - Number(inv.paid_amount || 0);
+      if (remaining <= 0) { ok++; continue; }
+      const { error } = await sb.rpc('mark_invoice_paid', {
+        p_invoice_id: inv.id,
+        p_amount: remaining,
+        p_method: 'bank',
+        p_notes: 'Bulk mark paid',
+      });
+      if (!error) ok++;
     }
     setBusy(false);
     setSelected(new Set());

@@ -222,6 +222,12 @@ export default function NewInvoicePage() {
     }));
     await sb.from('invoice_items').insert(itemRows);
 
+    // Auto-post journal entry (FA → 311/602/34302 ; credit_note reverses)
+    if (form.type === 'invoice' || form.type === 'credit_note') {
+      const { error: jeErr } = await sb.rpc('post_invoice_journal', { p_invoice_id: inv.id, p_event: 'issue' });
+      if (jeErr) console.warn('Journal posting skipped:', jeErr.message);
+    }
+
     router.push('/dashboard/invoices');
     router.refresh();
   }
