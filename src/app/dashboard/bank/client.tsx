@@ -57,13 +57,15 @@ export default function BankImportClient() {
     const sb = createClient();
     let ok = 0;
     for (const m of toApply) {
-      const { error } = await sb
-        .from('invoices')
-        .update({ paid_amount: Math.abs(m.tx.amount), status: 'paid' })
-        .eq('id', m.invoice!.id);
+      const { error } = await sb.rpc('mark_invoice_paid', {
+        p_invoice_id: m.invoice!.id,
+        p_amount: Math.abs(m.tx.amount),
+        p_method: 'bank',
+        p_notes: `Bankový výpis · ${fmtDate(m.tx.date)} · VS ${m.tx.vs || '—'}`,
+      });
       if (!error) ok++;
     }
-    toast(`${ok} faktúr označených ako zaplatené`, 'success');
+    toast(`${ok} faktúr zaplatených · denníkové zápisy vytvorené`, 'success');
     setMatches([]);
     setStats(null);
   }
