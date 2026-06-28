@@ -3,6 +3,7 @@ import { PageHeader, Card, EmptyState, Badge, Button } from '@/components/ui';
 import { Repeat, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { fmtEur, fmtDate } from '@/lib/utils';
+import RunNowButton from './run-now-button';
 
 const FREQ_LABEL: Record<string, string> = { monthly: 'mesačne', quarterly: 'štvrťročne', yearly: 'ročne' };
 
@@ -18,11 +19,14 @@ export default async function RecurringPage() {
     <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader
         title="Opakujúce sa faktúry"
-        subtitle={`${templates?.length || 0} šablón · auto-generujú sa pri splatnosti, posielajú mailom`}
+        subtitle={`${templates?.length || 0} šablón · cron 06:00 UTC denne, alebo manuálne tlačidlom`}
         actions={
-          <Link href="/dashboard/recurring/new">
-            <Button variant="primary"><Plus size={14} /> Nová šablóna</Button>
-          </Link>
+          <div className="flex gap-2">
+            <RunNowButton />
+            <Link href="/dashboard/recurring/new">
+              <Button variant="primary"><Plus size={14} /> Nová šablóna</Button>
+            </Link>
+          </div>
         }
       />
 
