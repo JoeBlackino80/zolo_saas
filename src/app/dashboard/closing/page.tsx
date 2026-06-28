@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { PageHeader, Card, CardHeader, Badge } from '@/components/ui';
 import { Check, AlertCircle } from 'lucide-react';
+import YearEndButton from './year-end-button';
 
 const CHECKLIST = [
   { key: 'inventura', label: 'Inventarizácia majetku a záväzkov', desc: 'Fyzická + dokladová inventúra k 31.12.' },
@@ -78,6 +79,8 @@ export default async function ClosingPage() {
           </div>
         </div>
       </Card>
+
+      <YearEndButton />
     </div>
   );
 }
