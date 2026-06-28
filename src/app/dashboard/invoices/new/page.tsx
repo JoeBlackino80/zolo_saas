@@ -222,9 +222,11 @@ export default function NewInvoicePage() {
     }));
     await sb.from('invoice_items').insert(itemRows);
 
-    // Auto-post journal entry + stock movement (FA → 311/602/34302 + stock_issue ;
-    // credit_note → reverse journal + stock_receipt)
-    if (form.type === 'invoice' || form.type === 'credit_note') {
+    // Auto-post journal entry + stock movement
+    // invoice          → 311/602/34302 + stock_issue
+    // credit_note      → reverse + stock_receipt
+    // received_invoice → 132 or 518 + 34301 / 321
+    if (form.type === 'invoice' || form.type === 'credit_note' || form.type === 'received_invoice') {
       const { error: jeErr } = await sb.rpc('post_invoice_journal', { p_invoice_id: inv.id, p_event: 'issue' });
       if (jeErr) console.warn('Journal posting skipped:', jeErr.message);
       const { error: stErr } = await sb.rpc('post_invoice_stock', { p_invoice_id: inv.id });

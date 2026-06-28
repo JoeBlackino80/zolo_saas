@@ -26,20 +26,24 @@ export default function BankImportClient() {
       const sb = createClient();
       const { data: invoices } = await sb
         .from('invoices')
-        .select('id, number, variable_symbol, total, paid_amount, customer_name, status')
-        .eq('type', 'invoice')
+        .select('id, number, type, variable_symbol, total, paid_amount, customer_name, supplier_name, status')
+        .in('type', ['invoice', 'received_invoice'])
         .neq('status', 'paid')
         .is('deleted_at', null);
       const invs = invoices || [];
       const m: Match[] = txs.map((tx) => {
-        const inv = invs.find((i) => {
+        // Incoming money (+amount) → outgoing FA (we get paid)
+        // Outgoing money (-amount) → received_invoice (we pay supplier)
+        const isIncoming = tx.amount > 0;
+        const candidates = invs.filter((i) => isIncoming ? i.type === 'invoice' : i.type === 'received_invoice');
+        const inv = candidates.find((i) => {
           const vs = (i.variable_symbol || '').trim();
           if (vs && vs === tx.vs.trim()) return true;
           const remaining = Number(i.total) - Number(i.paid_amount || 0);
           if (Math.abs(Math.abs(tx.amount) - remaining) < 0.01) return true;
           return false;
         });
-        return { tx, invoice: inv ? { id: inv.id, number: inv.number, total: Number(inv.total), customer_name: inv.customer_name } : null };
+        return { tx, invoice: inv ? { id: inv.id, number: inv.number, total: Number(inv.total), customer_name: inv.customer_name || inv.supplier_name } : null };
       });
       setMatches(m);
       setStats({ matched: m.filter((x) => x.invoice).length, unmatched: m.filter((x) => !x.invoice).length, total: m.length });
