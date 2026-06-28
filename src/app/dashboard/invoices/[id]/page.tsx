@@ -61,11 +61,14 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=storno&parent=${invoice.id}`}>
                   <Button variant="secondary">Storno</Button>
                 </Link>
+                <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=delivery_note&parent=${invoice.id}`}>
+                  <Button variant="secondary">Dodací list</Button>
+                </Link>
               </>
             )}
-            {(invoice.type === 'proforma' || invoice.type === 'quote') && (
+            {(invoice.type === 'proforma' || invoice.type === 'quote' || invoice.type === 'delivery_note') && (
               <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=invoice&parent=${invoice.id}`}>
-                <Button variant="primary">Konvertovať na FA</Button>
+                <Button variant="primary">Vystaviť FA</Button>
               </Link>
             )}
             <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=${invoice.type}`}>

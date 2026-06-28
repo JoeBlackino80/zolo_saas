@@ -222,10 +222,13 @@ export default function NewInvoicePage() {
     }));
     await sb.from('invoice_items').insert(itemRows);
 
-    // Auto-post journal entry (FA → 311/602/34302 ; credit_note reverses)
+    // Auto-post journal entry + stock movement (FA → 311/602/34302 + stock_issue ;
+    // credit_note → reverse journal + stock_receipt)
     if (form.type === 'invoice' || form.type === 'credit_note') {
       const { error: jeErr } = await sb.rpc('post_invoice_journal', { p_invoice_id: inv.id, p_event: 'issue' });
       if (jeErr) console.warn('Journal posting skipped:', jeErr.message);
+      const { error: stErr } = await sb.rpc('post_invoice_stock', { p_invoice_id: inv.id });
+      if (stErr) console.warn('Stock movement skipped:', stErr.message);
     }
 
     router.push('/dashboard/invoices');
