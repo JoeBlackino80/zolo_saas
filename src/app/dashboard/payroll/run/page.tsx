@@ -140,7 +140,12 @@ export default function PayrollRunPage() {
     const { error: itemsErr } = await sb.from('payroll_items').insert(itemRows);
     if (itemsErr) { toast(itemsErr.message, 'error'); setSaving(false); return; }
 
-    toast(finalize ? 'Beh uzamknutý' : 'Uložené ako draft', 'success');
+    if (finalize) {
+      const { error: jeErr } = await sb.rpc('post_payroll_journal', { p_run_id: runId });
+      if (jeErr) console.warn('Payroll journal skipped:', jeErr.message);
+    }
+
+    toast(finalize ? 'Beh uzamknutý · denníkový zápis vytvorený' : 'Uložené ako draft', 'success');
     setSaving(false);
     router.refresh();
   }
