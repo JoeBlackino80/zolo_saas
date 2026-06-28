@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
-import { PageHeader, Card, EmptyState, Badge } from '@/components/ui';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { PageHeader, Card, EmptyState, Badge, Button } from '@/components/ui';
+import { TrendingUp, TrendingDown, Plus } from 'lucide-react';
 import { fmtEur, fmtDate } from '@/lib/utils';
+import Link from 'next/link';
 
 export default async function StockMovementsPage() {
   const sb = await createClient();
@@ -16,7 +17,15 @@ export default async function StockMovementsPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-6xl">
-      <PageHeader title="Skladové pohyby" subtitle={`${rows.length} pohybov · príjemky, výdajky, prevody`} />
+      <PageHeader
+        title="Skladové pohyby"
+        subtitle={`${rows.length} pohybov · príjemky, výdajky, prevody`}
+        actions={
+          <Link href="/dashboard/stock-movements/new">
+            <Button variant="primary"><Plus size={14} /> Nový príjem</Button>
+          </Link>
+        }
+      />
       {rows.length === 0 ? (
         <Card><EmptyState icon={<TrendingUp size={24} />} title="Žiadne pohyby" description="Vytvor príjemku alebo výdajku v sklade." /></Card>
       ) : (
