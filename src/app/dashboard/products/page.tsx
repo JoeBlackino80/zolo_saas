@@ -15,6 +15,7 @@ export default async function ProductsPage() {
         subtitle={`${products?.length || 0} položiek`}
         actions={
           <div className="flex gap-2">
+            <Link href="/dashboard/products/reprice"><Button variant="secondary">Hromadne preceniť</Button></Link>
             <Link href="/dashboard/products/import"><Button variant="secondary"><Upload size={14} /> Import CSV</Button></Link>
             <Link href="/dashboard/products/new"><Button variant="primary"><Plus size={14} /> Nová položka</Button></Link>
           </div>
