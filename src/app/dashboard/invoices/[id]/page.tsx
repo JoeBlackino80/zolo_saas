@@ -11,6 +11,7 @@ const TYPE_LABEL: Record<string, string> = {
   received_invoice: 'Prijatá faktúra',
   proforma: 'Zálohová faktúra',
   credit_note: 'Dobropis',
+  debit_note: 'Ťarchopis',
   storno: 'Storno',
   delivery_note: 'Dodací list',
   quote: 'Cenová ponuka',
@@ -60,6 +61,9 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 </Link>
                 <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=storno&parent=${invoice.id}`}>
                   <Button variant="secondary">Storno</Button>
+                </Link>
+                <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=debit_note&parent=${invoice.id}`}>
+                  <Button variant="secondary">Ťarchopis</Button>
                 </Link>
                 <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=delivery_note&parent=${invoice.id}`}>
                   <Button variant="secondary">Dodací list</Button>

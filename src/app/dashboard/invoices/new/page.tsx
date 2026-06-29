@@ -225,7 +225,7 @@ export default function NewInvoicePage() {
     // Auto-post journal entry + stock movement
     // invoice / received_invoice / credit_note / storno → journal entry
     // invoice / received_invoice / credit_note / storno / delivery_note → stock movement (DL no journal)
-    const journalTypes = ['invoice', 'credit_note', 'storno', 'received_invoice'];
+    const journalTypes = ['invoice', 'credit_note', 'storno', 'received_invoice', 'debit_note'];
     const stockTypes = [...journalTypes, 'delivery_note'];
     if (journalTypes.includes(form.type)) {
       const { error: jeErr } = await sb.rpc('post_invoice_journal', { p_invoice_id: inv.id, p_event: 'issue' });
@@ -262,6 +262,7 @@ export default function NewInvoicePage() {
                 <option value="received_invoice">Prijatá FA (PFA)</option>
                 <option value="proforma">Zálohová (ZF)</option>
                 <option value="credit_note">Dobropis (DOB)</option>
+                <option value="debit_note">Ťarchopis (TCH)</option>
                 <option value="storno">Storno (STO)</option>
                 <option value="delivery_note">Dodací list (DL)</option>
                 <option value="cash_receipt">Pokladnica (PPD)</option>

@@ -121,3 +121,51 @@ export function generateDpfoBXml(firm: { dic: string | null; name: string }, yea
   </Vykaz>
 </DPFOBv26>`;
 }
+
+// DPMV — Daň z motorových vozidiel (motor vehicle tax)
+// Slovenský elektronický formulár DMPVv26.
+export type Vehicle = {
+  plate: string;
+  type: string;
+  weight_kg: number;
+  engine_cm3: number;
+  fuel: 'diesel' | 'gasoline' | 'electric' | 'other';
+  first_registration: string;
+  annual_tax: number;
+};
+
+export function calcDpmv(vehicles: Vehicle[]): { total: number; per_vehicle: { plate: string; tax: number }[] } {
+  const per_vehicle = vehicles.map((v) => ({ plate: v.plate, tax: +v.annual_tax.toFixed(2) }));
+  const total = +per_vehicle.reduce((s, v) => s + v.tax, 0).toFixed(2);
+  return { total, per_vehicle };
+}
+
+export function generateDpmvXml(firm: { dic: string | null; ic_dph: string | null; name: string }, year: number | string, vehicles: Vehicle[]): string {
+  const r = calcDpmv(vehicles);
+  const fmt = (n: number) => n.toFixed(2);
+  const vehLines = vehicles.map((v, i) => `
+    <Vozidlo poradie="${i + 1}">
+      <EvCislo>${esc(v.plate)}</EvCislo>
+      <DruhVozidla>${esc(v.type)}</DruhVozidla>
+      <Hmotnost>${v.weight_kg}</Hmotnost>
+      <ObjemMotora>${v.engine_cm3}</ObjemMotora>
+      <DruhPaliva>${esc(v.fuel)}</DruhPaliva>
+      <PrvaEvidencia>${esc(v.first_registration)}</PrvaEvidencia>
+      <RocnaDan>${fmt(v.annual_tax)}</RocnaDan>
+    </Vozidlo>`).join('');
+  return `<?xml version="1.0" encoding="windows-1250"?>
+<DMPVv26 xmlns="http://www.financnasprava.sk/dmpvv26">
+  <Identifikacia>
+    <DIC>${esc(firm.dic)}</DIC>
+    <ICDPH>${esc(firm.ic_dph)}</ICDPH>
+    <Nazov>${esc(firm.name)}</Nazov>
+    <ZdanovacieObdobie>${year}</ZdanovacieObdobie>
+  </Identifikacia>
+  <Vozidla>${vehLines}
+  </Vozidla>
+  <Vykaz>
+    <R10_CelkovyPocetVozidiel>${vehicles.length}</R10_CelkovyPocetVozidiel>
+    <R20_CelkovaSuma>${fmt(r.total)}</R20_CelkovaSuma>
+  </Vykaz>
+</DMPVv26>`;
+}
