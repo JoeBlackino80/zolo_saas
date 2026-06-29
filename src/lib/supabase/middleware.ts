@@ -34,7 +34,7 @@ export async function updateSession(request: NextRequest) {
     path.startsWith('/api/send-invite');
   const isPublic = path.startsWith('/portal/') || path.startsWith('/invite/') || path.startsWith('/auth/callback') || path.startsWith('/auth/reset') || isTokenisedApi || path === '/' || path === '/terms' || path === '/privacy' || path === '/cookies' || path === '/contact' || path === '/pricing' || path === '/robots.txt' || path === '/sitemap.xml';
   const isAuthPage = path.startsWith('/login');
-  const isProtectedPage = (path.startsWith('/dashboard') || path.startsWith('/api/')) && !path.startsWith('/api/portal') && !path.startsWith('/api/stripe') && !path.startsWith('/api/exchange-rates') && !path.startsWith('/api/validate-vat') && !path.startsWith('/api/health') && !path.startsWith('/api/csp-report') && !isTokenisedApi;
+  const isProtectedPage = (path.startsWith('/dashboard') || path.startsWith('/api/')) && !path.startsWith('/api/portal') && !path.startsWith('/api/stripe') && !path.startsWith('/api/exchange-rates') && !path.startsWith('/api/validate-vat') && !path.startsWith('/api/health') && !path.startsWith('/api/csp-report') && !path.startsWith('/api/exchange-rates/sync') && !isTokenisedApi;
   if (isPublic) return supabaseResponse;
 
   if (!user && isProtectedPage) {
