@@ -5,6 +5,7 @@ import { fmtEur, fmtDate } from '@/lib/utils';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import InvoiceActions from './actions';
+import InstallmentsSection from './installments-form';
 
 const TYPE_LABEL: Record<string, string> = {
   invoice: 'Faktúra',
@@ -81,6 +82,10 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           </div>
         }
       />
+
+      {invoice.type === 'invoice' && Number(invoice.paid_amount || 0) < Number(invoice.total) && (
+        <InstallmentsSection invoiceId={invoice.id} companyId={invoice.company_id} total={Number(invoice.total)} />
+      )}
 
       {hasLinks && (
         <Card className="mb-4">
