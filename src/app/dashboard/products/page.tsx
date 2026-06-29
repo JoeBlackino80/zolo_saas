@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { PageHeader, Card, EmptyState, Button } from '@/components/ui';
-import { Tag, Plus } from 'lucide-react';
+import { Tag, Plus, Upload } from 'lucide-react';
 import { fmtEur } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -13,7 +13,12 @@ export default async function ProductsPage() {
       <PageHeader
         title="Cenník"
         subtitle={`${products?.length || 0} položiek`}
-        actions={<Link href="/dashboard/products/new"><Button variant="primary"><Plus size={14} /> Nová položka</Button></Link>}
+        actions={
+          <div className="flex gap-2">
+            <Link href="/dashboard/products/import"><Button variant="secondary"><Upload size={14} /> Import CSV</Button></Link>
+            <Link href="/dashboard/products/new"><Button variant="primary"><Plus size={14} /> Nová položka</Button></Link>
+          </div>
+        }
       />
       {!products?.length ? (
         <Card><EmptyState

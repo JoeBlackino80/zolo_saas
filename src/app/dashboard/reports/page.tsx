@@ -66,6 +66,17 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         }
       />
 
+      <div className="grid sm:grid-cols-2 gap-3 mb-6">
+        <Link href={`/dashboard/reports/balance-sheet?year=${year}`} className="block bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl p-5 transition-colors">
+          <div className="font-semibold tracking-tight text-zinc-900">Súvaha {year}</div>
+          <div className="text-xs text-zinc-500 mt-1">Aktíva a pasíva k 31.12. zo zaúčtovaných operácií →</div>
+        </Link>
+        <Link href={`/dashboard/reports/income-statement?year=${year}`} className="block bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl p-5 transition-colors">
+          <div className="font-semibold tracking-tight text-zinc-900">Výsledovka {year}</div>
+          <div className="text-xs text-zinc-500 mt-1">Náklady, výnosy a výsledok hospodárenia (P&L) →</div>
+        </Link>
+      </div>
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card><div className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Výnosy</div>
