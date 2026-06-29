@@ -33,7 +33,12 @@ export default async function JournalPage() {
       <PageHeader
         title="Denník & hlavná kniha"
         subtitle={`${rows.length} zápisov`}
-        actions={<Link href="/dashboard/journal/new"><Button variant="primary"><Plus size={14} /> Nový zápis</Button></Link>}
+        actions={
+          <div className="flex gap-2">
+            <Link href="/dashboard/journal/accruals"><Button variant="secondary">Časové rozlíšenie</Button></Link>
+            <Link href="/dashboard/journal/new"><Button variant="primary"><Plus size={14} /> Nový zápis</Button></Link>
+          </div>
+        }
       />
 
       {rows.length === 0 ? (
