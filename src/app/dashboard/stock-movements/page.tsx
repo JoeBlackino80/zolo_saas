@@ -21,9 +21,10 @@ export default async function StockMovementsPage() {
         title="Skladové pohyby"
         subtitle={`${rows.length} pohybov · príjemky, výdajky, prevody`}
         actions={
-          <Link href="/dashboard/stock-movements/new">
-            <Button variant="primary"><Plus size={14} /> Nový príjem</Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/dashboard/stock-movements/transfer"><Button variant="secondary">Prevodka</Button></Link>
+            <Link href="/dashboard/stock-movements/new"><Button variant="primary"><Plus size={14} /> Nový príjem</Button></Link>
+          </div>
         }
       />
       {rows.length === 0 ? (

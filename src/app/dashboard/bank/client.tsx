@@ -76,7 +76,15 @@ export default function BankImportClient() {
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl">
-      <PageHeader title="Bankový výpis" subtitle="Import CSV výpisu + automatické párovanie k faktúram cez VS" />
+      <PageHeader
+        title="Bankový výpis"
+        subtitle="Import CSV výpisu + automatické párovanie k faktúram cez VS"
+        actions={
+          <a href="/dashboard/bank/payment-orders" className="px-3.5 py-2 bg-white border border-zinc-200 text-zinc-800 hover:bg-zinc-50 rounded-lg text-[13px] font-medium tracking-tight transition-colors inline-flex items-center gap-1.5">
+            Prevodný príkaz →
+          </a>
+        }
+      />
 
       <Card className="mb-4">
         <div className="p-6">
