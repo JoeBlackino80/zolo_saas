@@ -94,8 +94,16 @@ export default function WebhooksPage() {
           <div className="divide-y divide-slate-100">
             {hooks.map((h) => (
               <div key={h.id} className="px-5 py-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="font-mono text-xs text-slate-700 break-all">{h.webhook_url}</div>
+                <div className="flex items-start justify-between mb-2 gap-2">
+                  <div className="font-mono text-xs text-slate-700 break-all flex-1">{h.webhook_url}</div>
+                  <button
+                    onClick={async () => {
+                      const r = await fetch('/api/webhook-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ webhook_config_id: h.id }) });
+                      const j = await r.json();
+                      toast(j.delivery?.success ? `Test prešiel · HTTP ${j.delivery.response_status}` : `Test zlyhal · ${j.delivery?.response_status || j.error || '?'}`, j.delivery?.success ? 'success' : 'error');
+                    }}
+                    className="text-xs text-zinc-600 hover:text-zinc-900 px-2 py-1 border border-zinc-200 rounded shrink-0"
+                  >Test</button>
                   <button onClick={() => delHook(h.id!)} className="text-red-500 hover:bg-red-50 p-1 rounded flex-shrink-0"><Trash2 size={14} /></button>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
