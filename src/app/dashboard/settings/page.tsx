@@ -37,6 +37,7 @@ export default async function SettingsPage() {
         <SettingCard href="/dashboard/audit" icon={<History size={20} />} title="Audit log" desc="História zmien" />
         <SettingCard href="/dashboard/settings/security" icon={<Shield size={20} />} title="Bezpečnosť" desc="História prihlásení" />
         <SettingCard href="/dashboard/settings/price-levels" icon={<Palette size={20} />} title="Cenové úrovne" desc="VIP / Distribútor / Retail" />
+        <SettingCard href="/dashboard/settings/api-keys" icon={<Shield size={20} />} title="API kľúče" desc="REST API · integrácie" />
       </div>
 
       <Card>
