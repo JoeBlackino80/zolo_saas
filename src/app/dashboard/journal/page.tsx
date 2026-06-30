@@ -35,6 +35,7 @@ export default async function JournalPage() {
         subtitle={`${rows.length} zápisov`}
         actions={
           <div className="flex gap-2">
+            <Link href="/dashboard/journal/bulk-post"><Button variant="secondary">Hromadne rozúčtovať</Button></Link>
             <Link href="/dashboard/journal/accruals"><Button variant="secondary">Časové rozlíšenie</Button></Link>
             <Link href="/dashboard/journal/new"><Button variant="primary"><Plus size={14} /> Nový zápis</Button></Link>
           </div>
