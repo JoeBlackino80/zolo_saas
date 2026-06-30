@@ -48,6 +48,7 @@ import {
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import NotificationBell from './NotificationBell';
 
 type Company = {
   id: string;
@@ -202,13 +203,16 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
     <aside className="sidebar-aside bg-zinc-950 text-zinc-300 flex flex-col h-screen md:sticky md:top-0 border-r border-white/[0.06] md:!w-auto md:!z-auto hidden md:flex">
       {/* Header — logo + firm + search */}
       <div className="px-3 pt-4 pb-3 space-y-3">
-        <div className="flex items-center gap-2.5 px-1">
-          <div className="w-7 h-7 rounded-lg bg-white text-zinc-900 flex items-center justify-center font-black text-base tracking-tight">
-            Z
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-white text-zinc-900 flex items-center justify-center font-black text-base tracking-tight">
+              Z
+            </div>
+            <div className="leading-none">
+              <div className="font-semibold text-white text-[15px] tracking-tight">ZOLO</div>
+            </div>
           </div>
-          <div className="leading-none">
-            <div className="font-semibold text-white text-[15px] tracking-tight">ZOLO</div>
-          </div>
+          <NotificationBell />
         </div>
 
         <button
