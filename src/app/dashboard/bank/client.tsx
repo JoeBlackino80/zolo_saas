@@ -56,9 +56,50 @@ export default function BankImportClient() {
   }
 
   async function applyMatches() {
-    const toApply = matches.filter((m) => m.invoice);
-    if (toApply.length === 0) return;
+    if (matches.length === 0) return;
     const sb = createClient();
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return;
+    const cid = typeof window !== 'undefined' ? localStorage.getItem('zolo_firm') : null;
+
+    // 1) Persist bank_statement + bank_transactions so the import isn't ephemeral
+    let bankAccountId: string | null = null;
+    if (cid) {
+      const { data: ba } = await sb.from('bank_accounts').select('id').eq('company_id', cid).eq('is_active', true).limit(1).maybeSingle();
+      bankAccountId = ba?.id || null;
+    }
+    let statementId: string | null = null;
+    if (cid && bankAccountId) {
+      const stmtDate = matches[matches.length - 1]?.tx.date || new Date().toISOString().slice(0, 10);
+      const { data: stmt } = await sb.from('bank_statements').insert({
+        company_id: cid,
+        bank_account_id: bankAccountId,
+        statement_number: `IMP-${Date.now()}`,
+        statement_date: stmtDate,
+        import_format: 'csv-or-camt',
+        imported_at: new Date().toISOString(),
+      }).select('id').single();
+      statementId = stmt?.id || null;
+      if (statementId) {
+        const txRows = matches.map((m) => ({
+          company_id: cid,
+          bank_statement_id: statementId,
+          bank_account_id: bankAccountId,
+          transaction_date: m.tx.date,
+          amount: m.tx.amount,
+          variable_symbol: m.tx.vs,
+          constant_symbol: m.tx.ks,
+          specific_symbol: m.tx.ss,
+          message: m.tx.description,
+          status: m.invoice ? 'matched' : 'unmatched',
+          matched_invoice_id: m.invoice?.id || null,
+        }));
+        await sb.from('bank_transactions').insert(txRows);
+      }
+    }
+
+    // 2) Apply matches → mark paid + journal
+    const toApply = matches.filter((m) => m.invoice);
     let ok = 0;
     for (const m of toApply) {
       const { error } = await sb.rpc('mark_invoice_paid', {
@@ -69,7 +110,7 @@ export default function BankImportClient() {
       });
       if (!error) ok++;
     }
-    toast(`${ok} faktúr zaplatených · denníkové zápisy vytvorené`, 'success');
+    toast(`${ok} FA zaplatených · ${matches.length} tx uložených${statementId ? ' do bankového výpisu' : ''}`, 'success');
     setMatches([]);
     setStats(null);
   }
