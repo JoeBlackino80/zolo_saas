@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { fireWebhook } from '@/lib/webhooks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -99,6 +100,9 @@ export async function POST(req: NextRequest) {
   // Auto-post journal + stock
   await a.sb.rpc('post_invoice_journal', { p_invoice_id: inv.id, p_event: 'issue' });
   try { await a.sb.rpc('post_invoice_stock', { p_invoice_id: inv.id }); } catch { /* ignore */ }
+
+  // Fire-and-forget webhook
+  fireWebhook(a.key.company_id, 'invoice.created', { id: inv.id, number: inv.number, total: +total.toFixed(2) }, a.sb).catch(() => undefined);
 
   return NextResponse.json({ ok: true, id: inv.id, number: inv.number, total: +total.toFixed(2) }, { status: 201 });
 }
