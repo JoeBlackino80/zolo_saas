@@ -26,6 +26,13 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; tot
       p_notes: 'Manuálne označené ako zaplatené',
     });
     if (error) { toast(error.message, 'error'); return; }
+    const { data: inv } = await sb.from('invoices').select('company_id').eq('id', invoice.id).single();
+    if (inv?.company_id) {
+      fetch('/api/webhook-fire', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ companyId: inv.company_id, event: 'invoice.paid', data: { id: invoice.id, number: invoice.number, amount: remaining } }),
+      }).catch(() => undefined);
+    }
     toast('Zaplatené · denníkový zápis vytvorený', 'success');
     router.refresh();
   }

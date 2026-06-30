@@ -20,6 +20,9 @@ export default async function InvoicesPage() {
         subtitle="Faktúry · Zálohové · Dobropisy · Dodacie listy · PPD · Cenové ponuky"
         actions={
           <div className="flex flex-wrap gap-2">
+            <Link href="/dashboard/invoices/bulk-send">
+              <Button variant="secondary">Hromadne poslať</Button>
+            </Link>
             <a href="/api/export/invoices" download>
               <Button variant="secondary">Export CSV</Button>
             </a>
