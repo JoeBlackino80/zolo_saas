@@ -4,6 +4,7 @@ import { PageHeader, Card, CardHeader, Badge, Button } from '@/components/ui';
 import { ArrowLeft, Mail, Phone, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { fmtEur, fmtDate } from '@/lib/utils';
+import ContactActivities from './activities';
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -59,6 +60,8 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
           <div><span className="text-slate-500">Adresa:</span> {[contact.street, contact.city, contact.zip].filter(Boolean).join(', ') || '—'}</div>
         </div>
       </Card>
+
+      <ContactActivities contactId={id} companyId={contact.company_id} />
 
       <Card>
         <CardHeader title={`História faktúr (${rows.length})`} action={<Link href={`/dashboard/invoices/new?customer=${id}`}><Button variant="primary">Nová faktúra</Button></Link>} />

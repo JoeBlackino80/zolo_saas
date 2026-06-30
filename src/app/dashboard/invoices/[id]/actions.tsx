@@ -61,6 +61,9 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; tot
       <a href={`/api/invoice-pdf?id=${invoice.id}`}>
         <Button variant="secondary"><FileText size={14} /> Stiahnuť PDF</Button>
       </a>
+      <a href={`/api/invoice-isdoc?id=${invoice.id}`}>
+        <Button variant="secondary"><FileText size={14} /> ISDOC</Button>
+      </a>
       <Button variant="primary" onClick={() => setShowSend(true)}><Mail size={14} /> Poslať mailom</Button>
 
       {showSend && (
