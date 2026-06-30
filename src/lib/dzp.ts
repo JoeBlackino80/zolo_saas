@@ -97,6 +97,115 @@ export function generateDppoXml(firm: { dic: string | null; ic_dph: string | nul
 </DPPOv26>`;
 }
 
+// DPFO-A — Daňové priznanie typu A pre zamestnancov (závislá činnosť)
+// Použiteľné iba pre zamestnaneckú mzdu (5xx príjmy podľa §5).
+export type DpfoAInput = {
+  brutto_year: number;       // hrubý ročný príjem zo závislej činnosti
+  preddavky_paid: number;     // už zaplatené preddavky (zamestnávateľ)
+  nezdanitelna?: number;      // odpočítateľná suma (default 5753.76 €)
+  childCount?: number;        // daňový bonus na dieťa
+  socialne: number;            // odvody na sociálne poistenie
+  zdravotne: number;           // odvody na zdravotné poistenie
+};
+
+export type DpfoAResult = {
+  brutto: number;
+  odvody: number;
+  ciastkovyZaklad: number;
+  nezdanitelna: number;
+  taxBase: number;
+  tax: number;
+  bonus: number;
+  taxAfterBonus: number;
+  preddavky: number;
+  vysledok: number;
+};
+
+export function calcDpfoA(i: DpfoAInput): DpfoAResult {
+  const brutto = +i.brutto_year || 0;
+  const odvody = +(i.socialne + i.zdravotne).toFixed(2);
+  const ciastkovyZaklad = +(brutto - odvody).toFixed(2);
+  const nezdan = +(i.nezdanitelna ?? DZP_2026.fo_nezdanitelna_rocne);
+  const taxBase = Math.max(0, +(ciastkovyZaklad - nezdan).toFixed(2));
+  let tax = 0;
+  if (taxBase <= DZP_2026.fo_threshold) {
+    tax = +(taxBase * DZP_2026.fo_rate_19).toFixed(2);
+  } else {
+    tax = +(DZP_2026.fo_threshold * DZP_2026.fo_rate_19 + (taxBase - DZP_2026.fo_threshold) * DZP_2026.fo_rate_25).toFixed(2);
+  }
+  const bonus = (i.childCount || 0) * 600;
+  const taxAfterBonus = Math.max(0, +(tax - bonus).toFixed(2));
+  const preddavky = +(i.preddavky_paid || 0);
+  const vysledok = +(taxAfterBonus - preddavky).toFixed(2);
+  return { brutto, odvody, ciastkovyZaklad, nezdanitelna: nezdan, taxBase, tax, bonus, taxAfterBonus, preddavky, vysledok };
+}
+
+export function generateDpfoAXml(firm: { dic: string | null; name: string }, year: number | string, r: DpfoAResult): string {
+  const fmt = (n: number) => n.toFixed(2);
+  return `<?xml version="1.0" encoding="windows-1250"?>
+<DPFOAv26 xmlns="http://www.financnasprava.sk/dpfoav26">
+  <Identifikacia>
+    <DIC>${esc(firm.dic)}</DIC>
+    <Nazov>${esc(firm.name)}</Nazov>
+    <ZdanovacieObdobie>${year}</ZdanovacieObdobie>
+  </Identifikacia>
+  <Vykaz>
+    <R36_PrijmyZavisla>${fmt(r.brutto)}</R36_PrijmyZavisla>
+    <R37_Odvody>${fmt(r.odvody)}</R37_Odvody>
+    <R38_CiastkovyZaklad>${fmt(r.ciastkovyZaklad)}</R38_CiastkovyZaklad>
+    <R39_Nezdanitelna>${fmt(r.nezdanitelna)}</R39_Nezdanitelna>
+    <R56_ZakladDane>${fmt(r.taxBase)}</R56_ZakladDane>
+    <R57_Dan>${fmt(r.tax)}</R57_Dan>
+    <R65_BonusNaDieta>${fmt(r.bonus)}</R65_BonusNaDieta>
+    <R76_DanovaPovinnost>${fmt(r.taxAfterBonus)}</R76_DanovaPovinnost>
+    <R83_ZaplatenePreddavky>${fmt(r.preddavky)}</R83_ZaplatenePreddavky>
+    <R90_VysledokDane>${fmt(r.vysledok)}</R90_VysledokDane>
+  </Vykaz>
+</DPFOAv26>`;
+}
+
+// Hlásenie o zrazenej a odvedenej dani — §43 zrážková daň
+// Použiteľné pre úroky, licenčné poplatky, autorské honoráre, výhry atď.
+export type WithholdingRow = {
+  recipient_name: string;
+  recipient_rc: string | null;          // rodné číslo alebo DIČ
+  payment_type: string;                  // licencia/úrok/autorský honorár/výhra
+  payment_date: string;                  // YYYY-MM-DD
+  brutto: number;                        // hrubá suma
+  rate: number;                          // 7% / 19% / 35%
+  withheld: number;                      // zrazená daň
+};
+
+export function generateWithholdingXml(firm: { dic: string | null; ic_dph: string | null; name: string }, period: string, rows: WithholdingRow[]): string {
+  const [y, m] = period.split('-');
+  const fmt = (n: number) => n.toFixed(2);
+  const total = rows.reduce((s, r) => s + r.withheld, 0);
+  const lines = rows.map((r, i) => `
+    <Zaznam poradie="${i + 1}">
+      <NazovPrijemcu>${esc(r.recipient_name)}</NazovPrijemcu>
+      <RCalebo DIC>${esc(r.recipient_rc)}</RCalebo>
+      <DruhPrijmu>${esc(r.payment_type)}</DruhPrijmu>
+      <DatumVyplaty>${esc(r.payment_date)}</DatumVyplaty>
+      <Brutto>${fmt(r.brutto)}</Brutto>
+      <Sadzba>${r.rate}</Sadzba>
+      <ZrazkaDan>${fmt(r.withheld)}</ZrazkaDan>
+    </Zaznam>`).join('');
+  return `<?xml version="1.0" encoding="windows-1250"?>
+<HlZD43v26 xmlns="http://www.financnasprava.sk/hlzd43v26">
+  <Identifikacia>
+    <DIC>${esc(firm.dic)}</DIC>
+    <ICDPH>${esc(firm.ic_dph)}</ICDPH>
+    <Nazov>${esc(firm.name)}</Nazov>
+    <Obdobie><Rok>${y}</Rok><Mesiac>${m}</Mesiac></Obdobie>
+  </Identifikacia>
+  <Zaznamy>${lines}
+  </Zaznamy>
+  <Sumar>
+    <CelkomZrazka>${fmt(total)}</CelkomZrazka>
+  </Sumar>
+</HlZD43v26>`;
+}
+
 export function generateDpfoBXml(firm: { dic: string | null; name: string }, year: number | string, r: DzpResult, opts: { childCount?: number } = {}): string {
   const fmt = (n: number) => n.toFixed(2);
   const bonus = (opts.childCount || 0) * 600;

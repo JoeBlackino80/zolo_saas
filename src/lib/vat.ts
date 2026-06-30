@@ -101,10 +101,24 @@ export type KvInvoice = {
   items: { vat_rate: number; subtotal: number; vat_amount: number }[];
 };
 
-export function generateKvDphXml(firm: { dic: string | null; ic_dph: string | null; name: string }, period: string, outInvoices: KvInvoice[], inInvoices: KvInvoice[]): string {
+export type KvEkasaTotal = { base23: number; vat23: number; base19: number; vat19: number; base10: number; vat10: number };
+
+export function generateKvDphXml(
+  firm: { dic: string | null; ic_dph: string | null; name: string },
+  period: string,
+  outInvoices: KvInvoice[],
+  inInvoices: KvInvoice[],
+  opts: {
+    creditNotesOut?: KvInvoice[];      // C1 — opravné doklady vystavené (dobropisy)
+    creditNotesIn?: KvInvoice[];        // C2 — opravné doklady prijaté
+    ekasaOut?: KvEkasaTotal;            // D1 — eKasa tržby (sumárne)
+    ekasaIn?: KvEkasaTotal;             // D2 — eKasa nákupy (sumárne)
+  } = {}
+): string {
   const [y, m] = period.split('-');
   const r = (n: number) => n.toFixed(2);
-  const renderRow = (i: KvInvoice, partnerIcDph: string | null | undefined, partnerName: string | null | undefined) => {
+
+  const renderRow = (i: KvInvoice, partnerIcDph: string | null | undefined, partnerName: string | null | undefined, tag = 'Faktura') => {
     const lines: string[] = [];
     for (const it of i.items) {
       const rate = Number(it.vat_rate);
@@ -112,7 +126,7 @@ export function generateKvDphXml(firm: { dic: string | null; ic_dph: string | nu
       const base = Number(it.subtotal || 0);
       const vat = Number(it.vat_amount || 0);
       if (base === 0 && vat === 0) continue;
-      lines.push(`      <Faktura>
+      lines.push(`      <${tag}>
         <Cislo>${escapeXml(i.number)}</Cislo>
         <Datum>${escapeXml(i.issue_date)}</Datum>
         <IcDphPartnera>${escapeXml(partnerIcDph)}</IcDphPartnera>
@@ -120,12 +134,32 @@ export function generateKvDphXml(firm: { dic: string | null; ic_dph: string | nu
         <Zaklad>${r(base)}</Zaklad>
         <Sadzba>${rate}</Sadzba>
         <Dan>${r(vat)}</Dan>
-      </Faktura>`);
+      </${tag}>`);
     }
     return lines.join('\n');
   };
+
+  // Bez IC DPH partnera ale platiteľ DPH = B2 / B3
+  // B3 = zjednodušená FA (príjem < 100€ vrátane DPH)
   const a1 = outInvoices.filter((i) => (i.customer_ic_dph || '').toUpperCase().startsWith('SK'));
   const b1 = inInvoices.filter((i) => (i.supplier_ic_dph || '').toUpperCase().startsWith('SK'));
+  const b2 = inInvoices.filter((i) => !(i.supplier_ic_dph || '').toUpperCase().startsWith('SK') && i.items.reduce((s, it) => s + Number(it.subtotal || 0) + Number(it.vat_amount || 0), 0) >= 100);
+  const b3 = inInvoices.filter((i) => i.items.reduce((s, it) => s + Number(it.subtotal || 0) + Number(it.vat_amount || 0), 0) < 100);
+  const c1 = opts.creditNotesOut || [];
+  const c2 = opts.creditNotesIn || [];
+
+  const renderEkasa = (tag: 'D1' | 'D2', t?: KvEkasaTotal) => {
+    if (!t) return '';
+    return `    <${tag === 'D1' ? 'SekciaD1' : 'SekciaD2'}>
+      <Zaklad23>${r(t.base23)}</Zaklad23>
+      <Dan23>${r(t.vat23)}</Dan23>
+      <Zaklad19>${r(t.base19)}</Zaklad19>
+      <Dan19>${r(t.vat19)}</Dan19>
+      <Zaklad10>${r(t.base10)}</Zaklad10>
+      <Dan10>${r(t.vat10)}</Dan10>
+    </${tag === 'D1' ? 'SekciaD1' : 'SekciaD2'}>`;
+  };
+
   return `<?xml version="1.0" encoding="windows-1250"?>
 <KVDPHv21 xmlns="http://www.financnasprava.sk/kvdphv21">
   <Identifikacia>
@@ -140,6 +174,20 @@ ${a1.map((i) => renderRow(i, i.customer_ic_dph, i.customer_name)).filter(Boolean
   <SekciaB1>
 ${b1.map((i) => renderRow(i, i.supplier_ic_dph, i.supplier_name)).filter(Boolean).join('\n')}
   </SekciaB1>
+  <SekciaB2>
+${b2.map((i) => renderRow(i, i.supplier_ic_dph, i.supplier_name)).filter(Boolean).join('\n')}
+  </SekciaB2>
+  <SekciaB3>
+${b3.map((i) => renderRow(i, i.supplier_ic_dph, i.supplier_name, 'ZjednFA')).filter(Boolean).join('\n')}
+  </SekciaB3>
+  <SekciaC1>
+${c1.map((i) => renderRow(i, i.customer_ic_dph, i.customer_name, 'OpravnyDoklad')).filter(Boolean).join('\n')}
+  </SekciaC1>
+  <SekciaC2>
+${c2.map((i) => renderRow(i, i.supplier_ic_dph, i.supplier_name, 'OpravnyDoklad')).filter(Boolean).join('\n')}
+  </SekciaC2>
+${renderEkasa('D1', opts.ekasaOut)}
+${renderEkasa('D2', opts.ekasaIn)}
 </KVDPHv21>`;
 }
 

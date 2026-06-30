@@ -44,6 +44,10 @@ import {
   Search,
   LogOut,
   ChevronDown,
+  Car,
+  Building2,
+  Scissors,
+  Wallet2,
 } from 'lucide-react';
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -132,6 +136,10 @@ const SECTIONS: NavSection[] = [
       { icon: CalendarDays, label: 'Kalendár', href: '/dashboard/calendar', segments: ['calendar'] },
       { icon: History, label: 'História', href: '/dashboard/tax-returns', segments: ['tax-returns'] },
       { icon: Coins, label: 'Daň z príjmov', href: '/dashboard/income-tax', segments: ['income-tax'] },
+      { icon: Wallet2, label: 'DPFO-A (závislá)', href: '/dashboard/dpfo-a', segments: ['dpfo-a'] },
+      { icon: Car, label: 'DPMV (vozidlá)', href: '/dashboard/dpmv', segments: ['dpmv'] },
+      { icon: Scissors, label: 'Zrážková daň', href: '/dashboard/withholding', segments: ['withholding'] },
+      { icon: Building2, label: 'Nehnuteľnosti', href: '/dashboard/real-estate', segments: ['real-estate'] },
       { icon: Archive, label: 'Závierka', href: '/dashboard/closing', segments: ['closing'] },
     ],
   },
