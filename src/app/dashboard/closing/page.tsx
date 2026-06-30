@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { PageHeader, Card, CardHeader, Badge } from '@/components/ui';
 import { Check, AlertCircle } from 'lucide-react';
 import YearEndButton from './year-end-button';
+import Link from 'next/link';
+import { Button } from '@/components/ui';
 
 const CHECKLIST = [
   { key: 'inventura', label: 'Inventarizácia majetku a záväzkov', desc: 'Fyzická + dokladová inventúra k 31.12.' },
@@ -28,7 +30,11 @@ export default async function ClosingPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <PageHeader title="Závierka & podanie" subtitle="Krok za krokom — koncoročná uzávierka pre účtovnú jednotku" />
+      <PageHeader
+        title="Závierka & podanie"
+        subtitle="Krok za krokom — koncoročná uzávierka pre účtovnú jednotku"
+        actions={<Link href="/dashboard/closing/notes"><Button variant="secondary">Poznámky k závierke</Button></Link>}
+      />
 
       <Card className="mb-4">
         <div className="p-5">
