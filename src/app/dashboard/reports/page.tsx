@@ -66,14 +66,18 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         }
       />
 
-      <div className="grid sm:grid-cols-2 gap-3 mb-6">
+      <div className="grid sm:grid-cols-3 gap-3 mb-6">
         <Link href={`/dashboard/reports/balance-sheet?year=${year}`} className="block bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl p-5 transition-colors">
           <div className="font-semibold tracking-tight text-zinc-900">Súvaha {year}</div>
-          <div className="text-xs text-zinc-500 mt-1">Aktíva a pasíva k 31.12. zo zaúčtovaných operácií →</div>
+          <div className="text-xs text-zinc-500 mt-1">Aktíva a pasíva k 31.12. →</div>
         </Link>
         <Link href={`/dashboard/reports/income-statement?year=${year}`} className="block bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl p-5 transition-colors">
           <div className="font-semibold tracking-tight text-zinc-900">Výsledovka {year}</div>
-          <div className="text-xs text-zinc-500 mt-1">Náklady, výnosy a výsledok hospodárenia (P&L) →</div>
+          <div className="text-xs text-zinc-500 mt-1">Náklady, výnosy a HV (P&L) →</div>
+        </Link>
+        <Link href={`/dashboard/reports/cash-flow?year=${year}`} className="block bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl p-5 transition-colors">
+          <div className="font-semibold tracking-tight text-zinc-900">Cash flow {year}</div>
+          <div className="text-xs text-zinc-500 mt-1">Príjmy a výdaje cez 211 + 221 →</div>
         </Link>
       </div>
 

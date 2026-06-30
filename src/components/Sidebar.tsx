@@ -83,6 +83,7 @@ const SECTIONS: NavSection[] = [
     items: [
       { icon: FileText, label: 'Faktúry', href: '/dashboard/invoices', segments: ['invoices'] },
       { icon: ReceiptText, label: 'Ponuky', href: '/dashboard/quotes', segments: ['quotes'] },
+      { icon: ShoppingBag, label: 'Objednávky', href: '/dashboard/orders', segments: ['orders'] },
       { icon: Repeat, label: 'Opakované', href: '/dashboard/recurring', segments: ['recurring'] },
       { icon: Users, label: 'Zákazníci', href: '/dashboard/customers', segments: ['customers'] },
       { icon: Tag, label: 'Cenník', href: '/dashboard/products', segments: ['products'] },
@@ -137,6 +138,7 @@ const SECTIONS: NavSection[] = [
     label: 'Reporty a nástroje',
     items: [
       { icon: BarChart3, label: 'Reporty', href: '/dashboard/reports', segments: ['reports'] },
+      { icon: Archive, label: 'Archív', href: '/dashboard/archive', segments: ['archive'] },
       { icon: Sparkles, label: 'AI Import', href: '/dashboard/import', segments: ['import'], beta: true },
       { icon: Link2, label: 'Prepojenia', href: '/dashboard/links', segments: ['links'] },
     ],
