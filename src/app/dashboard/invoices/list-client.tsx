@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Badge, Button, Card, EmptyState } from '@/components/ui';
 import { FileText, Plus, Search, CheckSquare, Square } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
@@ -17,9 +17,19 @@ type Row = { id: string; type: string; number: string; customer_name: string | n
 export default function InvoicesListClient({ invoices }: { invoices: Row[] }) {
   const toast = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [filter, setFilter] = useState<{ q: string; type: string; status: string }>({ q: '', type: 'all', status: 'all' });
+  const [filter, setFilter] = useState<{ q: string; type: string; status: string }>({
+    q: '',
+    type: searchParams.get('type') || 'all',
+    status: searchParams.get('status') || 'all',
+  });
   const [busy, setBusy] = useState(false);
+
+  // Sync filter when URL search params change (sidebar submenu nav)
+  useEffect(() => {
+    setFilter((f) => ({ ...f, type: searchParams.get('type') || 'all', status: searchParams.get('status') || 'all' }));
+  }, [searchParams]);
 
   const filtered = useMemo(() => invoices.filter((i) => {
     if (filter.type !== 'all' && i.type !== filter.type) return false;

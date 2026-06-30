@@ -69,6 +69,13 @@ type NavItemDef = {
   href: string;
   segments: string[];
   beta?: boolean;
+  children?: NavSubItem[];
+};
+
+type NavSubItem = {
+  label: string;
+  href: string;
+  match?: (pathname: string) => boolean;  // for active state if needed
 };
 
 type NavSection = {
@@ -86,7 +93,17 @@ const SECTIONS: NavSection[] = [
   {
     label: 'Predaj',
     items: [
-      { icon: FileText, label: 'Faktúry', href: '/dashboard/invoices', segments: ['invoices'] },
+      { icon: FileText, label: 'Fakturácia', href: '/dashboard/invoices', segments: ['invoices'],
+        children: [
+          { label: 'Všetky doklady',  href: '/dashboard/invoices' },
+          { label: 'FA — Faktúry',    href: '/dashboard/invoices?type=invoice' },
+          { label: 'PFA — Prijaté',    href: '/dashboard/invoices?type=received_invoice' },
+          { label: 'ZF — Zálohové',    href: '/dashboard/invoices?type=proforma' },
+          { label: 'DOB — Dobropisy',  href: '/dashboard/invoices?type=credit_note' },
+          { label: 'STO — Storno',     href: '/dashboard/invoices?type=storno' },
+          { label: 'DL — Dodacie',     href: '/dashboard/invoices?type=delivery_note' },
+        ],
+      },
       { icon: ReceiptText, label: 'Ponuky', href: '/dashboard/quotes', segments: ['quotes'] },
       { icon: ShoppingBag, label: 'Objednávky', href: '/dashboard/orders', segments: ['orders'] },
       { icon: Repeat, label: 'Opakované', href: '/dashboard/recurring', segments: ['recurring'] },
@@ -275,6 +292,8 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
                       href={item.href}
                       active={item.segments.includes(currentSegment)}
                       beta={item.beta}
+                      children={item.children}
+                      currentSegment={currentSegment}
                     />
                   ))}
                 </div>
@@ -321,37 +340,104 @@ function NavLink({
   href,
   active,
   beta,
+  children,
+  currentSegment,
 }: {
   icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
   label: string;
   href: string;
   active?: boolean;
   beta?: boolean;
+  children?: NavSubItem[];
+  currentSegment?: string;
 }) {
   const router = useRouter();
+  const hasChildren = !!children && children.length > 0;
+  const [expanded, setExpanded] = useState(!!active);
+
+  // Auto-expand if parent becomes active
+  useEffect(() => { if (active) setExpanded(true); }, [active]);
+
+  function navigateOrToggle(e: React.MouseEvent) {
+    if (hasChildren && e.altKey) {
+      // alt+click = toggle without navigating
+      setExpanded((v) => !v);
+      return;
+    }
+    if (hasChildren) {
+      setExpanded(true);
+    }
+    router.push(href);
+  }
+
+  return (
+    <>
+      <button
+        onClick={navigateOrToggle}
+        className={`w-full group relative flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
+          active
+            ? 'bg-white/[0.08] text-white font-medium'
+            : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-100 font-normal'
+        }`}
+      >
+        {active && (
+          <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-0.5 bg-white rounded-r-full" />
+        )}
+        <Icon
+          size={14}
+          strokeWidth={active ? 2.2 : 1.8}
+          className={active ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'}
+        />
+        <span className="flex-1 text-left tracking-tight">{label}</span>
+        {beta && (
+          <span className="text-[9px] uppercase tracking-wider bg-white/[0.08] text-zinc-300 px-1.5 py-0.5 rounded font-semibold">
+            Beta
+          </span>
+        )}
+        {hasChildren && (
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
+            className="text-zinc-500 hover:text-zinc-200 p-0.5 rounded transition-colors cursor-pointer"
+          >
+            <ChevronDown size={11} className={`transition-transform duration-150 ${expanded ? '' : '-rotate-90'}`} />
+          </span>
+        )}
+      </button>
+      {hasChildren && expanded && (
+        <div className="ml-4 mt-px mb-1 pl-3 border-l border-white/[0.06] space-y-px">
+          {children!.map((sub) => (
+            <NavSubLink key={sub.href} label={sub.label} href={sub.href} currentSegment={currentSegment} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+function NavSubLink({ label, href, currentSegment }: { label: string; href: string; currentSegment?: string }) {
+  const router = useRouter();
+  // Active if URL matches exactly (path + query). For SSR-safe check use a simple approach:
+  const [isActive, setIsActive] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(href, window.location.origin);
+    const onSegment = url.pathname.includes(`/dashboard/${currentSegment}`) || (currentSegment === '' && url.pathname === '/dashboard');
+    const qsMatch = url.search === window.location.search;
+    setIsActive(onSegment && qsMatch);
+  }, [href, currentSegment]);
+
   return (
     <button
       onClick={() => router.push(href)}
-      className={`w-full group relative flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
-        active
-          ? 'bg-white/[0.08] text-white font-medium'
-          : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-100 font-normal'
+      className={`w-full text-left px-2.5 py-1 rounded-md text-[12px] transition-colors ${
+        isActive
+          ? 'bg-white/[0.06] text-white font-medium'
+          : 'text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200'
       }`}
     >
-      {active && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-0.5 bg-white rounded-r-full" />
-      )}
-      <Icon
-        size={14}
-        strokeWidth={active ? 2.2 : 1.8}
-        className={active ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'}
-      />
-      <span className="flex-1 text-left tracking-tight">{label}</span>
-      {beta && (
-        <span className="text-[9px] uppercase tracking-wider bg-white/[0.08] text-zinc-300 px-1.5 py-0.5 rounded font-semibold">
-          Beta
-        </span>
-      )}
+      {label}
     </button>
   );
 }
