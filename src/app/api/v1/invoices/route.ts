@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { fireWebhook } from '@/lib/webhooks';
+import { rateLimit, getClientIp } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -22,6 +23,10 @@ export async function GET(req: NextRequest) {
   const a = await authenticate(req);
   if ('error' in a) return NextResponse.json({ ok: false, error: a.error }, { status: a.status });
 
+  // Rate limit per API key (300/min reads)
+  const rl = await rateLimit(`v1:read:${a.key.company_id}:${getClientIp(req)}`, 300, 60_000);
+  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Rate limit exceeded' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
+
   const limit = Math.min(parseInt(req.nextUrl.searchParams.get('limit') || '50', 10), 200);
   const type = req.nextUrl.searchParams.get('type');
   let q = a.sb.from('invoices')
@@ -41,6 +46,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const a = await authenticate(req);
   if ('error' in a) return NextResponse.json({ ok: false, error: a.error }, { status: a.status });
+
+  // Rate limit per API key (60/min writes — protect against runaway scripts)
+  const rl = await rateLimit(`v1:write:${a.key.company_id}:${getClientIp(req)}`, 60, 60_000);
+  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Rate limit exceeded' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
 
   let body: Record<string, unknown> = {};
   try { body = await req.json(); } catch { return NextResponse.json({ ok: false, error: 'Invalid JSON' }, { status: 400 }); }
