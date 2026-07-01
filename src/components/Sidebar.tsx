@@ -10,13 +10,10 @@ import {
   Landmark,
   Wallet,
   PiggyBank,
-  CircleDollarSign,
   Banknote,
   ClipboardList,
   Clock,
   Percent,
-  FileSpreadsheet,
-  Globe,
   Target,
   BookOpen,
   Library,
@@ -48,9 +45,11 @@ import {
   Building2,
   Scissors,
   Wallet2,
+  Receipt,
+  BookMarked,
 } from 'lucide-react';
-import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useRouter, useSelectedLayoutSegment, usePathname } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import NotificationBell from './NotificationBell';
 
@@ -69,13 +68,13 @@ type NavItemDef = {
   href: string;
   segments: string[];
   beta?: boolean;
+  shortcut?: string;
   children?: NavSubItem[];
 };
 
 type NavSubItem = {
   label: string;
   href: string;
-  match?: (pathname: string) => boolean;  // for active state if needed
 };
 
 type NavSection = {
@@ -87,13 +86,13 @@ const SECTIONS: NavSection[] = [
   {
     label: 'Prehľad',
     items: [
-      { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', segments: [''] },
+      { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', segments: [''], shortcut: '⌘D' },
     ],
   },
   {
     label: 'Predaj',
     items: [
-      { icon: FileText, label: 'Fakturácia', href: '/dashboard/invoices', segments: ['invoices'],
+      { icon: FileText, label: 'Fakturácia', href: '/dashboard/invoices', segments: ['invoices'], shortcut: '⌘I',
         children: [
           { label: 'Všetky doklady',  href: '/dashboard/invoices' },
           { label: 'FA — Faktúry',    href: '/dashboard/invoices?type=invoice' },
@@ -117,7 +116,7 @@ const SECTIONS: NavSection[] = [
           { label: 'Nová',       href: '/dashboard/recurring/new' },
         ],
       },
-      { icon: Users, label: 'Zákazníci', href: '/dashboard/customers', segments: ['customers'],
+      { icon: Users, label: 'Zákazníci', href: '/dashboard/customers', segments: ['customers'], shortcut: '⌘U',
         children: [
           { label: 'Všetci',     href: '/dashboard/customers' },
           { label: 'Nový',       href: '/dashboard/customers/new' },
@@ -125,11 +124,10 @@ const SECTIONS: NavSection[] = [
       },
       { icon: Tag, label: 'Cenník', href: '/dashboard/products', segments: ['products'],
         children: [
-          { label: 'Produkty',       href: '/dashboard/products' },
-          { label: 'Nový produkt',   href: '/dashboard/products/new' },
-          { label: 'CSV import',     href: '/dashboard/products/import' },
-          { label: 'Hromadné ceny',  href: '/dashboard/products/reprice' },
-          { label: 'Cenové úrovne',  href: '/dashboard/settings/price-levels' },
+          { label: 'Produkty',      href: '/dashboard/products' },
+          { label: 'Nový produkt',  href: '/dashboard/products/new' },
+          { label: 'CSV import',    href: '/dashboard/products/import' },
+          { label: 'Hromadné ceny', href: '/dashboard/products/reprice' },
         ],
       },
     ],
@@ -137,9 +135,9 @@ const SECTIONS: NavSection[] = [
   {
     label: 'Financie',
     items: [
-      { icon: Landmark, label: 'Banka', href: '/dashboard/bank', segments: ['bank'],
+      { icon: Landmark, label: 'Banka', href: '/dashboard/bank', segments: ['bank'], shortcut: '⌘B',
         children: [
-          { label: 'Prehľad',           href: '/dashboard/bank' },
+          { label: 'Prehľad',            href: '/dashboard/bank' },
           { label: 'Pravidlá párovania', href: '/dashboard/bank/rules' },
           { label: 'Platobné príkazy',   href: '/dashboard/bank/payment-orders' },
         ],
@@ -147,53 +145,38 @@ const SECTIONS: NavSection[] = [
       { icon: TrendingUp, label: 'Cash flow', href: '/dashboard/cashflow', segments: ['cashflow'] },
       { icon: Wallet, label: 'Pokladnica', href: '/dashboard/cash-book', segments: ['cash-book'],
         children: [
-          { label: 'Pohyby',     href: '/dashboard/cash-book' },
-          { label: 'Nový PPD/VPD', href: '/dashboard/cash-book/new' },
+          { label: 'Pohyby',      href: '/dashboard/cash-book' },
+          { label: 'Nový doklad', href: '/dashboard/cash-book/new' },
         ],
       },
       { icon: Banknote, label: 'Bankové účty', href: '/dashboard/bank-accounts', segments: ['bank-accounts'],
         children: [
-          { label: 'Účty',   href: '/dashboard/bank-accounts' },
-          { label: 'Nový',   href: '/dashboard/bank-accounts/new' },
+          { label: 'Účty', href: '/dashboard/bank-accounts' },
+          { label: 'Nový', href: '/dashboard/bank-accounts/new' },
         ],
       },
       { icon: Clock, label: 'Pohľadávky', href: '/dashboard/receivables', segments: ['receivables'] },
-      { icon: Clock, label: 'Záväzky', href: '/dashboard/payables', segments: ['payables'] },
+      { icon: Receipt, label: 'Záväzky', href: '/dashboard/payables', segments: ['payables'] },
       { icon: ClipboardList, label: 'Schvaľovanie dokladov', href: '/dashboard/approvals', segments: ['approvals'] },
-    ],
-  },
-  {
-    label: 'DPH',
-    items: [
-      { icon: Percent, label: 'Zápisy', href: '/dashboard/vat', segments: ['vat'],
-        children: [
-          { label: 'Zápisy DPH',         href: '/dashboard/vat' },
-          { label: 'Záznamová povinnosť', href: '/dashboard/vat/records' },
-          { label: 'DPH koeficient',       href: '/dashboard/vat/coefficient' },
-        ],
-      },
-      { icon: Target, label: 'DPH optimalizátor', href: '/dashboard/optimize', segments: ['optimize'] },
     ],
   },
   {
     label: 'Účtovníctvo',
     items: [
-      { icon: BookOpen, label: 'Denník', href: '/dashboard/journal', segments: ['journal'],
+      { icon: BookOpen, label: 'Denník', href: '/dashboard/journal', segments: ['journal'], shortcut: '⌘J',
         children: [
-          { label: 'Denník',              href: '/dashboard/journal' },
-          { label: 'Nový zápis',           href: '/dashboard/journal/new' },
-          { label: 'Časové rozlíšenie',    href: '/dashboard/journal/accruals' },
-          { label: 'Hromadne zaúčtovať',   href: '/dashboard/journal/bulk-post' },
+          { label: 'Denník',            href: '/dashboard/journal' },
+          { label: 'Nový zápis',         href: '/dashboard/journal/new' },
+          { label: 'Časové rozlíšenie',  href: '/dashboard/journal/accruals' },
+          { label: 'Hromadne zaúčtovať', href: '/dashboard/journal/bulk-post' },
         ],
       },
-      { icon: Library, label: 'Osnova', href: '/dashboard/chart-of-accounts', segments: ['chart-of-accounts'],
+      { icon: Library, label: 'Účtovná osnova', href: '/dashboard/chart-of-accounts', segments: ['chart-of-accounts'],
         children: [
-          { label: 'Účtovná osnova',  href: '/dashboard/chart-of-accounts' },
-          { label: 'Nový účet',        href: '/dashboard/chart-of-accounts/new' },
-          { label: 'Predkontácie',     href: '/dashboard/predkontacie' },
+          { label: 'Osnova',    href: '/dashboard/chart-of-accounts' },
+          { label: 'Nový účet', href: '/dashboard/chart-of-accounts/new' },
         ],
       },
-      { icon: CalendarDays, label: 'Účtovné obdobia', href: '/dashboard/fiscal-years', segments: ['fiscal-years'] },
       { icon: Briefcase, label: 'Projekty', href: '/dashboard/projects', segments: ['projects'],
         children: [
           { label: 'Projekty', href: '/dashboard/projects' },
@@ -209,20 +192,20 @@ const SECTIONS: NavSection[] = [
       },
       { icon: Boxes, label: 'Sklad', href: '/dashboard/stock', segments: ['stock', 'stock-movements'],
         children: [
-          { label: 'Stav skladu',  href: '/dashboard/stock' },
-          { label: 'Pohyby',        href: '/dashboard/stock-movements' },
-          { label: 'Nový pohyb',    href: '/dashboard/stock-movements/new' },
-          { label: 'Prevodka',      href: '/dashboard/stock-movements/transfer' },
-          { label: 'Inventúra',     href: '/dashboard/stock/inventory' },
+          { label: 'Stav skladu', href: '/dashboard/stock' },
+          { label: 'Pohyby',       href: '/dashboard/stock-movements' },
+          { label: 'Nový pohyb',   href: '/dashboard/stock-movements/new' },
+          { label: 'Prevodka',     href: '/dashboard/stock-movements/transfer' },
+          { label: 'Inventúra',    href: '/dashboard/stock/inventory' },
         ],
       },
       { icon: HardHat, label: 'Mzdy', href: '/dashboard/payroll', segments: ['payroll'], beta: true,
         children: [
-          { label: 'Prehľad',         href: '/dashboard/payroll' },
-          { label: 'Zamestnanci',      href: '/dashboard/employees' },
-          { label: 'Nový zamestnanec', href: '/dashboard/payroll/new' },
-          { label: 'Výpočet mzdy',    href: '/dashboard/payroll/calc' },
-          { label: 'Spracovať mzdy',  href: '/dashboard/payroll/run' },
+          { label: 'Prehľad',          href: '/dashboard/payroll' },
+          { label: 'Zamestnanci',       href: '/dashboard/employees' },
+          { label: 'Nový zamestnanec',  href: '/dashboard/payroll/new' },
+          { label: 'Výpočet mzdy',      href: '/dashboard/payroll/calc' },
+          { label: 'Spracovať mzdy',    href: '/dashboard/payroll/run' },
         ],
       },
       { icon: Plane, label: 'Pracovné cesty', href: '/dashboard/travel', segments: ['travel'],
@@ -236,25 +219,34 @@ const SECTIONS: NavSection[] = [
     ],
   },
   {
-    label: 'Daňové podania',
+    label: 'Dane',
     items: [
+      { icon: Percent, label: 'DPH', href: '/dashboard/vat', segments: ['vat'],
+        children: [
+          { label: 'Zápisy DPH',          href: '/dashboard/vat' },
+          { label: 'Záznamová povinnosť', href: '/dashboard/vat/records' },
+          { label: 'DPH koeficient',       href: '/dashboard/vat/coefficient' },
+          { label: 'DPH optimalizátor',    href: '/dashboard/optimize' },
+        ],
+      },
+      { icon: Coins, label: 'Priznania', href: '/dashboard/vat-return',
+        segments: ['income-tax', 'dpfo-a', 'dpmv', 'withholding', 'real-estate', 'vat-return', 'control-statement', 'summary-statement'],
+        children: [
+          { label: 'DP DPH',               href: '/dashboard/vat-return' },
+          { label: 'KV DPH',                href: '/dashboard/control-statement' },
+          { label: 'SV DPH',                href: '/dashboard/summary-statement' },
+          { label: 'Daň z príjmov',         href: '/dashboard/income-tax' },
+          { label: 'DPFO-A — zamestnanec',   href: '/dashboard/dpfo-a' },
+          { label: 'DPMV — vozidlá',         href: '/dashboard/dpmv' },
+          { label: 'Zrážková daň',           href: '/dashboard/withholding' },
+          { label: 'Nehnuteľnosti',          href: '/dashboard/real-estate' },
+        ],
+      },
       { icon: Send, label: 'eDane', href: '/dashboard/edane', segments: ['edane'] },
       { icon: ShoppingBag, label: 'eKasa', href: '/dashboard/ekasa', segments: ['ekasa'] },
       { icon: CalendarDays, label: 'Daňový kalendár', href: '/dashboard/calendar', segments: ['calendar'] },
-      { icon: Coins, label: 'Priznania', href: '/dashboard/income-tax', segments: ['income-tax', 'dpfo-a', 'dpmv', 'withholding', 'real-estate', 'vat-return', 'control-statement', 'summary-statement'],
-        children: [
-          { label: 'DP DPH',          href: '/dashboard/vat-return' },
-          { label: 'KV DPH',           href: '/dashboard/control-statement' },
-          { label: 'SV DPH',           href: '/dashboard/summary-statement' },
-          { label: 'Daň z príjmov',     href: '/dashboard/income-tax' },
-          { label: 'DPFO-A (závislá)',  href: '/dashboard/dpfo-a' },
-          { label: 'DPMV (vozidlá)',    href: '/dashboard/dpmv' },
-          { label: 'Zrážková daň §43',  href: '/dashboard/withholding' },
-          { label: 'Nehnuteľnosti',     href: '/dashboard/real-estate' },
-        ],
-      },
       { icon: History, label: 'Podané priznania', href: '/dashboard/tax-returns', segments: ['tax-returns'] },
-      { icon: Archive, label: 'Závierka', href: '/dashboard/closing', segments: ['closing'],
+      { icon: BookMarked, label: 'Závierka', href: '/dashboard/closing', segments: ['closing'],
         children: [
           { label: 'Závierka',            href: '/dashboard/closing' },
           { label: 'Poznámky k závierke', href: '/dashboard/closing/notes' },
@@ -263,69 +255,148 @@ const SECTIONS: NavSection[] = [
     ],
   },
   {
-    label: 'Reporty a nástroje',
+    label: 'Reporty',
     items: [
-      { icon: BarChart3, label: 'Reporty', href: '/dashboard/reports', segments: ['reports'],
+      { icon: BarChart3, label: 'Reporty', href: '/dashboard/reports', segments: ['reports'], shortcut: '⌘R',
         children: [
-          { label: 'Prehľad',     href: '/dashboard/reports' },
-          { label: 'Súvaha',       href: '/dashboard/reports/balance-sheet' },
-          { label: 'Výsledovka',    href: '/dashboard/reports/income-statement' },
-          { label: 'Cash flow',     href: '/dashboard/reports/cash-flow' },
-          { label: 'INTRASTAT',     href: '/dashboard/reports/intrastat' },
+          { label: 'Prehľad',    href: '/dashboard/reports' },
+          { label: 'Súvaha',      href: '/dashboard/reports/balance-sheet' },
+          { label: 'Výsledovka',   href: '/dashboard/reports/income-statement' },
+          { label: 'INTRASTAT',    href: '/dashboard/reports/intrastat' },
         ],
       },
       { icon: Archive, label: 'Digitálny archív', href: '/dashboard/archive', segments: ['archive'] },
       { icon: Sparkles, label: 'AI asistent', href: '/dashboard/import', segments: ['import'], beta: true },
-      { icon: Link2, label: 'Integrácie', href: '/dashboard/links', segments: ['links'] },
     ],
   },
   {
-    label: 'Firma',
+    label: 'Nastavenia',
     items: [
       { icon: Users2, label: 'Tím', href: '/dashboard/team', segments: ['team'] },
       { icon: ShieldCheck, label: 'Bezpečnosť', href: '/dashboard/settings/security', segments: [] },
+      { icon: HelpCircle, label: 'Pomoc', href: '/dashboard/help', segments: ['help'] },
+      { icon: SettingsIcon, label: 'Konfigurácia', href: '/dashboard/settings', segments: ['settings'],
+        children: [
+          { label: 'Profil firmy',   href: '/dashboard/settings' },
+          { label: 'Branding',       href: '/dashboard/settings/branding' },
+          { label: 'E-maily',         href: '/dashboard/settings/email' },
+          { label: 'Platby',          href: '/dashboard/settings/payments' },
+          { label: 'Cenové úrovne',   href: '/dashboard/settings/price-levels' },
+          { label: 'Notifikácie',     href: '/dashboard/settings/notifications' },
+          { label: 'Predplatné',      href: '/dashboard/settings/subscription' },
+          { label: 'Preferencie',     href: '/dashboard/settings/preferences' },
+        ],
+      },
+      { icon: CalendarDays, label: 'Účtovné obdobia', href: '/dashboard/fiscal-years', segments: ['fiscal-years'] },
+      { icon: Library, label: 'Predkontácie', href: '/dashboard/predkontacie', segments: ['predkontacie'] },
+      { icon: Link2, label: 'Integrácie', href: '/dashboard/links', segments: ['links'],
+        children: [
+          { label: 'Integrácie', href: '/dashboard/links' },
+          { label: 'API kľúče',  href: '/dashboard/settings/api-keys' },
+          { label: 'Webhooks',   href: '/dashboard/settings/webhooks' },
+        ],
+      },
       { icon: Activity, label: 'Audit', href: '/dashboard/audit', segments: ['audit'],
         children: [
           { label: 'Audit log',         href: '/dashboard/audit' },
           { label: 'Kontroly dokladov', href: '/dashboard/audit/checks' },
         ],
       },
-      { icon: HelpCircle, label: 'Pomoc', href: '/dashboard/help', segments: ['help'] },
-      { icon: SettingsIcon, label: 'Nastavenia', href: '/dashboard/settings', segments: ['settings'],
-        children: [
-          { label: 'Profil firmy',       href: '/dashboard/settings' },
-          { label: 'Branding',           href: '/dashboard/settings/branding' },
-          { label: 'E-maily',             href: '/dashboard/settings/email' },
-          { label: 'Platby',              href: '/dashboard/settings/payments' },
-          { label: 'API kľúče',           href: '/dashboard/settings/api-keys' },
-          { label: 'Webhooks',            href: '/dashboard/settings/webhooks' },
-          { label: 'Cenové úrovne',       href: '/dashboard/settings/price-levels' },
-          { label: 'Notifikácie',         href: '/dashboard/settings/notifications' },
-          { label: 'Predplatné',          href: '/dashboard/settings/subscription' },
-          { label: 'Preferencie',         href: '/dashboard/settings/preferences' },
-        ],
-      },
     ],
   },
 ];
 
-const COLLAPSED_KEY = 'zolo_sidebar_collapsed';
+const COLLAPSED_KEY = 'zolo_sidebar_collapsed_v2';
+const RECENT_KEY = 'zolo_sidebar_recent';
+const MAX_RECENT = 4;
+
+// Default: iba Prehľad + Predaj otvorené; ostatné collapsed
+const DEFAULT_COLLAPSED: Record<string, boolean> = {
+  'Prehľad': false,
+  'Predaj': false,
+  'Financie': true,
+  'Účtovníctvo': true,
+  'Dane': true,
+  'Reporty': true,
+  'Nastavenia': true,
+};
+
+// Global route → label pre "Naposledy použité"
+const ALL_ROUTES: Record<string, string> = (() => {
+  const map: Record<string, string> = {};
+  for (const s of SECTIONS) {
+    for (const item of s.items) {
+      map[item.href] = item.label;
+      for (const sub of item.children || []) {
+        // strip query string for path key
+        const key = sub.href.split('?')[0];
+        if (!map[key]) map[key] = `${item.label} · ${sub.label}`;
+      }
+    }
+  }
+  return map;
+})();
 
 export default function Sidebar({ companies, userEmail }: { companies: Company[]; userEmail: string }) {
   const router = useRouter();
   const segment = useSelectedLayoutSegment();
+  const pathname = usePathname();
   const [currentFirmId, setCurrentFirmId] = useState<string>(
     typeof window !== 'undefined' ? localStorage.getItem('zolo_firm') || '' : ''
   );
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>(DEFAULT_COLLAPSED);
+  const [recent, setRecent] = useState<{ href: string; label: string }[]>([]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
       const raw = localStorage.getItem(COLLAPSED_KEY);
-      if (raw) setCollapsed(JSON.parse(raw));
+      if (raw) setCollapsed({ ...DEFAULT_COLLAPSED, ...JSON.parse(raw) });
+    } catch {}
+    try {
+      const raw = localStorage.getItem(RECENT_KEY);
+      if (raw) setRecent(JSON.parse(raw));
     } catch {}
   }, []);
+
+  // Track recent pages
+  useEffect(() => {
+    if (typeof window === 'undefined' || !pathname) return;
+    if (pathname === '/dashboard' || pathname.startsWith('/dashboard/search')) return;
+    const label = ALL_ROUTES[pathname];
+    if (!label) return;
+    setRecent((prev) => {
+      const next = [{ href: pathname, label }, ...prev.filter((r) => r.href !== pathname)].slice(0, MAX_RECENT);
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, [pathname]);
+
+  // Global keyboard shortcuts
+  const handleKey = useCallback((e: KeyboardEvent) => {
+    if (!e.metaKey && !e.ctrlKey) return;
+    // Skip if user is typing in an input
+    const t = e.target as HTMLElement;
+    if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable) return;
+    const map: Record<string, string> = {
+      d: '/dashboard',
+      i: '/dashboard/invoices',
+      u: '/dashboard/customers',
+      b: '/dashboard/bank',
+      j: '/dashboard/journal',
+      r: '/dashboard/reports',
+    };
+    const target = map[e.key.toLowerCase()];
+    if (target) {
+      e.preventDefault();
+      router.push(target);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [handleKey]);
 
   function toggleSection(label: string) {
     setCollapsed((c) => {
@@ -396,6 +467,26 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-2 pb-2 [&_a]:block [&_a]:text-current scrollbar-thin">
+        {recent.length > 0 && (
+          <div className="mb-1">
+            <div className="px-2.5 pt-3 pb-1.5 text-[10px] uppercase font-semibold text-zinc-500 tracking-[0.1em]">
+              Naposledy
+            </div>
+            <div className="space-y-px">
+              {recent.map((r) => (
+                <button
+                  key={r.href}
+                  onClick={() => router.push(r.href)}
+                  className="w-full flex items-center gap-2 px-2.5 py-1 rounded-md text-[12px] text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200 transition-colors"
+                >
+                  <Clock size={11} className="text-zinc-600 flex-shrink-0" />
+                  <span className="truncate text-left">{r.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {SECTIONS.map((section) => {
           const isCollapsed = collapsed[section.label];
           return (
@@ -420,6 +511,7 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
                       href={item.href}
                       active={item.segments.includes(currentSegment)}
                       beta={item.beta}
+                      shortcut={item.shortcut}
                       children={item.children}
                       currentSegment={currentSegment}
                     />
@@ -468,6 +560,7 @@ function NavLink({
   href,
   active,
   beta,
+  shortcut,
   children,
   currentSegment,
 }: {
@@ -476,6 +569,7 @@ function NavLink({
   href: string;
   active?: boolean;
   beta?: boolean;
+  shortcut?: string;
   children?: NavSubItem[];
   currentSegment?: string;
 }) {
@@ -483,18 +577,14 @@ function NavLink({
   const hasChildren = !!children && children.length > 0;
   const [expanded, setExpanded] = useState(!!active);
 
-  // Auto-expand if parent becomes active
   useEffect(() => { if (active) setExpanded(true); }, [active]);
 
   function navigateOrToggle(e: React.MouseEvent) {
     if (hasChildren && e.altKey) {
-      // alt+click = toggle without navigating
       setExpanded((v) => !v);
       return;
     }
-    if (hasChildren) {
-      setExpanded(true);
-    }
+    if (hasChildren) setExpanded(true);
     router.push(href);
   }
 
@@ -517,6 +607,11 @@ function NavLink({
           className={active ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'}
         />
         <span className="flex-1 text-left tracking-tight">{label}</span>
+        {shortcut && (
+          <span className="hidden group-hover:inline text-[9px] bg-white/[0.06] text-zinc-400 px-1.5 py-0.5 rounded font-mono tracking-tight">
+            {shortcut}
+          </span>
+        )}
         {beta && (
           <span className="text-[9px] uppercase tracking-wider bg-white/[0.08] text-zinc-300 px-1.5 py-0.5 rounded font-semibold">
             Beta
@@ -546,7 +641,6 @@ function NavLink({
 
 function NavSubLink({ label, href, currentSegment }: { label: string; href: string; currentSegment?: string }) {
   const router = useRouter();
-  // Active if URL matches exactly (path + query). For SSR-safe check use a simple approach:
   const [isActive, setIsActive] = useState(false);
   useEffect(() => {
     if (typeof window === 'undefined') return;
