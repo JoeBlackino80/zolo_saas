@@ -94,13 +94,13 @@ const SECTIONS: NavSection[] = [
     items: [
       { icon: FileText, label: 'Fakturácia', href: '/dashboard/invoices', segments: ['invoices'], shortcut: '⌘I',
         children: [
-          { label: 'Všetky doklady',  href: '/dashboard/invoices' },
-          { label: 'FA — Faktúry',    href: '/dashboard/invoices?type=invoice' },
-          { label: 'PFA — Prijaté',    href: '/dashboard/invoices?type=received_invoice' },
-          { label: 'ZF — Zálohové',    href: '/dashboard/invoices?type=proforma' },
-          { label: 'DOB — Dobropisy',  href: '/dashboard/invoices?type=credit_note' },
-          { label: 'STO — Storno',     href: '/dashboard/invoices?type=storno' },
-          { label: 'DL — Dodacie',     href: '/dashboard/invoices?type=delivery_note' },
+          { label: 'Všetky doklady',   href: '/dashboard/invoices' },
+          { label: 'Vydané faktúry',   href: '/dashboard/invoices?type=invoice' },
+          { label: 'Prijaté faktúry',   href: '/dashboard/invoices?type=received_invoice' },
+          { label: 'Zálohové faktúry',  href: '/dashboard/invoices?type=proforma' },
+          { label: 'Dobropisy',         href: '/dashboard/invoices?type=credit_note' },
+          { label: 'Storno',            href: '/dashboard/invoices?type=storno' },
+          { label: 'Dodacie listy',     href: '/dashboard/invoices?type=delivery_note' },
         ],
       },
       { icon: ReceiptText, label: 'Ponuky', href: '/dashboard/quotes', segments: ['quotes'] },
@@ -232,14 +232,14 @@ const SECTIONS: NavSection[] = [
       { icon: Coins, label: 'Priznania', href: '/dashboard/vat-return',
         segments: ['income-tax', 'dpfo-a', 'dpmv', 'withholding', 'real-estate', 'vat-return', 'control-statement', 'summary-statement'],
         children: [
-          { label: 'DP DPH',               href: '/dashboard/vat-return' },
-          { label: 'KV DPH',                href: '/dashboard/control-statement' },
-          { label: 'SV DPH',                href: '/dashboard/summary-statement' },
+          { label: 'Priznanie DPH',        href: '/dashboard/vat-return' },
+          { label: 'Kontrolný výkaz',       href: '/dashboard/control-statement' },
+          { label: 'Súhrnný výkaz',         href: '/dashboard/summary-statement' },
           { label: 'Daň z príjmov',         href: '/dashboard/income-tax' },
-          { label: 'DPFO-A — zamestnanec',   href: '/dashboard/dpfo-a' },
-          { label: 'DPMV — vozidlá',         href: '/dashboard/dpmv' },
-          { label: 'Zrážková daň',           href: '/dashboard/withholding' },
-          { label: 'Nehnuteľnosti',          href: '/dashboard/real-estate' },
+          { label: 'Daň zo mzdy',           href: '/dashboard/dpfo-a' },
+          { label: 'Daň z vozidiel',        href: '/dashboard/dpmv' },
+          { label: 'Zrážková daň',          href: '/dashboard/withholding' },
+          { label: 'Daň z nehnuteľností',   href: '/dashboard/real-estate' },
         ],
       },
       { icon: Send, label: 'eDane', href: '/dashboard/edane', segments: ['edane'] },
@@ -629,7 +629,7 @@ function NavLink({
         )}
       </button>
       {hasChildren && expanded && (
-        <div className="ml-4 mt-px mb-1 pl-3 border-l border-white/[0.06] space-y-px">
+        <div className="ml-[26px] mt-0.5 mb-1.5 pl-3 border-l border-white/[0.04] space-y-0">
           {children!.map((sub) => (
             <NavSubLink key={sub.href} label={sub.label} href={sub.href} currentSegment={currentSegment} />
           ))}
@@ -653,12 +653,15 @@ function NavSubLink({ label, href, currentSegment }: { label: string; href: stri
   return (
     <button
       onClick={() => router.push(href)}
-      className={`w-full text-left px-2.5 py-1 rounded-md text-[12px] transition-colors ${
+      className={`relative w-full text-left pl-2.5 pr-2 py-1 rounded-md text-[12.5px] tracking-tight transition-colors ${
         isActive
-          ? 'bg-white/[0.06] text-white font-medium'
-          : 'text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200'
+          ? 'text-white font-medium'
+          : 'text-zinc-500 hover:text-zinc-200'
       }`}
     >
+      {isActive && (
+        <span className="absolute left-[-13px] top-1/2 -translate-y-1/2 h-3 w-0.5 bg-white rounded-r-full" />
+      )}
       {label}
     </button>
   );
