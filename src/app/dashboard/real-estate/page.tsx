@@ -103,7 +103,7 @@ export default function RealEstatePage() {
       </Card>
 
       {draft && (
-        <Card className="mb-4 border-blue-200 bg-blue-50/30">
+        <Card className="mb-4 border-zinc-200 bg-zinc-50/30">
           <CardHeader title={draft.id ? 'Upraviť nehnuteľnosť' : 'Nová nehnuteľnosť'} />
           <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Field label="Obec / mesto"><Input value={draft.obec} onChange={(e) => setDraft({ ...draft, obec: e.target.value })} /></Field>

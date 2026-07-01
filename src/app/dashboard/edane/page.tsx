@@ -47,7 +47,7 @@ export default async function EDanePage() {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+              <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                 <th className="text-left px-5 py-3">Firma</th>
                 <th className="text-left px-3 py-3">Typ</th>
                 <th className="text-left px-3 py-3">Obdobie</th>
@@ -56,11 +56,11 @@ export default async function EDanePage() {
                 <th className="text-center px-3 py-3">Stav</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((r) => {
                 const co = Array.isArray(r.companies) ? r.companies[0] : r.companies;
                 return (
-                  <tr key={r.id} className="hover:bg-slate-50">
+                  <tr key={r.id} className="hover:bg-zinc-50">
                     <td className="px-5 py-3">{co?.name || '—'}</td>
                     <td className="px-3 py-3 font-mono text-xs">{r.submission_type}</td>
                     <td className="px-3 py-3">{r.period}</td>

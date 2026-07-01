@@ -32,7 +32,7 @@ export default async function ProjectsPage() {
         <Card>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+              <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                 <th className="text-left px-5 py-3">Projekt</th>
                 <th className="text-left px-3 py-3">Kód</th>
                 <th className="text-left px-3 py-3">Firma</th>
@@ -41,14 +41,14 @@ export default async function ProjectsPage() {
                 <th className="text-center px-3 py-3">Stav</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((p) => {
                 const co = Array.isArray(p.companies) ? p.companies[0] : p.companies;
                 return (
-                  <tr key={p.id} className="hover:bg-slate-50">
+                  <tr key={p.id} className="hover:bg-zinc-50">
                     <td className="px-5 py-3 font-medium">{p.name}</td>
                     <td className="px-3 py-3 font-mono text-xs">{p.code || '—'}</td>
-                    <td className="px-3 py-3 text-slate-600">{co?.name || '—'}</td>
+                    <td className="px-3 py-3 text-zinc-600">{co?.name || '—'}</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(p.budget || 0))}</td>
                     <td className="px-3 py-3 text-center font-mono text-xs">{p.start_date ? fmtDate(p.start_date) : '—'}{p.end_date ? ` → ${fmtDate(p.end_date)}` : ''}</td>
                     <td className="px-3 py-3 text-center"><Badge variant={p.is_active ? 'green' : 'gray'}>{p.is_active ? 'aktívny' : 'ukončený'}</Badge></td>

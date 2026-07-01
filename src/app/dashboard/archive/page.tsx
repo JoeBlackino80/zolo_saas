@@ -46,7 +46,7 @@ export default async function ArchivePage() {
                   <td className="px-3 py-3 text-right font-mono text-xs">{d.file_size ? `${(d.file_size / 1024).toFixed(1)} KB` : '—'}</td>
                   <td className="px-3 py-3 text-center text-xs">{fmtDate(d.created_at)}</td>
                   <td className="px-3 py-3">
-                    {d.invoice_id ? <Link href={`/dashboard/invoices/${d.invoice_id}`} className="text-blue-600 hover:underline text-xs">FA →</Link> : <span className="text-xs text-zinc-400">—</span>}
+                    {d.invoice_id ? <Link href={`/dashboard/invoices/${d.invoice_id}`} className="text-zinc-900 hover:underline text-xs">FA →</Link> : <span className="text-xs text-zinc-400">—</span>}
                   </td>
                 </tr>
               ))}

@@ -125,7 +125,7 @@ export default function IncomeTaxPage() {
             <Row label="Príjmy" value={fmtEur(res.revenue)} />
             <Row label="Výdavky" value={`-${fmtEur(res.expenses)}`} />
             <Row label="Zisk / Strata" value={fmtEur(res.profit)} bold variant={res.profit >= 0 ? undefined : 'red'} />
-            <div className="border-t border-slate-200 pt-3" />
+            <div className="border-t border-zinc-200 pt-3" />
             <Row label="Základ dane" value={fmtEur(res.taxBase)} />
             <Row label={`Daň ${type === 'PO' ? (res.revenue <= 60000 ? '15%' : '21%') : '19/25%'}`} value={`-${fmtEur(res.tax)}`} />
             {type !== 'PO' && children > 0 && (
@@ -133,7 +133,7 @@ export default function IncomeTaxPage() {
             )}
             <Row label="Daň po bonusoch" value={fmtEur(res.taxAfterBonus)} bold />
             {res.prepaid > 0 && <Row label="Zaplatené preddavky" value={`-${fmtEur(res.prepaid)}`} />}
-            <div className="border-t border-slate-200 pt-3" />
+            <div className="border-t border-zinc-200 pt-3" />
             <Row
               label={res.toPay >= 0 ? 'K úhrade do 31.3.' : 'Preplatok na vrátenie'}
               value={fmtEur(Math.abs(res.toPay))}
@@ -145,7 +145,7 @@ export default function IncomeTaxPage() {
         </Card>
       </div>
 
-      <div className="mt-4 text-xs text-slate-500">
+      <div className="mt-4 text-xs text-zinc-500">
         ⚠ Výpočet je orientačný. Zákon 595/2003 Z.z. s úpravami pre rok 2026. PO s obratom do 60 000 € platí 15%, ostatné 21%.
         FO: 19% do {fmtEur(47537.5)} základu, nad to 25%. Nezdaniteľná suma FO 2026: {fmtEur(5753.76)} (mení sa medziročne).
       </div>
@@ -154,10 +154,10 @@ export default function IncomeTaxPage() {
 }
 
 function Row({ label, value, bold, variant }: { label: string; value: string; bold?: boolean; variant?: 'green' | 'red' }) {
-  const color = variant === 'green' ? 'text-emerald-600' : variant === 'red' ? 'text-red-600' : 'text-slate-900';
+  const color = variant === 'green' ? 'text-emerald-600' : variant === 'red' ? 'text-red-600' : 'text-zinc-900';
   return (
     <div className="flex items-center justify-between">
-      <span className="text-slate-600">{label}</span>
+      <span className="text-zinc-600">{label}</span>
       <span className={`font-mono ${bold ? 'font-bold' : ''} ${color}`}>{value}</span>
     </div>
   );

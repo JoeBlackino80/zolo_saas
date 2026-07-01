@@ -63,7 +63,7 @@ export default function NewAssetPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/assets" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/assets" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na majetok
       </Link>
       <PageHeader title="Nový majetok" subtitle="DHM / DNM s automatickým výpočtom odpisov podľa § 26 ZDP" />
@@ -107,12 +107,12 @@ export default function NewAssetPage() {
               </Select>
             </Field>
             {form.acquisition_price > 0 && (
-              <div className="mt-4 p-4 bg-slate-50 rounded-lg text-sm space-y-1.5">
-                <div className="flex justify-between"><span className="text-slate-600">Obstarávacia cena</span><span className="font-mono">{form.acquisition_price.toFixed(2)} €</span></div>
-                <div className="flex justify-between"><span className="text-slate-600">Doba odpisovania</span><span className="font-mono">{group.years} rokov</span></div>
-                <div className="flex justify-between"><span className="text-slate-600">Ročný odpis</span><span className="font-mono font-semibold">{yearlyDep.toFixed(2)} €</span></div>
-                <div className="flex justify-between"><span className="text-slate-600">Mesačný odpis</span><span className="font-mono">{monthlyDep.toFixed(2)} €</span></div>
-                <div className="text-xs text-slate-500 mt-2 pt-2 border-t border-slate-200">Účtovne: 551 / 082 (odpisy / oprávky) každý rok cez celé obdobie.</div>
+              <div className="mt-4 p-4 bg-zinc-50 rounded-lg text-sm space-y-1.5">
+                <div className="flex justify-between"><span className="text-zinc-600">Obstarávacia cena</span><span className="font-mono">{form.acquisition_price.toFixed(2)} €</span></div>
+                <div className="flex justify-between"><span className="text-zinc-600">Doba odpisovania</span><span className="font-mono">{group.years} rokov</span></div>
+                <div className="flex justify-between"><span className="text-zinc-600">Ročný odpis</span><span className="font-mono font-semibold">{yearlyDep.toFixed(2)} €</span></div>
+                <div className="flex justify-between"><span className="text-zinc-600">Mesačný odpis</span><span className="font-mono">{monthlyDep.toFixed(2)} €</span></div>
+                <div className="text-xs text-zinc-500 mt-2 pt-2 border-t border-zinc-200">Účtovne: 551 / 082 (odpisy / oprávky) každý rok cez celé obdobie.</div>
               </div>
             )}
           </div>

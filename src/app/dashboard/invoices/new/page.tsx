@@ -242,7 +242,7 @@ export default function NewInvoicePage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/invoices" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/invoices" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na zoznam
       </Link>
       <PageHeader title="Nový doklad" subtitle="Vystaviť FA, ZF, DO, DL, PPD alebo CP" />
@@ -281,14 +281,14 @@ export default function NewInvoicePage() {
                   <button
                     type="button"
                     onClick={() => { setForm({ ...form, number: peekedNumber }); setAutoNumber(true); }}
-                    className="px-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg border border-slate-200"
+                    className="px-2.5 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 rounded-lg border border-zinc-200"
                     title={`Obnoviť na navrhované: ${peekedNumber}`}
                   >
                     <RotateCcw size={14} />
                   </button>
                 )}
               </div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-[11px] text-zinc-500 mt-1">
                 {autoNumber ? `Auto: ${peekedNumber || '…'} — pridelí sa pri uložení` : 'Manuálne — sekvencia sa upraví podľa tvojho čísla'}
               </div>
             </Field>
@@ -312,7 +312,7 @@ export default function NewInvoicePage() {
                       key={d}
                       type="button"
                       onClick={() => setForm((f) => ({ ...f, due_date: target }))}
-                      className={`text-[11px] px-2 py-0.5 rounded border transition ${active ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'}`}
+                      className={`text-[11px] px-2 py-0.5 rounded border transition ${active ? 'bg-zinc-900 border-zinc-900 text-white' : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50'}`}
                     >
                       {d === 0 ? 'Hneď' : `+${d}d`}
                     </button>
@@ -343,7 +343,7 @@ export default function NewInvoicePage() {
             <Field label={`Vybrať z existujúcich (${contacts.length})`}>
               <div className="relative">
                 <div className="relative">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
                   <input
                     type="text"
                     value={contactQuery}
@@ -351,20 +351,20 @@ export default function NewInvoicePage() {
                     onFocus={() => setShowContactDropdown(true)}
                     onBlur={() => setTimeout(() => setShowContactDropdown(false), 200)}
                     placeholder="Hľadaj podľa názvu, IČO alebo IČ DPH…"
-                    className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-zinc-200 rounded-lg pl-9 pr-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-900"
                   />
                 </div>
                 {showContactDropdown && filteredContacts.length > 0 && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-64 overflow-auto">
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-zinc-200 rounded-lg shadow-lg max-h-64 overflow-auto">
                     {filteredContacts.map((c) => (
                       <button
                         type="button"
                         key={c.id}
                         onClick={() => pickContact(c)}
-                        className="w-full text-left px-3 py-2 hover:bg-blue-50 border-b border-slate-100 last:border-0"
+                        className="w-full text-left px-3 py-2 hover:bg-zinc-50 border-b border-zinc-100 last:border-0"
                       >
-                        <div className="text-sm font-medium text-slate-900">{c.name}</div>
-                        <div className="text-xs text-slate-500 flex gap-3">
+                        <div className="text-sm font-medium text-zinc-900">{c.name}</div>
+                        <div className="text-xs text-zinc-500 flex gap-3">
                           {c.ico && <span>IČO: {c.ico}</span>}
                           {c.ic_dph && <span>IČ DPH: {c.ic_dph}</span>}
                           {c.city && <span>{c.city}</span>}
@@ -374,8 +374,8 @@ export default function NewInvoicePage() {
                   </div>
                 )}
                 {showContactDropdown && filteredContacts.length === 0 && contactQuery && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg p-3 text-sm text-slate-500">
-                    Žiadny zákazník &quot;{contactQuery}&quot;. <Link href={`/dashboard/customers/new`} target="_blank" className="text-blue-600 hover:underline">Pridať nového →</Link>
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-zinc-200 rounded-lg shadow-lg p-3 text-sm text-zinc-500">
+                    Žiadny zákazník &quot;{contactQuery}&quot;. <Link href={`/dashboard/customers/new`} target="_blank" className="text-zinc-900 hover:underline">Pridať nového →</Link>
                   </div>
                 )}
               </div>
@@ -396,7 +396,7 @@ export default function NewInvoicePage() {
               <div className="sm:col-span-2 lg:col-span-2">
                 <label className="flex items-center gap-2 text-sm pt-7">
                   <input type="checkbox" checked={form.reminders_enabled} onChange={(e) => setForm({ ...form, reminders_enabled: e.target.checked })} />
-                  <span>Automatické pripomienky platby <span className="text-slate-500">(3 dni pred splatnosťou · v deň splatnosti · +7 dní · +30 dní)</span></span>
+                  <span>Automatické pripomienky platby <span className="text-zinc-500">(3 dni pred splatnosťou · v deň splatnosti · +7 dní · +30 dní)</span></span>
                 </label>
               </div>
             </div>
@@ -440,7 +440,7 @@ export default function NewInvoicePage() {
                   </Select>
                 </Field>
                 <Field label={i === 0 ? 'Spolu' : ''}>
-                  <div className="text-sm font-mono py-2 text-slate-900 text-right">
+                  <div className="text-sm font-mono py-2 text-zinc-900 text-right">
                     {fmtEur(it.quantity * it.unit_price * (1 + it.vat_rate / 100))}
                   </div>
                 </Field>
@@ -455,18 +455,18 @@ export default function NewInvoicePage() {
               </div>
             ))}
           </div>
-          <div className="border-t border-slate-100 px-5 py-4 bg-slate-50 flex justify-end gap-8 text-sm">
+          <div className="border-t border-zinc-100 px-5 py-4 bg-zinc-50 flex justify-end gap-8 text-sm">
             <div>
-              <div className="text-xs text-slate-500">Základ</div>
+              <div className="text-xs text-zinc-500">Základ</div>
               <div className="font-mono font-medium">{fmtEur(totals.subtotal)}</div>
             </div>
             <div>
-              <div className="text-xs text-slate-500">DPH</div>
+              <div className="text-xs text-zinc-500">DPH</div>
               <div className="font-mono font-medium">{fmtEur(totals.vat)}</div>
             </div>
             <div>
-              <div className="text-xs text-slate-500">Spolu</div>
-              <div className="font-mono font-bold text-lg text-slate-900">{fmtEur(totals.total)}</div>
+              <div className="text-xs text-zinc-500">Spolu</div>
+              <div className="font-mono font-bold text-lg text-zinc-900">{fmtEur(totals.total)}</div>
             </div>
           </div>
         </Card>

@@ -65,7 +65,7 @@ export default function BrandingPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
       <PageHeader title="Branding faktúr" subtitle="Logo · farby · pätička. Per firma." />
@@ -86,9 +86,9 @@ export default function BrandingPage() {
             <Field label="Logo (PNG/JPG, max 200KB)">
               <label className="flex items-center gap-3 cursor-pointer">
                 {form.logo_url ? (
-                  <img src={form.logo_url} alt="logo" className="h-16 border border-slate-200 rounded p-1 bg-white" />
+                  <img src={form.logo_url} alt="logo" className="h-16 border border-zinc-200 rounded p-1 bg-white" />
                 ) : (
-                  <div className="h-16 w-32 border-2 border-dashed border-slate-300 rounded flex items-center justify-center text-slate-400 text-xs">Bez loga</div>
+                  <div className="h-16 w-32 border-2 border-dashed border-zinc-300 rounded flex items-center justify-center text-zinc-400 text-xs">Bez loga</div>
                 )}
                 <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadLogo(e.target.files[0])} className="hidden" />
                 <Button type="button" variant="secondary"><Upload size={14} /> Nahrať</Button>
@@ -97,13 +97,13 @@ export default function BrandingPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Hlavná farba">
                 <div className="flex gap-2">
-                  <input type="color" value={form.primary_color} onChange={(e) => setForm({ ...form, primary_color: e.target.value })} className="w-12 h-10 rounded border border-slate-200" />
+                  <input type="color" value={form.primary_color} onChange={(e) => setForm({ ...form, primary_color: e.target.value })} className="w-12 h-10 rounded border border-zinc-200" />
                   <Input value={form.primary_color} onChange={(e) => setForm({ ...form, primary_color: e.target.value })} className="font-mono" />
                 </div>
               </Field>
               <Field label="Akcentová farba">
                 <div className="flex gap-2">
-                  <input type="color" value={form.accent_color} onChange={(e) => setForm({ ...form, accent_color: e.target.value })} className="w-12 h-10 rounded border border-slate-200" />
+                  <input type="color" value={form.accent_color} onChange={(e) => setForm({ ...form, accent_color: e.target.value })} className="w-12 h-10 rounded border border-zinc-200" />
                   <Input value={form.accent_color} onChange={(e) => setForm({ ...form, accent_color: e.target.value })} className="font-mono" />
                 </div>
               </Field>
@@ -114,7 +114,7 @@ export default function BrandingPage() {
                 onChange={(e) => setForm({ ...form, footer_text: e.target.value })}
                 rows={3}
                 placeholder="napr. Ďakujeme za spoluprácu. Číslo účtu: SK..."
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-zinc-900"
               />
             </Field>
             <Button variant="primary" onClick={save} disabled={saving}>{saving ? 'Ukladám…' : 'Uložiť branding'}</Button>

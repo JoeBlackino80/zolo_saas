@@ -28,7 +28,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                 : t.kind === 'error'
                 ? 'bg-red-50 border-red-200 text-red-800'
-                : 'bg-slate-900 border-slate-800 text-white'
+                : 'bg-zinc-900 border-zinc-800 text-white'
             }`}
           >
             {t.kind === 'success' ? <Check size={16} /> : t.kind === 'error' ? <AlertCircle size={16} /> : null}

@@ -119,7 +119,7 @@ export default function NewRecurringPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/recurring" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/recurring" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na zoznam
       </Link>
       <PageHeader title="Nová opakujúca sa šablóna" subtitle="Nastav frekvenciu — FA sa potom vystavujú automaticky" />
@@ -166,15 +166,15 @@ export default function NewRecurringPage() {
             <Field label={`Vybrať existujúceho (${contacts.length})`}>
               <div className="relative">
                 <div className="relative">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                  <input type="text" value={contactQuery} onChange={(e) => { setContactQuery(e.target.value); setShowDropdown(true); }} onFocus={() => setShowDropdown(true)} onBlur={() => setTimeout(() => setShowDropdown(false), 200)} placeholder="Hľadaj podľa názvu alebo IČO…" className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm" />
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                  <input type="text" value={contactQuery} onChange={(e) => { setContactQuery(e.target.value); setShowDropdown(true); }} onFocus={() => setShowDropdown(true)} onBlur={() => setTimeout(() => setShowDropdown(false), 200)} placeholder="Hľadaj podľa názvu alebo IČO…" className="w-full bg-white border border-zinc-200 rounded-lg pl-9 pr-3 py-2 text-sm" />
                 </div>
                 {showDropdown && filtered.length > 0 && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-64 overflow-auto">
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-zinc-200 rounded-lg shadow-lg max-h-64 overflow-auto">
                     {filtered.map((c) => (
-                      <button type="button" key={c.id} onClick={() => pick(c)} className="w-full text-left px-3 py-2 hover:bg-blue-50 border-b border-slate-100 last:border-0">
+                      <button type="button" key={c.id} onClick={() => pick(c)} className="w-full text-left px-3 py-2 hover:bg-zinc-50 border-b border-zinc-100 last:border-0">
                         <div className="text-sm font-medium">{c.name}</div>
-                        <div className="text-xs text-slate-500 flex gap-3">{c.ico && <span>IČO: {c.ico}</span>}{c.email && <span>{c.email}</span>}</div>
+                        <div className="text-xs text-zinc-500 flex gap-3">{c.ico && <span>IČO: {c.ico}</span>}{c.email && <span>{c.email}</span>}</div>
                       </button>
                     ))}
                   </div>
@@ -208,10 +208,10 @@ export default function NewRecurringPage() {
               </div>
             ))}
           </div>
-          <div className="border-t border-slate-100 px-5 py-4 bg-slate-50 flex justify-end gap-8 text-sm">
-            <div><div className="text-xs text-slate-500">Základ</div><div className="font-mono font-medium">{fmtEur(totals.subtotal)}</div></div>
-            <div><div className="text-xs text-slate-500">DPH</div><div className="font-mono font-medium">{fmtEur(totals.vat)}</div></div>
-            <div><div className="text-xs text-slate-500">Spolu / faktúra</div><div className="font-mono font-bold text-lg">{fmtEur(totals.total)}</div></div>
+          <div className="border-t border-zinc-100 px-5 py-4 bg-zinc-50 flex justify-end gap-8 text-sm">
+            <div><div className="text-xs text-zinc-500">Základ</div><div className="font-mono font-medium">{fmtEur(totals.subtotal)}</div></div>
+            <div><div className="text-xs text-zinc-500">DPH</div><div className="font-mono font-medium">{fmtEur(totals.vat)}</div></div>
+            <div><div className="text-xs text-zinc-500">Spolu / faktúra</div><div className="font-mono font-bold text-lg">{fmtEur(totals.total)}</div></div>
           </div>
         </Card>
 

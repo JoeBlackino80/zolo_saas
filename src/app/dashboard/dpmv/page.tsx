@@ -131,7 +131,7 @@ export default function DpmvPage() {
       </Card>
 
       <div className="mt-4 text-xs text-zinc-500">
-        ⚠ Sadzby závisia od kraja, hmotnosti a typu vozidla. Vlož ročnú daň ručne podľa <a href="https://www.financnasprava.sk" target="_blank" rel="noreferrer" className="text-blue-600 underline">tabuľky FS SR</a>. Podanie cez eDane do 31.1. za predchádzajúci rok.
+        ⚠ Sadzby závisia od kraja, hmotnosti a typu vozidla. Vlož ročnú daň ručne podľa <a href="https://www.financnasprava.sk" target="_blank" rel="noreferrer" className="text-zinc-900 underline">tabuľky FS SR</a>. Podanie cez eDane do 31.1. za predchádzajúci rok.
       </div>
     </div>
   );

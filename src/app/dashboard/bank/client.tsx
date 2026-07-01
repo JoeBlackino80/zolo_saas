@@ -134,10 +134,10 @@ export default function BankImportClient() {
 
       <Card className="mb-4">
         <div className="p-6">
-          <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-10 cursor-pointer transition">
-            <Upload size={32} className="text-slate-400 mb-3" />
-            <div className="text-sm font-semibold text-slate-700">{loading ? 'Spracovávam…' : 'Klikni alebo pretiahni CSV výpis'}</div>
-            <div className="text-xs text-slate-500 mt-1">CSV alebo CAMT.053 XML · Tatra · SLSP · VÚB · iné</div>
+          <label className="flex flex-col items-center justify-center border-2 border-dashed border-zinc-300 hover:border-zinc-500 rounded-xl p-10 cursor-pointer transition">
+            <Upload size={32} className="text-zinc-400 mb-3" />
+            <div className="text-sm font-semibold text-zinc-700">{loading ? 'Spracovávam…' : 'Klikni alebo pretiahni CSV výpis'}</div>
+            <div className="text-xs text-zinc-500 mt-1">CSV alebo CAMT.053 XML · Tatra · SLSP · VÚB · iné</div>
             <input
               type="file"
               accept=".csv,.xml,text/csv,application/xml"
@@ -151,9 +151,9 @@ export default function BankImportClient() {
 
       {stats && (
         <div className="grid grid-cols-3 gap-4 mb-4">
-          <Card><div className="p-5"><div className="text-xs text-slate-500 font-semibold uppercase">Spolu transakcií</div><div className="text-2xl font-bold mt-2">{stats.total}</div></div></Card>
-          <Card><div className="p-5"><div className="text-xs text-slate-500 font-semibold uppercase">Spárované</div><div className="text-2xl font-bold mt-2 text-emerald-600">{stats.matched}</div></div></Card>
-          <Card><div className="p-5"><div className="text-xs text-slate-500 font-semibold uppercase">Nespárované</div><div className="text-2xl font-bold mt-2 text-amber-600">{stats.unmatched}</div></div></Card>
+          <Card><div className="p-5"><div className="text-xs text-zinc-500 font-semibold uppercase">Spolu transakcií</div><div className="text-2xl font-bold mt-2">{stats.total}</div></div></Card>
+          <Card><div className="p-5"><div className="text-xs text-zinc-500 font-semibold uppercase">Spárované</div><div className="text-2xl font-bold mt-2 text-emerald-600">{stats.matched}</div></div></Card>
+          <Card><div className="p-5"><div className="text-xs text-zinc-500 font-semibold uppercase">Nespárované</div><div className="text-2xl font-bold mt-2 text-amber-600">{stats.unmatched}</div></div></Card>
         </div>
       )}
 
@@ -165,8 +165,8 @@ export default function BankImportClient() {
           />
           <div className="overflow-auto max-h-[60vh]">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 sticky top-0">
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+              <thead className="bg-zinc-50 sticky top-0">
+                <tr className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                   <th className="text-center px-3 py-3 w-8"></th>
                   <th className="text-center px-3 py-3">Dátum</th>
                   <th className="text-left px-3 py-3">VS</th>
@@ -175,7 +175,7 @@ export default function BankImportClient() {
                   <th className="text-left px-3 py-3">Faktúra</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-zinc-100">
                 {matches.map((m, i) => (
                   <tr key={i} className={m.invoice ? 'bg-emerald-50/30' : ''}>
                     <td className="text-center px-3 py-2">
@@ -184,15 +184,15 @@ export default function BankImportClient() {
                     <td className="text-center px-3 py-2 font-mono text-xs">{fmtDate(m.tx.date)}</td>
                     <td className="px-3 py-2 font-mono text-xs">{m.tx.vs}</td>
                     <td className="text-right px-3 py-2 font-mono">{fmtEur(m.tx.amount)}</td>
-                    <td className="px-3 py-2 text-xs text-slate-600 truncate max-w-xs">{m.tx.description}</td>
+                    <td className="px-3 py-2 text-xs text-zinc-600 truncate max-w-xs">{m.tx.description}</td>
                     <td className="px-3 py-2">
                       {m.invoice ? (
                         <div className="flex items-center gap-2">
                           <Badge variant="green">{m.invoice.number}</Badge>
-                          <span className="text-xs text-slate-600">{m.invoice.customer_name}</span>
+                          <span className="text-xs text-zinc-600">{m.invoice.customer_name}</span>
                         </div>
                       ) : (
-                        <span className="text-xs text-slate-400">—</span>
+                        <span className="text-xs text-zinc-400">—</span>
                       )}
                     </td>
                   </tr>

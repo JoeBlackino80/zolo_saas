@@ -7,20 +7,20 @@ export default function HelpPage() {
       <PageHeader title="Pomoc & podpora" subtitle="Ak niečo nefunguje alebo si nevieš poradiť" />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <a href="mailto:podpora@zolo.sk" className="block bg-white border border-slate-200 hover:border-blue-300 rounded-xl p-5 transition">
-          <Mail size={20} className="text-blue-500 mb-2" />
-          <div className="font-semibold text-slate-900">Email podpora</div>
-          <div className="text-sm text-slate-500 mt-1">podpora@zolo.sk · odpovedáme do 24h</div>
+        <a href="mailto:podpora@zolo.sk" className="block bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl p-5 transition">
+          <Mail size={20} className="text-zinc-700 mb-2" />
+          <div className="font-semibold text-zinc-900">Email podpora</div>
+          <div className="text-sm text-zinc-500 mt-1">podpora@zolo.sk · odpovedáme do 24h</div>
         </a>
-        <a href="https://zolo.sk/contact" className="block bg-white border border-slate-200 hover:border-blue-300 rounded-xl p-5 transition">
-          <MessageSquare size={20} className="text-blue-500 mb-2" />
-          <div className="font-semibold text-slate-900">Kontaktný formulár</div>
-          <div className="text-sm text-slate-500 mt-1">zolo.sk/contact</div>
+        <a href="https://zolo.sk/contact" className="block bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl p-5 transition">
+          <MessageSquare size={20} className="text-zinc-700 mb-2" />
+          <div className="font-semibold text-zinc-900">Kontaktný formulár</div>
+          <div className="text-sm text-zinc-500 mt-1">zolo.sk/contact</div>
         </a>
-        <a href="https://zolo.sk/pricing" className="block bg-white border border-slate-200 hover:border-blue-300 rounded-xl p-5 transition">
-          <Sparkles size={20} className="text-blue-500 mb-2" />
-          <div className="font-semibold text-slate-900">Upgrade plánu</div>
-          <div className="text-sm text-slate-500 mt-1">Viac firiem, AI Vision, tím</div>
+        <a href="https://zolo.sk/pricing" className="block bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl p-5 transition">
+          <Sparkles size={20} className="text-zinc-700 mb-2" />
+          <div className="font-semibold text-zinc-900">Upgrade plánu</div>
+          <div className="text-sm text-zinc-500 mt-1">Viac firiem, AI Vision, tím</div>
         </a>
       </div>
 
@@ -63,8 +63,8 @@ export default function HelpPage() {
         </div>
       </Card>
 
-      <div className="mt-6 text-center text-sm text-slate-500">
-        Niečo si nenašiel? <a href="mailto:podpora@zolo.sk" className="text-blue-600 hover:underline">Napíš nám →</a>
+      <div className="mt-6 text-center text-sm text-zinc-500">
+        Niečo si nenašiel? <a href="mailto:podpora@zolo.sk" className="text-zinc-900 hover:underline">Napíš nám →</a>
       </div>
     </div>
   );
@@ -72,9 +72,9 @@ export default function HelpPage() {
 
 function Section({ title, desc }: { title: string; desc: string }) {
   return (
-    <div className="border-l-2 border-blue-200 pl-4 py-1">
-      <div className="font-semibold text-slate-900">{title}</div>
-      <div className="text-slate-600 mt-0.5">{desc}</div>
+    <div className="border-l-2 border-zinc-200 pl-4 py-1">
+      <div className="font-semibold text-zinc-900">{title}</div>
+      <div className="text-zinc-600 mt-0.5">{desc}</div>
     </div>
   );
 }
@@ -82,8 +82,8 @@ function Section({ title, desc }: { title: string; desc: string }) {
 function KbShortcut({ keys, desc }: { keys: string; desc: string }) {
   return (
     <div className="flex items-center gap-3">
-      <kbd className="px-2.5 py-1 bg-slate-100 border border-slate-200 rounded text-xs font-mono font-semibold">{keys}</kbd>
-      <span className="text-slate-700">{desc}</span>
+      <kbd className="px-2.5 py-1 bg-zinc-100 border border-zinc-200 rounded text-xs font-mono font-semibold">{keys}</kbd>
+      <span className="text-zinc-700">{desc}</span>
     </div>
   );
 }

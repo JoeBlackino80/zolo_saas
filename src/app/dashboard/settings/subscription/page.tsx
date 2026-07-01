@@ -20,7 +20,7 @@ export default async function SubscriptionPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
       <PageHeader title="Predplatné ZOLO" subtitle="Tvoj plán, fakturácia, zmena plánu" />
@@ -30,19 +30,19 @@ export default async function SubscriptionPage() {
         <div className="p-5 flex items-start justify-between gap-4 flex-wrap">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl font-bold text-slate-900">{info.label}</span>
+              <span className="text-2xl font-bold text-zinc-900">{info.label}</span>
               <Badge variant={info.color as 'gray' | 'blue' | 'green'}>{info.price}</Badge>
               {sub?.status === 'trialing' && <Badge variant="amber">Skúšobné obdobie</Badge>}
               {sub?.status === 'past_due' && <Badge variant="red">Pozastavené — neuhradené</Badge>}
             </div>
-            <ul className="text-sm text-slate-600 space-y-1">
+            <ul className="text-sm text-zinc-600 space-y-1">
               <li className="flex items-center gap-2"><Check size={14} className="text-emerald-500" /> {info.companies}</li>
               <li className="flex items-center gap-2"><Check size={14} className="text-emerald-500" /> {info.invoices}</li>
               <li className="flex items-center gap-2"><Check size={14} className="text-emerald-500" /> {info.ai}</li>
               <li className="flex items-center gap-2"><Check size={14} className="text-emerald-500" /> {info.team}</li>
             </ul>
             {sub?.current_period_end && (
-              <div className="text-xs text-slate-500 mt-3">Ďalšie účtovanie: {new Date(sub.current_period_end).toLocaleDateString('sk-SK')}</div>
+              <div className="text-xs text-zinc-500 mt-3">Ďalšie účtovanie: {new Date(sub.current_period_end).toLocaleDateString('sk-SK')}</div>
             )}
             {sub?.trial_ends_at && new Date(sub.trial_ends_at) > new Date() && (
               <div className="text-xs text-amber-600 mt-1">Skúška do {new Date(sub.trial_ends_at).toLocaleDateString('sk-SK')}</div>
@@ -56,10 +56,10 @@ export default async function SubscriptionPage() {
         <Card>
           <CardHeader title="Upgrade — odomkni viac" />
           <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border border-slate-200 rounded-xl p-5">
+            <div className="border border-zinc-200 rounded-xl p-5">
               <div className="font-bold text-lg">Pro · 15 €/mes</div>
-              <div className="text-sm text-slate-500 mt-1">14 dní zadarmo, kedykoľvek zrušiť</div>
-              <ul className="text-sm text-slate-700 mt-3 space-y-1.5">
+              <div className="text-sm text-zinc-500 mt-1">14 dní zadarmo, kedykoľvek zrušiť</div>
+              <ul className="text-sm text-zinc-700 mt-3 space-y-1.5">
                 <li>✓ 3 firmy</li>
                 <li>✓ Neobmedzene faktúr</li>
                 <li>✓ AI Vision 100 dokladov/mes</li>
@@ -70,8 +70,8 @@ export default async function SubscriptionPage() {
             </div>
             <div className="border border-zinc-900 rounded-xl p-5 bg-zinc-50">
               <div className="font-bold text-lg">Business · 49 €/mes</div>
-              <div className="text-sm text-slate-500 mt-1">Pre holdingy a viac firiem</div>
-              <ul className="text-sm text-slate-700 mt-3 space-y-1.5">
+              <div className="text-sm text-zinc-500 mt-1">Pre holdingy a viac firiem</div>
+              <ul className="text-sm text-zinc-700 mt-3 space-y-1.5">
                 <li>✓ Neobmedzene firiem</li>
                 <li>✓ AI Vision unlimited</li>
                 <li>✓ Tím do 50 ľudí</li>

@@ -26,7 +26,7 @@ export default function TravelCalcPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/travel" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/travel" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na cestovné príkazy
       </Link>
       <PageHeader title="Kalkulačka cestovných náhrad" subtitle="SK 2026 sadzby — diéty + amortizácia auta + spotreba PHM" />
@@ -82,33 +82,33 @@ export default function TravelCalcPage() {
         <Card>
           <CardHeader title={<><Calculator className="inline mr-2" size={14} /> Výpočet náhrad</>} />
           <div className="p-5 space-y-3 text-sm">
-            <div className="border-l-2 border-blue-200 pl-3">
-              <div className="text-xs uppercase text-slate-500 font-semibold">Stravné (diéty)</div>
+            <div className="border-l-2 border-zinc-200 pl-3">
+              <div className="text-xs uppercase text-zinc-500 font-semibold">Stravné (diéty)</div>
               <div className="text-2xl font-bold mt-1">{fmtEur(r.diety)}</div>
-              <div className="text-xs text-slate-500 mt-1">{r.diety_breakdown}</div>
+              <div className="text-xs text-zinc-500 mt-1">{r.diety_breakdown}</div>
             </div>
-            <div className="border-l-2 border-blue-200 pl-3">
-              <div className="text-xs uppercase text-slate-500 font-semibold">Amortizácia auta</div>
+            <div className="border-l-2 border-zinc-200 pl-3">
+              <div className="text-xs uppercase text-zinc-500 font-semibold">Amortizácia auta</div>
               <div className="text-2xl font-bold mt-1">{fmtEur(r.km_compensation)}</div>
-              <div className="text-xs text-slate-500 mt-1">{km} km × {SAZBA_KM_2026.toFixed(3)} €</div>
+              <div className="text-xs text-zinc-500 mt-1">{km} km × {SAZBA_KM_2026.toFixed(3)} €</div>
             </div>
-            <div className="border-l-2 border-blue-200 pl-3">
-              <div className="text-xs uppercase text-slate-500 font-semibold">Spotreba PHM</div>
+            <div className="border-l-2 border-zinc-200 pl-3">
+              <div className="text-xs uppercase text-zinc-500 font-semibold">Spotreba PHM</div>
               <div className="text-2xl font-bold mt-1">{fmtEur(r.fuel_compensation)}</div>
-              <div className="text-xs text-slate-500 mt-1">{km} km × ({consumption}/100) L × {fuelPrice} €</div>
+              <div className="text-xs text-zinc-500 mt-1">{km} km × ({consumption}/100) L × {fuelPrice} €</div>
             </div>
-            <div className="border-t border-slate-200 pt-3" />
+            <div className="border-t border-zinc-200 pt-3" />
             <div className="flex justify-between text-base">
-              <span className="text-slate-600">Spolu náhrady</span>
+              <span className="text-zinc-600">Spolu náhrady</span>
               <span className="font-mono font-bold">{fmtEur(r.total_expenses)}</span>
             </div>
             {advance > 0 && (
               <div className="flex justify-between">
-                <span className="text-slate-600">Preddavok</span>
-                <span className="font-mono text-slate-700">-{fmtEur(advance)}</span>
+                <span className="text-zinc-600">Preddavok</span>
+                <span className="font-mono text-zinc-700">-{fmtEur(advance)}</span>
               </div>
             )}
-            <div className="border-t-2 border-blue-500 pt-3 flex justify-between text-lg">
+            <div className="border-t-2 border-zinc-500 pt-3 flex justify-between text-lg">
               <span className="font-semibold">{r.to_pay >= 0 ? 'K vyplateniu zamest.' : 'Vrátiť firme'}</span>
               <span className={`font-mono font-bold ${r.to_pay >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmtEur(Math.abs(r.to_pay))}</span>
             </div>
@@ -116,7 +116,7 @@ export default function TravelCalcPage() {
         </Card>
       </div>
 
-      <div className="mt-4 text-xs text-slate-500">
+      <div className="mt-4 text-xs text-zinc-500">
         Tuzemsko 2026: 5–12h {fmtEur(DIETY_SK_2026.domestic.band_5_12h)} · 12–18h {fmtEur(DIETY_SK_2026.domestic.band_12_18h)} · 18h+ {fmtEur(DIETY_SK_2026.domestic.band_18plus)}.
         Zahraničie — vreckové 40% z diéty. Stravovanie kráti diétu o 25/40/35% (R/O/V).
       </div>

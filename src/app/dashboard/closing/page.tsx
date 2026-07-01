@@ -39,10 +39,10 @@ export default async function ClosingPage() {
       <Card className="mb-4">
         <div className="p-5">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-sm font-semibold text-slate-900">Progres uzávierky</div>
-            <div className="text-sm font-mono text-slate-600">{done} / {CHECKLIST.length}</div>
+            <div className="text-sm font-semibold text-zinc-900">Progres uzávierky</div>
+            <div className="text-sm font-mono text-zinc-600">{done} / {CHECKLIST.length}</div>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
             <div className="h-full bg-zinc-900 transition-all" style={{ width: `${pct}%` }} />
           </div>
         </div>
@@ -50,18 +50,18 @@ export default async function ClosingPage() {
 
       <Card>
         <CardHeader title="Checklist krokov" subtitle="V poradí v akom sa zvyčajne robia" />
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-zinc-100">
           {CHECKLIST.map((item, idx) => {
             const op = opMap[item.key];
             const isDone = op?.status === 'completed';
             return (
-              <div key={item.key} className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${isDone ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400 border border-slate-200'}`}>
+              <div key={item.key} className="flex items-center gap-4 px-5 py-4 hover:bg-zinc-50">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${isDone ? 'bg-emerald-500 text-white' : 'bg-zinc-100 text-zinc-400 border border-zinc-200'}`}>
                   {isDone ? <Check size={14} /> : <span className="text-xs font-semibold">{idx + 1}</span>}
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm font-semibold text-slate-900">{item.label}</div>
-                  <div className="text-xs text-slate-500 mt-0.5">{item.desc}</div>
+                  <div className="text-sm font-semibold text-zinc-900">{item.label}</div>
+                  <div className="text-xs text-zinc-500 mt-0.5">{item.desc}</div>
                 </div>
                 {isDone ? (
                   <Badge variant="green">Hotovo</Badge>

@@ -72,7 +72,7 @@ export default function EditCompanyClient({ company }: { company: Company }) {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
       <PageHeader title={`Upraviť: ${company.name}`} subtitle="Zmena údajov firmy ovplyvní budúce faktúry a výkazy" />

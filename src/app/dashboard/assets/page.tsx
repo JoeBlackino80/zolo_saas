@@ -26,7 +26,7 @@ export default async function AssetsPage() {
         <Card>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+              <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                 <th className="text-left px-5 py-3">Aktívum</th>
                 <th className="text-left px-3 py-3">Inv. č.</th>
                 <th className="text-right px-3 py-3">Obstarávacia cena</th>
@@ -34,9 +34,9 @@ export default async function AssetsPage() {
                 <th className="text-center px-3 py-3">Skupina</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {assets.map((a) => (
-                <tr key={a.id} className="hover:bg-slate-50">
+                <tr key={a.id} className="hover:bg-zinc-50">
                   <td className="px-5 py-3 font-medium">{a.name}</td>
                   <td className="px-3 py-3 font-mono text-xs">{a.inventory_number || '—'}</td>
                   <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(a.acquisition_price || 0))}</td>

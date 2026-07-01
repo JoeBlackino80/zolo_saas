@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { Card, CardHeader } from '@/components/ui';
 import { fmtEur, fmtDate } from '@/lib/utils';
 import Link from 'next/link';
-import { TrendingUp, TrendingDown, FileText, Building2, Clock, Calendar, Plus, Receipt } from 'lucide-react';
+import { TrendingUp, TrendingDown, FileText, Building2, Clock, Calendar, Plus, ArrowUpRight } from 'lucide-react';
 
 export default async function DashboardPage() {
   const sb = await createClient();
@@ -37,19 +37,44 @@ export default async function DashboardPage() {
     redirect('/onboarding');
   }
 
-  // First-FA coaching: ak má firmu ale 0 FA → silný CTA banner navrchu
   const totalInvoices = allInv.length;
   const showFirstInvoiceCoach = totalCompanies > 0 && totalInvoices === 0;
 
+  const monthName = new Date().toLocaleDateString('sk-SK', { month: 'long', year: 'numeric' });
+
   return (
     <div className="p-4 sm:p-8 max-w-7xl">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Vitaj späť, {user?.email?.split('@')[0]}</h1>
-        <p className="text-slate-500 mt-1 text-sm">{totalCompanies} firiem pod tvojím účtom · {thisMonth}</p>
+      {/* Hero — Apple Health style: prominent primary metric */}
+      <div className="mb-8">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500 mb-3">
+          Prehľad · {monthName}
+        </div>
+        <div className="flex items-end justify-between gap-6 flex-wrap">
+          <div>
+            <h1 className="text-[44px] sm:text-[56px] font-bold text-zinc-900 tracking-[-0.03em] leading-[1] tabular-nums">
+              {fmtEur(thisMonthRevenue)}
+            </h1>
+            <div className="flex items-center gap-3 mt-3">
+              <span className="text-[13px] text-zinc-500 tracking-tight">tržby tento mesiac</span>
+              {revenueDelta !== 0 && (
+                <span className={`inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-0.5 rounded-full tabular-nums ${
+                  revenueDelta > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
+                }`}>
+                  {revenueDelta > 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                  {revenueDelta > 0 ? '+' : ''}{revenueDelta.toFixed(1)}%
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="text-right hidden sm:block">
+            <div className="text-[11px] text-zinc-400 uppercase tracking-[0.1em]">Vitaj späť</div>
+            <div className="text-[14px] text-zinc-700 font-medium mt-1 tracking-tight">{user?.email?.split('@')[0]}</div>
+          </div>
+        </div>
       </div>
 
       {showFirstInvoiceCoach && (
-        <div className="mb-6 bg-zinc-950 text-white rounded-2xl p-7">
+        <div className="mb-8 bg-zinc-950 text-white rounded-2xl p-7">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div className="max-w-xl">
               <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-zinc-400">Posledný krok</div>
@@ -71,94 +96,81 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Tržby tento mesiac</div>
-              <Receipt size={16} className="text-slate-400" />
-            </div>
-            <div className="text-2xl font-bold tracking-tight">{fmtEur(thisMonthRevenue)}</div>
-            {revenueDelta !== 0 && (
-              <div className={`flex items-center gap-1 text-xs font-medium mt-2 ${revenueDelta > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                {revenueDelta > 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                {revenueDelta > 0 ? '+' : ''}{revenueDelta.toFixed(1)}% vs minulý mesiac
-              </div>
-            )}
-          </div>
-        </Card>
-
-        <Card>
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Nezaplatené</div>
-              <Clock size={16} className="text-slate-400" />
-            </div>
-            <div className="text-2xl font-bold tracking-tight text-red-600">{fmtEur(unpaidTotal)}</div>
-            <div className="text-xs text-slate-500 mt-2">{overdueCount} po splatnosti</div>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Faktúry tento rok</div>
-              <FileText size={16} className="text-slate-400" />
-            </div>
-            <div className="text-2xl font-bold tracking-tight">{allInv.filter((i) => i.type === 'invoice').length}</div>
-            <div className="text-xs text-slate-500 mt-2">vystavené spolu</div>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Firmy</div>
-              <Building2 size={16} className="text-slate-400" />
-            </div>
-            <div className="text-2xl font-bold tracking-tight">{totalCompanies}</div>
-            <div className="text-xs text-slate-500 mt-2">v portfóliu</div>
-          </div>
-        </Card>
+      {/* Secondary metrics — smaller, denser */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+        <MetricCard
+          label="Nezaplatené"
+          value={fmtEur(unpaidTotal)}
+          hint={`${overdueCount} po splatnosti`}
+          hintVariant={overdueCount > 0 ? 'red' : undefined}
+          valueVariant="red"
+          icon={<Clock size={14} />}
+          href="/dashboard/receivables"
+        />
+        <MetricCard
+          label="Faktúry tento rok"
+          value={String(allInv.filter((i) => i.type === 'invoice').length)}
+          hint="vystavené spolu"
+          icon={<FileText size={14} />}
+          href="/dashboard/invoices"
+        />
+        <MetricCard
+          label="Firmy"
+          value={String(totalCompanies)}
+          hint="v portfóliu"
+          icon={<Building2 size={14} />}
+          href="/dashboard/settings"
+        />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <Link href="/dashboard/invoices/new" className="block bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl p-5 transition-colors">
-          <Plus size={20} strokeWidth={2.2} className="mb-2" />
-          <div className="text-sm font-semibold tracking-tight">Nový doklad</div>
-          <div className="text-xs text-zinc-400 mt-0.5">FA · ZF · DO · DL · PPD · CP</div>
+      {/* Quick actions */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+        <Link href="/dashboard/invoices/new" className="group bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl p-5 transition-colors flex items-center justify-between">
+          <div>
+            <Plus size={20} strokeWidth={2.2} className="mb-2 text-zinc-300 group-hover:text-white transition-colors" />
+            <div className="text-[14px] font-semibold tracking-tight">Nový doklad</div>
+            <div className="text-[11px] text-zinc-400 mt-0.5">FA · ZF · DO · DL · PPD · CP</div>
+          </div>
+          <ArrowUpRight size={16} className="text-zinc-400 group-hover:text-white transition-colors" />
         </Link>
-        <Link href="/dashboard/calendar" className="block bg-white border border-zinc-100 rounded-xl p-5 hover:border-zinc-200 hover:bg-zinc-50 transition-colors">
-          <Calendar size={20} className="text-amber-500 mb-2" />
-          <div className="text-sm font-semibold text-slate-900">Daňový kalendár</div>
-          <div className="text-xs text-slate-500 mt-0.5">DPH 25. · DZP 31.3.</div>
+        <Link href="/dashboard/calendar" className="group bg-white border border-zinc-100 rounded-2xl p-5 hover:border-zinc-200 hover:bg-zinc-50 transition-colors flex items-center justify-between">
+          <div>
+            <Calendar size={20} className="text-zinc-400 mb-2" />
+            <div className="text-[14px] font-semibold text-zinc-900 tracking-tight">Daňový kalendár</div>
+            <div className="text-[11px] text-zinc-500 mt-0.5">DPH 25. · DZP 31.3.</div>
+          </div>
+          <ArrowUpRight size={16} className="text-zinc-400 group-hover:text-zinc-900 transition-colors" />
         </Link>
-        <Link href="/dashboard/cashflow" className="block bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md hover:border-blue-300 transition">
-          <TrendingUp size={20} className="text-emerald-500 mb-2" />
-          <div className="text-sm font-semibold text-slate-900">Cash flow 90 dní</div>
-          <div className="text-xs text-slate-500 mt-0.5">predikcia hotovosti</div>
+        <Link href="/dashboard/cashflow" className="group bg-white border border-zinc-100 rounded-2xl p-5 hover:border-zinc-200 hover:bg-zinc-50 transition-colors flex items-center justify-between">
+          <div>
+            <TrendingUp size={20} className="text-zinc-400 mb-2" />
+            <div className="text-[14px] font-semibold text-zinc-900 tracking-tight">Cash flow 90 dní</div>
+            <div className="text-[11px] text-zinc-500 mt-0.5">predikcia hotovosti</div>
+          </div>
+          <ArrowUpRight size={16} className="text-zinc-400 group-hover:text-zinc-900 transition-colors" />
         </Link>
       </div>
 
+      {/* Lists */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
-          <CardHeader title="Posledné doklady" action={<Link href="/dashboard/invoices" className="text-xs text-blue-600 hover:underline">Všetky →</Link>} />
-          <div className="divide-y divide-slate-100">
+          <CardHeader title="Posledné doklady" action={<Link href="/dashboard/invoices" className="text-[12px] text-zinc-900 hover:underline tracking-tight">Všetky →</Link>} />
+          <div className="divide-y divide-zinc-100">
             {recentRows.length === 0 ? (
-              <div className="px-5 py-8 text-center text-sm text-slate-500">Zatiaľ žiadne doklady</div>
+              <div className="px-5 py-10 text-center text-[13px] text-zinc-500">Zatiaľ žiadne doklady</div>
             ) : (
               recentRows.map((r) => {
                 const co = Array.isArray(r.companies) ? r.companies[0] : r.companies;
                 return (
-                  <Link key={r.id} href={`/dashboard/invoices/${r.id}`} className="block px-5 py-3 hover:bg-slate-50">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm font-medium text-slate-900 font-mono">{r.number}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">{co?.name} → {r.customer_name || '—'}</div>
+                  <Link key={r.id} href={`/dashboard/invoices/${r.id}`} className="block px-5 py-3 hover:bg-zinc-50 transition-colors">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-[13px] font-medium text-zinc-900 font-mono tracking-tight">{r.number}</div>
+                        <div className="text-[12px] text-zinc-500 mt-0.5 truncate">{co?.name} → {r.customer_name || '—'}</div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-sm font-mono font-medium">{fmtEur(Number(r.total))}</div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">{fmtDate(r.issue_date)}</div>
+                      <div className="text-right shrink-0">
+                        <div className="text-[13px] font-mono font-semibold tabular-nums">{fmtEur(Number(r.total))}</div>
+                        <div className="text-[10px] text-zinc-400 mt-0.5">{fmtDate(r.issue_date)}</div>
                       </div>
                     </div>
                   </Link>
@@ -169,23 +181,23 @@ export default async function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader title="Po splatnosti" action={<Link href="/dashboard/receivables" className="text-xs text-blue-600 hover:underline">Všetky →</Link>} />
-          <div className="divide-y divide-slate-100">
+          <CardHeader title="Po splatnosti" action={<Link href="/dashboard/receivables" className="text-[12px] text-zinc-900 hover:underline tracking-tight">Všetky →</Link>} />
+          <div className="divide-y divide-zinc-100">
             {overdueRows.length === 0 ? (
-              <div className="px-5 py-8 text-center text-sm text-emerald-600">✓ Žiadne overdue faktúry</div>
+              <div className="px-5 py-10 text-center text-[13px] text-emerald-600 font-medium">✓ Všetko zaplatené</div>
             ) : (
               overdueRows.map((r) => {
                 const days = Math.floor((today.getTime() - new Date(r.due_date).getTime()) / 86400000);
                 return (
-                  <Link key={r.id} href={`/dashboard/invoices/${r.id}`} className="block px-5 py-3 hover:bg-slate-50">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm font-medium text-slate-900 font-mono">{r.number}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">{r.customer_name || '—'}</div>
+                  <Link key={r.id} href={`/dashboard/invoices/${r.id}`} className="block px-5 py-3 hover:bg-zinc-50 transition-colors">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-[13px] font-medium text-zinc-900 font-mono tracking-tight">{r.number}</div>
+                        <div className="text-[12px] text-zinc-500 mt-0.5 truncate">{r.customer_name || '—'}</div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-sm font-mono font-medium text-red-600">{fmtEur(Number(r.total))}</div>
-                        <div className="text-[10px] text-red-500 mt-0.5">{days} dní po</div>
+                      <div className="text-right shrink-0">
+                        <div className="text-[13px] font-mono font-semibold text-red-600 tabular-nums">{fmtEur(Number(r.total))}</div>
+                        <div className="text-[10px] text-red-500 mt-0.5 font-medium">{days} dní po splatnosti</div>
                       </div>
                     </div>
                   </Link>
@@ -196,5 +208,35 @@ export default async function DashboardPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+function MetricCard({
+  label, value, hint, icon, href, valueVariant, hintVariant,
+}: {
+  label: string; value: string; hint: string;
+  icon: React.ReactNode;
+  href?: string;
+  valueVariant?: 'red' | 'green';
+  hintVariant?: 'red';
+}) {
+  const valueColor = valueVariant === 'red' ? 'text-red-600' : valueVariant === 'green' ? 'text-emerald-600' : 'text-zinc-900';
+  const hintColor = hintVariant === 'red' ? 'text-red-600 font-medium' : 'text-zinc-500';
+  const inner = (
+    <>
+      <div className="flex items-center justify-between mb-2">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-zinc-500">{label}</div>
+        <span className="text-zinc-400">{icon}</span>
+      </div>
+      <div className={`text-[22px] font-bold tracking-[-0.02em] tabular-nums ${valueColor}`}>{value}</div>
+      <div className={`text-[11px] mt-1.5 ${hintColor}`}>{hint}</div>
+    </>
+  );
+  return href ? (
+    <Link href={href} className="bg-white border border-zinc-100 rounded-2xl p-5 hover:border-zinc-200 hover:bg-zinc-50 transition-colors block">
+      {inner}
+    </Link>
+  ) : (
+    <div className="bg-white border border-zinc-100 rounded-2xl p-5">{inner}</div>
   );
 }

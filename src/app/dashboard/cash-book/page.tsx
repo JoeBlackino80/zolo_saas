@@ -30,15 +30,15 @@ export default async function CashBookPage() {
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Príjem</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Príjem</div>
           <div className="text-2xl font-bold mt-2 text-emerald-600">{fmtEur(totalIn)}</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Výdaj</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Výdaj</div>
           <div className="text-2xl font-bold mt-2 text-red-600">{fmtEur(totalOut)}</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Zostatok</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Zostatok</div>
           <div className={`text-2xl font-bold mt-2 ${balance >= 0 ? '' : 'text-red-600'}`}>{fmtEur(balance)}</div>
         </div></Card>
       </div>
@@ -53,7 +53,7 @@ export default async function CashBookPage() {
       ) : (
         <Card>
           <table className="w-full text-sm">
-            <thead><tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+            <thead><tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
               <th className="text-center px-5 py-3">Dátum</th>
               <th className="text-left px-3 py-3">Doklad</th>
               <th className="text-left px-3 py-3">Kategória</th>
@@ -61,13 +61,13 @@ export default async function CashBookPage() {
               <th className="text-center px-3 py-3">Typ</th>
               <th className="text-right px-3 py-3">Suma</th>
             </tr></thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((r) => (
-                <tr key={r.id} className="hover:bg-slate-50">
+                <tr key={r.id} className="hover:bg-zinc-50">
                   <td className="px-5 py-3 text-center font-mono text-xs">{fmtDate(r.entry_date)}</td>
                   <td className="px-3 py-3 font-mono text-xs">{r.document_number || '—'}</td>
-                  <td className="px-3 py-3 text-slate-600">{r.category || '—'}</td>
-                  <td className="px-3 py-3 text-slate-700">{r.description}</td>
+                  <td className="px-3 py-3 text-zinc-600">{r.category || '—'}</td>
+                  <td className="px-3 py-3 text-zinc-700">{r.description}</td>
                   <td className="px-3 py-3 text-center"><Badge variant={r.type === 'income' ? 'green' : 'red'}>{r.type === 'income' ? 'Príjem' : 'Výdaj'}</Badge></td>
                   <td className={`px-3 py-3 text-right font-mono font-medium ${r.type === 'income' ? 'text-emerald-600' : 'text-red-600'}`}>{r.type === 'income' ? '+' : '-'}{fmtEur(Number(r.amount))}</td>
                 </tr>

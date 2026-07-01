@@ -75,7 +75,7 @@ export default function FiscalYearsPage() {
       </Card>
 
       {showNew && (
-        <Card className="mb-4 border-blue-200 bg-blue-50/30">
+        <Card className="mb-4 border-zinc-200 bg-zinc-50/30">
           <div className="p-5 grid grid-cols-1 sm:grid-cols-4 gap-4">
             <Field label="Názov"><Input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} /></Field>
             <Field label="Začiatok"><Input type="date" value={draft.start_date} onChange={(e) => setDraft({ ...draft, start_date: e.target.value })} /></Field>

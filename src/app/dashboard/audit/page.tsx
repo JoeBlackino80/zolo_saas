@@ -30,7 +30,7 @@ export default async function AuditPage() {
         <Card>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+              <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                 <th className="text-left px-5 py-3">Čas</th>
                 <th className="text-left px-3 py-3">Akcia</th>
                 <th className="text-left px-3 py-3">Tabuľka</th>
@@ -38,16 +38,16 @@ export default async function AuditPage() {
                 <th className="text-left px-3 py-3">Detaily</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((r) => {
                 const time = new Date(r.created_at);
                 return (
-                  <tr key={r.id} className="hover:bg-slate-50">
+                  <tr key={r.id} className="hover:bg-zinc-50">
                     <td className="px-5 py-2.5 font-mono text-xs">{fmtDate(r.created_at)} {time.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' })}</td>
                     <td className="px-3 py-2.5"><Badge variant={actionColor[r.action] || 'gray'}>{r.action}</Badge></td>
                     <td className="px-3 py-2.5 font-mono text-xs">{r.table_name}</td>
-                    <td className="px-3 py-2.5 font-mono text-[10px] text-slate-500 truncate max-w-[120px]">{String(r.record_id).slice(0, 8)}…</td>
-                    <td className="px-3 py-2.5 text-xs text-slate-600 max-w-md truncate font-mono">
+                    <td className="px-3 py-2.5 font-mono text-[10px] text-zinc-500 truncate max-w-[120px]">{String(r.record_id).slice(0, 8)}…</td>
+                    <td className="px-3 py-2.5 text-xs text-zinc-600 max-w-md truncate font-mono">
                       {r.new_values ? JSON.stringify(r.new_values).slice(0, 100) : '—'}
                     </td>
                   </tr>

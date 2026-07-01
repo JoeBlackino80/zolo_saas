@@ -47,7 +47,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/invoices" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/invoices" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na zoznam
       </Link>
       <PageHeader
@@ -97,22 +97,22 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             {parent && (
               <div className="flex items-center gap-2">
                 <Badge variant="gray">Pôvodný</Badge>
-                <Link href={`/dashboard/invoices/${parent.id}`} className="text-blue-600 hover:underline font-mono">{parent.number}</Link>
-                <span className="text-slate-500">— {TYPE_LABEL[parent.type] || parent.type} · {fmtEur(Number(parent.total))}</span>
+                <Link href={`/dashboard/invoices/${parent.id}`} className="text-zinc-900 hover:underline font-mono">{parent.number}</Link>
+                <span className="text-zinc-500">— {TYPE_LABEL[parent.type] || parent.type} · {fmtEur(Number(parent.total))}</span>
               </div>
             )}
             {(children || []).map((c) => (
               <div key={c.id} className="flex items-center gap-2">
                 <Badge variant={c.type === 'storno' ? 'red' : c.type === 'credit_note' ? 'amber' : 'blue'}>{TYPE_LABEL[c.type] || c.type}</Badge>
-                <Link href={`/dashboard/invoices/${c.id}`} className="text-blue-600 hover:underline font-mono">{c.number}</Link>
-                <span className="text-slate-500">— {fmtEur(Number(c.total))}</span>
+                <Link href={`/dashboard/invoices/${c.id}`} className="text-zinc-900 hover:underline font-mono">{c.number}</Link>
+                <span className="text-zinc-500">— {fmtEur(Number(c.total))}</span>
               </div>
             ))}
             {(linkedDeliveryNotes || []).map((dn) => (
               <div key={dn.id} className="flex items-center gap-2">
                 <Badge variant="gray">Dodací list</Badge>
-                <Link href={`/dashboard/delivery-notes/${dn.id}`} className="text-blue-600 hover:underline font-mono">{dn.number}</Link>
-                <span className="text-slate-500">— {fmtDate(dn.delivery_date)}</span>
+                <Link href={`/dashboard/delivery-notes/${dn.id}`} className="text-zinc-900 hover:underline font-mono">{dn.number}</Link>
+                <span className="text-zinc-500">— {fmtDate(dn.delivery_date)}</span>
               </div>
             ))}
           </div>
@@ -123,18 +123,18 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         <CardHeader title="Strany" />
         <div className="p-5 grid grid-cols-2 gap-6">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Dodávateľ</div>
-            <div className="text-base font-semibold text-slate-900">{(invoice.companies as { name: string })?.name || invoice.supplier_name}</div>
-            <div className="text-sm text-slate-600 mt-2 space-y-0.5">
+            <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">Dodávateľ</div>
+            <div className="text-base font-semibold text-zinc-900">{(invoice.companies as { name: string })?.name || invoice.supplier_name}</div>
+            <div className="text-sm text-zinc-600 mt-2 space-y-0.5">
               <div>IČO: <strong>{(invoice.companies as { ico: string })?.ico || invoice.supplier_ico || '—'}</strong></div>
               <div>DIČ: <strong>{(invoice.companies as { dic: string })?.dic || invoice.supplier_dic || '—'}</strong></div>
               <div>IČ DPH: <strong>{(invoice.companies as { ic_dph: string })?.ic_dph || invoice.supplier_ic_dph || '—'}</strong></div>
             </div>
           </div>
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Odberateľ</div>
-            <div className="text-base font-semibold text-slate-900">{invoice.customer_name || '—'}</div>
-            <div className="text-sm text-slate-600 mt-2 space-y-0.5">
+            <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">Odberateľ</div>
+            <div className="text-base font-semibold text-zinc-900">{invoice.customer_name || '—'}</div>
+            <div className="text-sm text-zinc-600 mt-2 space-y-0.5">
               <div>IČO: <strong>{invoice.customer_ico || '—'}</strong></div>
               <div>DIČ: <strong>{invoice.customer_dic || '—'}</strong></div>
               <div>IČ DPH: <strong>{invoice.customer_ic_dph || '—'}</strong></div>
@@ -148,7 +148,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         <div className="overflow-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+              <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                 <th className="text-left px-5 py-3">#</th>
                 <th className="text-left px-3 py-3">Popis</th>
                 <th className="text-right px-3 py-3">Množ.</th>
@@ -160,11 +160,11 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 <th className="text-right px-5 py-3">Spolu</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-mono text-xs">
+            <tbody className="divide-y divide-zinc-100 font-mono text-xs">
               {items.map((it, i) => (
                 <tr key={i}>
-                  <td className="px-5 py-2.5 text-slate-500">{it.position}</td>
-                  <td className="px-3 py-2.5 font-sans text-sm text-slate-900">{it.description}</td>
+                  <td className="px-5 py-2.5 text-zinc-500">{it.position}</td>
+                  <td className="px-3 py-2.5 font-sans text-sm text-zinc-900">{it.description}</td>
                   <td className="px-3 py-2.5 text-right">{it.quantity}</td>
                   <td className="px-3 py-2.5">{it.unit}</td>
                   <td className="px-3 py-2.5 text-right">{fmtEur(Number(it.unit_price))}</td>
@@ -177,18 +177,18 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             </tbody>
           </table>
         </div>
-        <div className="border-t border-slate-100 px-5 py-4 bg-slate-50 flex justify-end gap-10 text-sm">
+        <div className="border-t border-zinc-100 px-5 py-4 bg-zinc-50 flex justify-end gap-10 text-sm">
           <div>
-            <div className="text-xs text-slate-500">Základ</div>
+            <div className="text-xs text-zinc-500">Základ</div>
             <div className="font-mono font-medium">{fmtEur(Number(invoice.subtotal))}</div>
           </div>
           <div>
-            <div className="text-xs text-slate-500">DPH</div>
+            <div className="text-xs text-zinc-500">DPH</div>
             <div className="font-mono font-medium">{fmtEur(Number(invoice.vat_amount))}</div>
           </div>
           <div>
-            <div className="text-xs text-slate-500">Spolu</div>
-            <div className="font-mono font-bold text-lg text-slate-900">{fmtEur(Number(invoice.total))}</div>
+            <div className="text-xs text-zinc-500">Spolu</div>
+            <div className="font-mono font-bold text-lg text-zinc-900">{fmtEur(Number(invoice.total))}</div>
           </div>
         </div>
       </Card>
@@ -197,15 +197,15 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         <CardHeader title="Platba & stav" />
         <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div>
-            <div className="text-xs text-slate-500 mb-1">VS</div>
+            <div className="text-xs text-zinc-500 mb-1">VS</div>
             <div className="font-mono">{invoice.variable_symbol || '—'}</div>
           </div>
           <div>
-            <div className="text-xs text-slate-500 mb-1">Zaplatené</div>
+            <div className="text-xs text-zinc-500 mb-1">Zaplatené</div>
             <div className="font-mono">{fmtEur(Number(invoice.paid_amount || 0))}</div>
           </div>
           <div>
-            <div className="text-xs text-slate-500 mb-1">Stav</div>
+            <div className="text-xs text-zinc-500 mb-1">Stav</div>
             <Badge variant={invoice.status === 'paid' ? 'green' : invoice.status === 'overdue' ? 'red' : 'blue'}>
               {invoice.status}
             </Badge>
@@ -225,9 +225,9 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             ].map(({ kind, label, col }) => {
               const sent = invoice[col as 'reminder_1_sent_at'];
               return (
-                <div key={kind} className={`border rounded-lg p-3 ${sent ? 'bg-emerald-50 border-emerald-200' : 'border-slate-200'}`}>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">{label}</div>
-                  <div className={`text-sm mt-0.5 ${sent ? 'text-emerald-700 font-medium' : 'text-slate-400'}`}>
+                <div key={kind} className={`border rounded-lg p-3 ${sent ? 'bg-emerald-50 border-emerald-200' : 'border-zinc-200'}`}>
+                  <div className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">{label}</div>
+                  <div className={`text-sm mt-0.5 ${sent ? 'text-emerald-700 font-medium' : 'text-zinc-400'}`}>
                     {sent ? '✓ ' + fmtDate(sent) : 'Čaká'}
                   </div>
                 </div>

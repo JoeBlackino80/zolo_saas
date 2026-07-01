@@ -54,7 +54,7 @@ export default function WebhooksPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
       <PageHeader title="Webhooks" subtitle="POST notifikácie pri eventoch (N8N · Zapier · Make · custom)" />
@@ -91,11 +91,11 @@ export default function WebhooksPage() {
         {hooks.length === 0 ? (
           <EmptyState icon={<Webhook size={24} />} title="Žiadne webhooks" description="Pridaj webhook pre integráciu s N8N, Zapier alebo Make." />
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-zinc-100">
             {hooks.map((h) => (
               <div key={h.id} className="px-5 py-4">
                 <div className="flex items-start justify-between mb-2 gap-2">
-                  <div className="font-mono text-xs text-slate-700 break-all flex-1">{h.webhook_url}</div>
+                  <div className="font-mono text-xs text-zinc-700 break-all flex-1">{h.webhook_url}</div>
                   <button
                     onClick={async () => {
                       const r = await fetch('/api/webhook-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ webhook_config_id: h.id }) });

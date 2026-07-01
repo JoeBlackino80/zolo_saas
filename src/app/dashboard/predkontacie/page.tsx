@@ -63,7 +63,7 @@ export default async function PredkontaciePage() {
                       <td className="px-3 py-2 font-mono text-xs text-zinc-600">
                         {(r.lines || []).map((l, i) => (
                           <span key={i} className="mr-3">
-                            {l.side === 'MD' ? <span className="text-blue-700">MD {l.account_code}</span> : <span className="text-orange-700">D {l.account_code}</span>}
+                            {l.side === 'MD' ? <span className="text-zinc-800">MD {l.account_code}</span> : <span className="text-orange-700">D {l.account_code}</span>}
                           </span>
                         ))}
                       </td>

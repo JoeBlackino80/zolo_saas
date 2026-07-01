@@ -53,7 +53,7 @@ export default function PaymentsSettingsPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
       <PageHeader title="Platby (Stripe)" subtitle="Generuj payment linky pre tvojich klientov" />
@@ -82,15 +82,15 @@ export default function PaymentsSettingsPage() {
             </div>
           </Card>
 
-          <Card className="mt-4 bg-blue-50 border-blue-200">
+          <Card className="mt-4 bg-zinc-50 border-zinc-200">
             <div className="p-5 text-sm">
-              <div className="font-semibold mb-2 text-blue-900">Ako získať Stripe API kľúč</div>
-              <ol className="space-y-1 list-decimal pl-5 text-blue-800">
+              <div className="font-semibold mb-2 text-zinc-900">Ako získať Stripe API kľúč</div>
+              <ol className="space-y-1 list-decimal pl-5 text-zinc-800">
                 <li>Otvor <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener" className="underline inline-flex items-center gap-1">Stripe Dashboard → API Keys <ExternalLink size={11} /></a></li>
                 <li>Skopíruj <strong>Secret key</strong> (začína <code>sk_live_</code> alebo <code>sk_test_</code>)</li>
                 <li>Vlož sem a ulož</li>
               </ol>
-              <div className="mt-3 text-blue-800">Stripe je <strong>per firma</strong> — každá firma má vlastný kľúč.</div>
+              <div className="mt-3 text-zinc-800">Stripe je <strong>per firma</strong> — každá firma má vlastný kľúč.</div>
             </div>
           </Card>
         </>

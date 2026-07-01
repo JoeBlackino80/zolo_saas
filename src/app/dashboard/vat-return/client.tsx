@@ -111,7 +111,7 @@ export default function VatReturnClient({ companies, kind, title }: { companies:
           </Field>
           <Field label="Obdobie">
             <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm" />
+              className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm" />
           </Field>
           <div className="flex items-end gap-2">
             <Button variant="primary" onClick={generate} disabled={loading}>
@@ -129,7 +129,7 @@ export default function VatReturnClient({ companies, kind, title }: { companies:
       {xml && (
         <Card className="mt-4">
           <CardHeader title="Náhľad XML" subtitle="Skontroluj pred podaním cez eDane" />
-          <pre className="p-4 text-[11px] font-mono text-slate-700 bg-slate-50 max-h-[60vh] overflow-auto whitespace-pre-wrap">
+          <pre className="p-4 text-[11px] font-mono text-zinc-700 bg-zinc-50 max-h-[60vh] overflow-auto whitespace-pre-wrap">
             {xml}
           </pre>
         </Card>
@@ -137,9 +137,9 @@ export default function VatReturnClient({ companies, kind, title }: { companies:
 
       <Card className="mt-4">
         <CardHeader title="Ako podať" />
-        <div className="p-5 text-sm text-slate-600 space-y-2">
+        <div className="p-5 text-sm text-zinc-600 space-y-2">
           <p>1. <strong>Stiahni XML</strong> tlačidlom hore.</p>
-          <p>2. Otvor <a href="https://www.financnasprava.sk" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">portál Finančnej správy SR</a>.</p>
+          <p>2. Otvor <a href="https://www.financnasprava.sk" target="_blank" rel="noopener noreferrer" className="text-zinc-900 underline">portál Finančnej správy SR</a>.</p>
           <p>3. Prihlás sa eID kartou alebo občianskym preukazom s čipom.</p>
           <p>4. <strong>Elektronické podanie → Daň z pridanej hodnoty</strong> → nahraj XML súbor.</p>
           <p>5. Skontroluj a podaj. Potvrdenie ti príde na adresu uvedenú v profile FS.</p>

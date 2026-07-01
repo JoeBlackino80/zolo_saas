@@ -53,13 +53,13 @@ export default async function JournalPage() {
       ) : (
         <Card>
           <CardHeader title="Účtovný denník" />
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-zinc-100">
             {rows.map((e) => (
               <div key={e.id} className="px-5 py-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs text-slate-500">#{e.entry_number || '—'}</span>
-                    <span className="text-sm font-medium text-slate-900">{e.description}</span>
+                    <span className="font-mono text-xs text-zinc-500">#{e.entry_number || '—'}</span>
+                    <span className="text-sm font-medium text-zinc-900">{e.description}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="gray">{fmtDate(e.entry_date)}</Badge>
@@ -69,9 +69,9 @@ export default async function JournalPage() {
                   <tbody>
                     {e.lines.map((l, i) => (
                       <tr key={i}>
-                        <td className="py-1 pl-4 text-slate-600">{l.account}</td>
-                        <td className="py-1 text-right text-slate-900">{l.debit ? fmtEur(l.debit) : ''}</td>
-                        <td className="py-1 text-right text-slate-900">{l.credit ? fmtEur(l.credit) : ''}</td>
+                        <td className="py-1 pl-4 text-zinc-600">{l.account}</td>
+                        <td className="py-1 text-right text-zinc-900">{l.debit ? fmtEur(l.debit) : ''}</td>
+                        <td className="py-1 text-right text-zinc-900">{l.credit ? fmtEur(l.credit) : ''}</td>
                       </tr>
                     ))}
                   </tbody>

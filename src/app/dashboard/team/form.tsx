@@ -68,7 +68,7 @@ export default function TeamInviteForm({ companies }: { companies: { id: string;
           multiple
           value={selectedFirms}
           onChange={(e) => setSelectedFirms([...e.target.selectedOptions].map((o) => o.value))}
-          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm h-32"
+          className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm h-32"
         >
           {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>

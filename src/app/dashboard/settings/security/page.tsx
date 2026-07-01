@@ -55,19 +55,19 @@ export default async function SecurityPage() {
       <Card>
         <CardHeader title="Posledných 50 prihlásení" />
         {rows.length === 0 ? (
-          <div className="px-6 py-12 text-center text-sm text-slate-500">
+          <div className="px-6 py-12 text-center text-sm text-zinc-500">
             Zatiaľ žiadne udalosti.
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-zinc-100">
             {rows.map((r) => (
               <div key={r.id} className="px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div className="flex items-start gap-3 min-w-0">
-                  <div className={`shrink-0 mt-0.5 w-8 h-8 rounded-full flex items-center justify-center ${r.is_new_device ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500'}`}>
+                  <div className={`shrink-0 mt-0.5 w-8 h-8 rounded-full flex items-center justify-center ${r.is_new_device ? 'bg-amber-50 text-amber-600' : 'bg-zinc-100 text-zinc-500'}`}>
                     {r.is_new_device ? <AlertTriangle size={16} /> : <Monitor size={16} />}
                   </div>
                   <div className="min-w-0">
-                    <div className="font-medium text-sm text-slate-900 flex items-center gap-2 flex-wrap">
+                    <div className="font-medium text-sm text-zinc-900 flex items-center gap-2 flex-wrap">
                       {shortUa(r.user_agent)}
                       {r.is_new_device && (
                         <span className="px-1.5 py-0.5 text-[10px] uppercase tracking-wider bg-amber-100 text-amber-700 rounded">
@@ -80,13 +80,13 @@ export default async function SecurityPage() {
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-slate-500 mt-0.5 truncate flex items-center gap-2">
+                    <div className="text-xs text-zinc-500 mt-0.5 truncate flex items-center gap-2">
                       <MapPin size={12} />
                       {r.ip || '—'} · {fmtCountry(r.country)}
                     </div>
                   </div>
                 </div>
-                <div className="text-xs text-slate-500 sm:text-right shrink-0 pl-11 sm:pl-0">
+                <div className="text-xs text-zinc-500 sm:text-right shrink-0 pl-11 sm:pl-0">
                   {new Date(r.created_at).toLocaleString('sk-SK', { timeZone: 'Europe/Bratislava' })}
                 </div>
               </div>
@@ -95,7 +95,7 @@ export default async function SecurityPage() {
         )}
       </Card>
 
-      <p className="text-xs text-slate-500 mt-4">
+      <p className="text-xs text-zinc-500 mt-4">
         Pri novom zariadení / inej krajine pošleme aj email. Ak vidíš podozrivú aktivitu, okamžite zmeň heslo a aktivuj MFA.
       </p>
     </div>

@@ -44,7 +44,7 @@ export default async function RecurringPage() {
           <div className="overflow-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+                <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                   <th className="text-left px-5 py-3">Zákazník</th>
                   <th className="text-right px-3 py-3">Suma</th>
                   <th className="text-left px-3 py-3">Frekvencia</th>
@@ -53,12 +53,12 @@ export default async function RecurringPage() {
                   <th className="text-center px-3 py-3">Stav</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-zinc-100">
                 {templates.map((t) => (
-                  <tr key={t.id} className="hover:bg-slate-50">
-                    <td className="px-5 py-3 font-medium text-slate-900">{t.customer_name || '—'}</td>
+                  <tr key={t.id} className="hover:bg-zinc-50">
+                    <td className="px-5 py-3 font-medium text-zinc-900">{t.customer_name || '—'}</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(t.total || 0))}</td>
-                    <td className="px-3 py-3 text-slate-600">{FREQ_LABEL[t.frequency as string] || t.frequency || '—'}</td>
+                    <td className="px-3 py-3 text-zinc-600">{FREQ_LABEL[t.frequency as string] || t.frequency || '—'}</td>
                     <td className="px-3 py-3 text-center font-mono text-xs">{t.next_generation_date ? fmtDate(t.next_generation_date) : '—'}</td>
                     <td className="px-3 py-3 text-center font-mono text-xs">{t.last_generated_at ? fmtDate(t.last_generated_at) : '—'}</td>
                     <td className="px-3 py-3 text-center">

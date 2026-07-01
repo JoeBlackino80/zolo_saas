@@ -52,7 +52,7 @@ export default async function PayrollPage() {
           <div className="overflow-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+                <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                   <th className="text-left px-5 py-3">Obdobie</th>
                   <th className="text-right px-3 py-3">Hrubá spolu</th>
                   <th className="text-right px-3 py-3">Čistá spolu</th>
@@ -61,11 +61,11 @@ export default async function PayrollPage() {
                   <th className="text-center px-3 py-3">Vytvorené</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-zinc-100">
                 {runs.map((r) => (
-                  <tr key={r.id} className="hover:bg-slate-50">
+                  <tr key={r.id} className="hover:bg-zinc-50">
                     <td className="px-5 py-3">
-                      <Link href={`/dashboard/payroll/run?period=${r.period_year}-${String(r.period_month).padStart(2, '0')}`} className="font-medium text-blue-600 hover:underline">
+                      <Link href={`/dashboard/payroll/run?period=${r.period_year}-${String(r.period_month).padStart(2, '0')}`} className="font-medium text-zinc-900 hover:underline">
                         {MONTH_LABELS[r.period_month - 1]} {r.period_year}
                       </Link>
                     </td>
@@ -95,17 +95,17 @@ export default async function PayrollPage() {
           <div className="overflow-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+                <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                   <th className="text-left px-5 py-3">Meno</th>
                   <th className="text-left px-3 py-3">IBAN</th>
                   <th className="text-center px-3 py-3">Pridaný</th>
                   <th className="text-center px-3 py-3">Stav</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-zinc-100">
                 {employees.map((e) => (
-                  <tr key={e.id} className="hover:bg-slate-50">
-                    <td className="px-5 py-3 font-medium text-slate-900">{e.surname} {e.name}</td>
+                  <tr key={e.id} className="hover:bg-zinc-50">
+                    <td className="px-5 py-3 font-medium text-zinc-900">{e.surname} {e.name}</td>
                     <td className="px-3 py-3 font-mono text-xs">{e.iban || '—'}</td>
                     <td className="px-3 py-3 text-center font-mono text-xs">{fmtDate(e.created_at)}</td>
                     <td className="px-3 py-3 text-center"><Badge variant={e.active ? 'green' : 'gray'}>{e.active ? 'aktívny' : 'neaktívny'}</Badge></td>

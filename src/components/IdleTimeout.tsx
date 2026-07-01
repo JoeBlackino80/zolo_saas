@@ -71,20 +71,20 @@ export default function IdleTimeout() {
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-1">Si tu ešte?</h3>
-        <p className="text-sm text-slate-600 mb-5">
+        <h3 className="text-lg font-semibold text-zinc-900 mb-1">Si tu ešte?</h3>
+        <p className="text-sm text-zinc-600 mb-5">
           Pre tvoju bezpečnosť ťa o <strong>{countdown}s</strong> odhlásime kvôli neaktivite.
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           <button
             onClick={stayLoggedIn}
-            className="flex-1 px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-md hover:bg-slate-800"
+            className="flex-1 px-4 py-2 bg-zinc-900 text-white text-sm font-semibold rounded-md hover:bg-zinc-800"
           >
             Zostať prihlásený
           </button>
           <button
             onClick={forceLogout}
-            className="flex-1 px-4 py-2 bg-slate-100 text-slate-900 text-sm font-semibold rounded-md hover:bg-slate-200"
+            className="flex-1 px-4 py-2 bg-zinc-100 text-zinc-900 text-sm font-semibold rounded-md hover:bg-zinc-200"
           >
             Odhlásiť teraz
           </button>

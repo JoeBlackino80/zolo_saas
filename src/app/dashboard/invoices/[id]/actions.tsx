@@ -74,27 +74,27 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; tot
       <Button variant="primary" onClick={() => setShowSend(true)}><Mail size={14} /> Poslať mailom</Button>
 
       {showSend && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowSend(false)}>
+        <div className="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowSend(false)}>
           <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h2 className="text-lg font-bold text-slate-900">Odoslať faktúru emailom</h2>
-                <p className="text-xs text-slate-500 mt-0.5">PDF sa pripojí ako príloha</p>
+                <h2 className="text-lg font-bold text-zinc-900">Odoslať faktúru emailom</h2>
+                <p className="text-xs text-zinc-500 mt-0.5">PDF sa pripojí ako príloha</p>
               </div>
-              <button onClick={() => setShowSend(false)} className="text-slate-400 hover:text-slate-700"><X size={18} /></button>
+              <button onClick={() => setShowSend(false)} className="text-zinc-400 hover:text-zinc-700"><X size={18} /></button>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Komu</label>
-                <input type="email" value={emailTo} onChange={(e) => setEmailTo(e.target.value)} placeholder="zakaznik@firma.sk" className="mt-1 w-full bg-white border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500" />
+                <label className="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold">Komu</label>
+                <input type="email" value={emailTo} onChange={(e) => setEmailTo(e.target.value)} placeholder="zakaznik@firma.sk" className="mt-1 w-full bg-white border border-zinc-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-zinc-900" />
               </div>
               <div>
-                <label className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Predmet</label>
-                <input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} className="mt-1 w-full bg-white border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500" />
+                <label className="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold">Predmet</label>
+                <input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} className="mt-1 w-full bg-white border border-zinc-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-zinc-900" />
               </div>
               <div>
-                <label className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Správa</label>
-                <textarea value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={5} className="mt-1 w-full bg-white border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500" />
+                <label className="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold">Správa</label>
+                <textarea value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={5} className="mt-1 w-full bg-white border border-zinc-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-zinc-900" />
               </div>
             </div>
             <div className="flex gap-2 mt-5 justify-end">

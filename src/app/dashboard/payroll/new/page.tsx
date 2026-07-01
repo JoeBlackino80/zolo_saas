@@ -46,7 +46,7 @@ export default function NewEmployeePage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/payroll" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3"><ArrowLeft size={14} /> Späť</Link>
+      <Link href="/dashboard/payroll" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3"><ArrowLeft size={14} /> Späť</Link>
       <PageHeader title="Nový zamestnanec" subtitle="Údaje pre mzdový list" />
 
       <form onSubmit={save} className="space-y-4">

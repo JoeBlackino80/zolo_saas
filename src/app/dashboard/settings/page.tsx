@@ -56,20 +56,20 @@ export default async function SettingsPage() {
             }
           />
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-zinc-100">
             {companies.map((c) => (
               <Link
                 key={c.id}
                 href={`/dashboard/settings/companies/${c.id}`}
-                className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition"
+                className="flex items-center justify-between px-5 py-3.5 hover:bg-zinc-50 transition"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-zinc-900 text-white font-bold flex items-center justify-center text-sm tracking-tight">
                     {c.name[0]?.toUpperCase()}
                   </div>
                   <div>
-                    <div className="font-semibold text-slate-900 text-sm">{c.name}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">
+                    <div className="font-semibold text-zinc-900 text-sm">{c.name}</div>
+                    <div className="text-xs text-zinc-500 mt-0.5">
                       {c.ico ? `IČO ${c.ico}` : 'IČO nedoplnené'}
                       {c.dic && ` · DIČ ${c.dic}`}
                     </div>
@@ -89,10 +89,10 @@ export default async function SettingsPage() {
 
 function SettingCard({ href, icon, title, desc }: { href: string; icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <Link href={href} className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-md hover:border-blue-300 transition group">
-      <div className="text-slate-400 group-hover:text-blue-500 transition mb-3">{icon}</div>
-      <div className="font-semibold text-slate-900 text-sm">{title}</div>
-      <div className="text-xs text-slate-500 mt-0.5">{desc}</div>
+    <Link href={href} className="block bg-white border border-zinc-200 rounded-xl p-4 hover:shadow-md hover:border-zinc-300 transition group">
+      <div className="text-zinc-400 group-hover:text-zinc-700 transition mb-3">{icon}</div>
+      <div className="font-semibold text-zinc-900 text-sm">{title}</div>
+      <div className="text-xs text-zinc-500 mt-0.5">{desc}</div>
     </Link>
   );
 }

@@ -40,19 +40,19 @@ export default async function ChartOfAccountsPage() {
         <div className="space-y-4">
           {Object.entries(classes).sort().map(([cls, accs]) => (
             <Card key={cls}>
-              <div className="px-5 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+              <div className="px-5 py-3 border-b border-zinc-100 bg-zinc-50 flex items-center justify-between">
                 <div>
                   <span className="font-mono font-bold mr-3">Trieda {cls}</span>
-                  <span className="text-sm text-slate-600">{classNames[cls] || ''}</span>
+                  <span className="text-sm text-zinc-600">{classNames[cls] || ''}</span>
                 </div>
-                <span className="text-xs text-slate-500">{accs.length} účtov</span>
+                <span className="text-xs text-zinc-500">{accs.length} účtov</span>
               </div>
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-zinc-100">
                 {accs.map((a) => (
-                  <div key={a.id} className="px-5 py-2 grid grid-cols-[80px_1fr_120px] gap-4 text-sm hover:bg-slate-50">
-                    <div className="font-mono font-semibold text-slate-700">{a.account_code}</div>
-                    <div className="text-slate-900">{a.account_name}</div>
-                    <div className="text-xs text-slate-500 text-right">{a.account_type}</div>
+                  <div key={a.id} className="px-5 py-2 grid grid-cols-[80px_1fr_120px] gap-4 text-sm hover:bg-zinc-50">
+                    <div className="font-mono font-semibold text-zinc-700">{a.account_code}</div>
+                    <div className="text-zinc-900">{a.account_name}</div>
+                    <div className="text-xs text-zinc-500 text-right">{a.account_type}</div>
                   </div>
                 ))}
               </div>

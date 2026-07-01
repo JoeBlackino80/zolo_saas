@@ -64,7 +64,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na nastavenia
       </Link>
       <PageHeader title="Notifikácie & upomienky" subtitle="Pravidlá pre automatické upomienky klientom" />
@@ -99,14 +99,14 @@ export default function NotificationsPage() {
       <Card>
         <CardHeader title={`Aktívne pravidlá (${rules.length})`} />
         {rules.length === 0 ? (
-          <div className="p-8 text-center text-sm text-slate-500"><Bell size={20} className="mx-auto mb-2 text-slate-300" />Žiadne pravidlá zatiaľ</div>
+          <div className="p-8 text-center text-sm text-zinc-500"><Bell size={20} className="mx-auto mb-2 text-zinc-300" />Žiadne pravidlá zatiaľ</div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-zinc-100">
             {rules.map((r) => (
               <div key={r.id} className="px-5 py-3 flex items-center justify-between">
                 <div>
                   <div className="text-sm font-medium">{TYPES.find((t) => t.key === r.rule_type)?.label}</div>
-                  <div className="text-xs text-slate-500">{r.days_offset} dní · → {r.recipient}</div>
+                  <div className="text-xs text-zinc-500">{r.days_offset} dní · → {r.recipient}</div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant={r.is_active ? 'green' : 'gray'}>{r.is_active ? 'aktívne' : 'pauzované'}</Badge>

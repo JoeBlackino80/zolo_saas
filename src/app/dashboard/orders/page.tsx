@@ -67,7 +67,7 @@ export default async function OrdersPage() {
                     <td className="px-3 py-3 text-center font-mono text-xs">{fmtDate(o.order_date)}</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(o.total || 0))}</td>
                     <td className="px-3 py-3 text-center"><Badge variant={o.status === 'completed' ? 'green' : o.status === 'cancelled' ? 'red' : 'amber'}>{STATUS_LABEL[o.status || ''] || o.status || '—'}</Badge></td>
-                    <td className="px-3 py-3">{o.converted_invoice_id ? <Link href={`/dashboard/invoices/${o.converted_invoice_id}`} className="text-blue-600 hover:underline text-xs">otvoriť →</Link> : <span className="text-xs text-zinc-400">—</span>}</td>
+                    <td className="px-3 py-3">{o.converted_invoice_id ? <Link href={`/dashboard/invoices/${o.converted_invoice_id}`} className="text-zinc-900 hover:underline text-xs">otvoriť →</Link> : <span className="text-xs text-zinc-400">—</span>}</td>
                   </tr>
                 );
               })}

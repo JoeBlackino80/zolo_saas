@@ -14,7 +14,7 @@ export default function PayrollCalcPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/payroll" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/payroll" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na mzdy
       </Link>
       <PageHeader title="Mzdová kalkulačka 2026" subtitle="Slovenské sadzby SP/ZP/daň podľa zákona č. 595/2003 a 461/2003" />
@@ -41,7 +41,7 @@ export default function PayrollCalcPage() {
             <Row label="Základ dane" value={fmtEur(calc.taxBase)} />
             <Row label="Daň (19/25%)" value={`-${fmtEur(calc.tax)}`} />
             {calc.childBonus > 0 && <Row label="Daňový bonus" value={`+${fmtEur(calc.childBonus)}`} variant="green" />}
-            <div className="border-t border-slate-200 pt-3 mt-3" />
+            <div className="border-t border-zinc-200 pt-3 mt-3" />
             <Row label="Čistá mzda" value={fmtEur(calc.net)} bold variant="green" />
           </div>
         </Card>
@@ -54,13 +54,13 @@ export default function PayrollCalcPage() {
           <Row label="SP zamestnávateľ (25.2%)" value={fmtEur(calc.empr_sp)} />
           <Row label="ZP zamestnávateľ (11%)" value={fmtEur(calc.empr_zp)} />
         </div>
-        <div className="border-t border-slate-100 px-5 py-4 bg-slate-50 flex justify-between">
-          <div className="text-sm text-slate-500">Celkový mesačný náklad firmy</div>
-          <div className="font-mono font-bold text-lg text-slate-900">{fmtEur(calc.totalCost)}</div>
+        <div className="border-t border-zinc-100 px-5 py-4 bg-zinc-50 flex justify-between">
+          <div className="text-sm text-zinc-500">Celkový mesačný náklad firmy</div>
+          <div className="font-mono font-bold text-lg text-zinc-900">{fmtEur(calc.totalCost)}</div>
         </div>
       </Card>
 
-      <div className="mt-4 text-xs text-slate-500">
+      <div className="mt-4 text-xs text-zinc-500">
         ⚠ Výpočet pre rok 2026. Pre presné odvody konzultuj s účtovníčkou — môžu existovať výnimky (maximálny VZ, znížené sadzby, ZŤP, atď.).
       </div>
     </div>
@@ -68,10 +68,10 @@ export default function PayrollCalcPage() {
 }
 
 function Row({ label, value, bold, variant }: { label: string; value: string; bold?: boolean; variant?: 'green' }) {
-  const color = variant === 'green' ? 'text-emerald-600' : 'text-slate-900';
+  const color = variant === 'green' ? 'text-emerald-600' : 'text-zinc-900';
   return (
     <div className="flex items-center justify-between">
-      <span className="text-slate-600">{label}</span>
+      <span className="text-zinc-600">{label}</span>
       <span className={`font-mono ${bold ? 'font-bold' : ''} ${color}`}>{value}</span>
     </div>
   );

@@ -32,7 +32,7 @@ export default async function StockMovementsPage() {
       ) : (
         <Card>
           <table className="w-full text-sm">
-            <thead><tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+            <thead><tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
               <th className="text-center px-5 py-3"></th>
               <th className="text-left px-3 py-3">Číslo</th>
               <th className="text-left px-3 py-3">Typ</th>
@@ -40,9 +40,9 @@ export default async function StockMovementsPage() {
               <th className="text-right px-3 py-3">Hodnota</th>
               <th className="text-center px-3 py-3">Stav</th>
             </tr></thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((m) => (
-                <tr key={m.id} className="hover:bg-slate-50">
+                <tr key={m.id} className="hover:bg-zinc-50">
                   <td className="px-5 py-3 text-center">{m.movement_type === 'receipt' ? <TrendingUp size={14} className="text-emerald-500 inline" /> : <TrendingDown size={14} className="text-red-500 inline" />}</td>
                   <td className="px-3 py-3 font-mono text-xs">{m.movement_number}</td>
                   <td className="px-3 py-3"><Badge variant={m.movement_type === 'receipt' ? 'green' : 'red'}>{m.movement_type}</Badge></td>

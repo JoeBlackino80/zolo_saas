@@ -65,15 +65,15 @@ export default async function LinksPage() {
         <>
           <div className="grid grid-cols-3 gap-4 mb-6">
             <Card><div className="p-5">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Inter-firm faktúr</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Inter-firm faktúr</div>
               <div className="text-2xl font-bold mt-2">{interFirm.length}</div>
             </div></Card>
             <Card><div className="p-5">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Celkový tok</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Celkový tok</div>
               <div className="text-2xl font-bold mt-2">{fmtEur(interFirm.reduce((s, i) => s + Number(i.total), 0))}</div>
             </div></Card>
             <Card><div className="p-5">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Obojsmerné toky</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Obojsmerné toky</div>
               <div className="text-2xl font-bold mt-2">{bidir.length}</div>
             </div></Card>
           </div>
@@ -81,16 +81,16 @@ export default async function LinksPage() {
           {bidir.length > 0 && (
             <Card className="mb-4">
               <CardHeader title="Obojsmerné toky (možnosť započítania)" />
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-zinc-100">
                 {bidir.map((b, i) => (
                   <div key={i} className="px-5 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="font-medium">{b.a.name}</div>
-                      <div className="text-slate-400">↔</div>
+                      <div className="text-zinc-400">↔</div>
                       <div className="font-medium">{b.b.name}</div>
                     </div>
                     <div className="flex items-center gap-4 text-sm">
-                      <span className="text-slate-500">{fmtEur(b.aToB)} → · ← {fmtEur(b.bToA)}</span>
+                      <span className="text-zinc-500">{fmtEur(b.aToB)} → · ← {fmtEur(b.bToA)}</span>
                       <Badge variant={Math.abs(b.net) < 100 ? 'green' : 'amber'}>Net {fmtEur(b.net)}</Badge>
                     </div>
                   </div>
@@ -104,7 +104,7 @@ export default async function LinksPage() {
             <div className="overflow-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+                  <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                     <th className="text-left px-5 py-3">Z firmy</th>
                     <th className="text-center px-3 py-3"></th>
                     <th className="text-left px-3 py-3">Do firmy</th>
@@ -112,11 +112,11 @@ export default async function LinksPage() {
                     <th className="text-right px-3 py-3">Faktúr</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-zinc-100">
                   {edges.map((e, i) => (
-                    <tr key={i} className="hover:bg-slate-50">
+                    <tr key={i} className="hover:bg-zinc-50">
                       <td className="px-5 py-3 font-medium">{e.from.name}</td>
-                      <td className="px-3 py-3 text-center text-slate-400">→</td>
+                      <td className="px-3 py-3 text-center text-zinc-400">→</td>
                       <td className="px-3 py-3 font-medium">{e.to.name}</td>
                       <td className="px-3 py-3 text-right font-mono font-medium">{fmtEur(e.sum)}</td>
                       <td className="px-3 py-3 text-right font-mono text-xs">{e.count}</td>

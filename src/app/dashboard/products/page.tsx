@@ -32,7 +32,7 @@ export default async function ProductsPage() {
         <Card>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+              <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                 <th className="text-left px-5 py-3">Názov</th>
                 <th className="text-left px-3 py-3">Kategória</th>
                 <th className="text-left px-3 py-3">SKU</th>
@@ -40,11 +40,11 @@ export default async function ProductsPage() {
                 <th className="text-right px-3 py-3">DPH</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {products.map((p) => (
-                <tr key={p.id} className="hover:bg-slate-50">
+                <tr key={p.id} className="hover:bg-zinc-50">
                   <td className="px-5 py-3 font-medium">{p.name}</td>
-                  <td className="px-3 py-3 text-slate-600">{p.category || '—'}</td>
+                  <td className="px-3 py-3 text-zinc-600">{p.category || '—'}</td>
                   <td className="px-3 py-3 font-mono text-xs">{p.sku || '—'}</td>
                   <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(p.selling_price || 0))} / {p.unit}</td>
                   <td className="px-3 py-3 text-right font-mono">{p.vat_rate}%</td>

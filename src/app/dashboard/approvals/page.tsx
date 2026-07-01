@@ -24,7 +24,7 @@ export default async function ApprovalsPage() {
       ) : (
         <Card>
           <table className="w-full text-sm">
-            <thead><tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+            <thead><tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
               <th className="text-left px-5 py-3">Číslo</th>
               <th className="text-left px-3 py-3">Zákazník</th>
               <th className="text-right px-3 py-3">Suma</th>
@@ -32,10 +32,10 @@ export default async function ApprovalsPage() {
               <th className="text-center px-3 py-3">Krok</th>
               <th className="text-center px-3 py-3"></th>
             </tr></thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((r) => (
-                <tr key={r.id} className="hover:bg-slate-50">
-                  <td className="px-5 py-3"><Link href={`/dashboard/invoices/${r.id}`} className="font-mono text-xs text-blue-600 hover:underline">{r.number}</Link></td>
+                <tr key={r.id} className="hover:bg-zinc-50">
+                  <td className="px-5 py-3"><Link href={`/dashboard/invoices/${r.id}`} className="font-mono text-xs text-zinc-900 hover:underline">{r.number}</Link></td>
                   <td className="px-3 py-3">{r.customer_name}</td>
                   <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(r.total))}</td>
                   <td className="px-3 py-3 text-center font-mono text-xs">{fmtDate(r.issue_date)}</td>

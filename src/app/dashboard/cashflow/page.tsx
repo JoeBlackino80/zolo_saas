@@ -69,19 +69,19 @@ export default async function CashflowPage() {
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Očakávaný príjem</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Očakávaný príjem</div>
           <div className="text-2xl font-bold mt-2 text-emerald-600">{fmtEur(totalIncome)}</div>
-          <div className="text-xs text-slate-500 mt-1">{recRows.length} pohľadávok</div>
+          <div className="text-xs text-zinc-500 mt-1">{recRows.length} pohľadávok</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Očakávaný odtok</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Očakávaný odtok</div>
           <div className="text-2xl font-bold mt-2 text-red-600">{fmtEur(totalOutflow)}</div>
-          <div className="text-xs text-slate-500 mt-1">{payRows.length} záväzkov</div>
+          <div className="text-xs text-zinc-500 mt-1">{payRows.length} záväzkov</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Net hotovosť</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Net hotovosť</div>
           <div className={`text-2xl font-bold mt-2 ${totalNet >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmtEur(totalNet)}</div>
-          <div className="text-xs text-slate-500 mt-1">za 90 dní</div>
+          <div className="text-xs text-zinc-500 mt-1">za 90 dní</div>
         </div></Card>
       </div>
 
@@ -91,7 +91,7 @@ export default async function CashflowPage() {
           <div className="grid grid-cols-13 gap-1.5">
             {Object.entries(buckets).map(([k, b]) => (
               <div key={k} className="flex flex-col items-center text-center" style={{ gridColumn: 'span 1' }}>
-                <div className="text-[9px] text-slate-500 mb-1">{k}</div>
+                <div className="text-[9px] text-zinc-500 mb-1">{k}</div>
                 <div className="flex-1 w-full min-h-[180px] flex flex-col items-stretch justify-end gap-1">
                   <div
                     className="bg-emerald-500 rounded-t"
@@ -105,7 +105,7 @@ export default async function CashflowPage() {
                   />
                 </div>
                 <div className={`text-[9px] mt-1 font-mono font-bold ${b.net >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>{b.net >= 0 ? '+' : ''}{Math.round(b.net)}</div>
-                <div className="text-[8px] text-slate-400 mt-0.5">{b.label}</div>
+                <div className="text-[8px] text-zinc-400 mt-0.5">{b.label}</div>
               </div>
             ))}
           </div>

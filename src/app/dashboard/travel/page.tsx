@@ -37,7 +37,7 @@ export default async function TravelPage() {
         <Card>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+              <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                 <th className="text-left px-5 py-3">Zamestnanec</th>
                 <th className="text-left px-3 py-3">Cieľ</th>
                 <th className="text-left px-3 py-3">Účel</th>
@@ -47,14 +47,14 @@ export default async function TravelPage() {
                 <th className="text-center px-3 py-3">Stav</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((o) => {
                 const emp = Array.isArray(o.employees) ? o.employees[0] : o.employees;
                 return (
-                  <tr key={o.id} className="hover:bg-slate-50 cursor-pointer" onClick={undefined}>
-                    <td className="px-5 py-3 text-slate-700"><Link href={`/dashboard/travel/${o.id}`} className="hover:underline">{emp ? `${emp.name} ${emp.surname}` : '—'}</Link></td>
-                    <td className="px-3 py-3 text-slate-700">{o.destination}{o.country ? `, ${o.country}` : ''}</td>
-                    <td className="px-3 py-3 text-slate-600 text-xs truncate max-w-[200px]">{o.purpose || '—'}</td>
+                  <tr key={o.id} className="hover:bg-zinc-50 cursor-pointer" onClick={undefined}>
+                    <td className="px-5 py-3 text-zinc-700"><Link href={`/dashboard/travel/${o.id}`} className="hover:underline">{emp ? `${emp.name} ${emp.surname}` : '—'}</Link></td>
+                    <td className="px-3 py-3 text-zinc-700">{o.destination}{o.country ? `, ${o.country}` : ''}</td>
+                    <td className="px-3 py-3 text-zinc-600 text-xs truncate max-w-[200px]">{o.purpose || '—'}</td>
                     <td className="px-3 py-3 text-center font-mono text-xs">{o.departure_date ? fmtDate(o.departure_date) : '—'}</td>
                     <td className="px-3 py-3 text-center font-mono text-xs">{o.arrival_date ? fmtDate(o.arrival_date) : '—'}</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(o.total_amount || 0))}</td>

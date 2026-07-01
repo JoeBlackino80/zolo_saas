@@ -27,7 +27,7 @@ export default async function BankAccountsPage() {
       ) : (
         <Card>
           <table className="w-full text-sm">
-            <thead><tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+            <thead><tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
               <th className="text-left px-5 py-3">Účet</th>
               <th className="text-left px-3 py-3">Firma</th>
               <th className="text-left px-3 py-3">IBAN</th>
@@ -36,13 +36,13 @@ export default async function BankAccountsPage() {
               <th className="text-center px-3 py-3">Mena</th>
               <th className="text-center px-3 py-3">Stav</th>
             </tr></thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((b) => {
                 const co = Array.isArray(b.companies) ? b.companies[0] : b.companies;
                 return (
-                  <tr key={b.id} className="hover:bg-slate-50">
-                    <td className="px-5 py-3"><div className="font-medium">{b.name}</div><div className="text-xs text-slate-500">{b.bank_name}</div></td>
-                    <td className="px-3 py-3 text-slate-700">{co?.name}</td>
+                  <tr key={b.id} className="hover:bg-zinc-50">
+                    <td className="px-5 py-3"><div className="font-medium">{b.name}</div><div className="text-xs text-zinc-500">{b.bank_name}</div></td>
+                    <td className="px-3 py-3 text-zinc-700">{co?.name}</td>
                     <td className="px-3 py-3 font-mono text-xs">{b.iban || '—'}</td>
                     <td className="px-3 py-3 font-mono text-xs">{b.bic || '—'}</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(b.opening_balance || 0))}</td>

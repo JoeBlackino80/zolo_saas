@@ -61,7 +61,7 @@ export default function NotificationBell() {
                   <button
                     key={n.id}
                     onClick={() => { if (n.link) window.location.href = n.link; markRead(n.id); setOpen(false); }}
-                    className={`w-full px-4 py-2.5 text-left hover:bg-zinc-50 ${!n.is_read ? 'bg-blue-50/40' : ''}`}
+                    className={`w-full px-4 py-2.5 text-left hover:bg-zinc-50 ${!n.is_read ? 'bg-zinc-50/40' : ''}`}
                   >
                     <div className="text-sm font-medium text-zinc-900 truncate">{n.title}</div>
                     {n.message && <div className="text-xs text-zinc-600 mt-0.5 truncate">{n.message}</div>}

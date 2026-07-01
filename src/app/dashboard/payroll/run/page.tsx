@@ -163,7 +163,7 @@ export default function PayrollRunPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl">
-      <Link href="/dashboard/payroll" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href="/dashboard/payroll" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na mzdy
       </Link>
       <PageHeader
@@ -187,15 +187,15 @@ export default function PayrollRunPage() {
             </Select>
           </Field>
           <Field label="Obdobie">
-            <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm" />
+            <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm" />
           </Field>
         </div>
       </Card>
 
       {loading ? (
-        <Card><div className="p-10 text-center text-sm text-slate-500">Načítavam zamestnancov…</div></Card>
+        <Card><div className="p-10 text-center text-sm text-zinc-500">Načítavam zamestnancov…</div></Card>
       ) : rows.length === 0 ? (
-        <Card><div className="p-10 text-center text-sm text-slate-500">Žiadni aktívni zamestnanci v tejto firme. <Link href="/dashboard/payroll/new" className="text-blue-600 hover:underline">Pridať zamestnanca →</Link></div></Card>
+        <Card><div className="p-10 text-center text-sm text-zinc-500">Žiadni aktívni zamestnanci v tejto firme. <Link href="/dashboard/payroll/new" className="text-zinc-900 hover:underline">Pridať zamestnanca →</Link></div></Card>
       ) : (
         <>
           <Card className="mb-4">
@@ -203,46 +203,46 @@ export default function PayrollRunPage() {
             <div className="overflow-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+                  <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                     <th className="text-left px-5 py-3">Zamestnanec</th>
                     <th className="text-right px-3 py-3">Hrubá mzda</th>
                     <th className="text-center px-3 py-3">Deti</th>
                     <th className="text-right px-3 py-3">SP zamest.</th>
                     <th className="text-right px-3 py-3">ZP zamest.</th>
                     <th className="text-right px-3 py-3">Daň</th>
-                    <th className="text-right px-3 py-3 bg-blue-50">Čistá mzda</th>
+                    <th className="text-right px-3 py-3 bg-zinc-50">Čistá mzda</th>
                     <th className="text-right px-3 py-3">Odvody zam.dáv.</th>
                     <th className="text-right px-5 py-3">Spolu náklad</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-zinc-100">
                   {calculated.map((x, i) => (
-                    <tr key={x.row.employee_id} className="hover:bg-slate-50">
-                      <td className="px-5 py-3 font-medium text-slate-900">{x.row.name}</td>
+                    <tr key={x.row.employee_id} className="hover:bg-zinc-50">
+                      <td className="px-5 py-3 font-medium text-zinc-900">{x.row.name}</td>
                       <td className="px-3 py-3 text-right">
-                        <input type="number" step="0.01" value={x.row.gross} onChange={(e) => setRow(i, 'gross', +e.target.value)} className="w-28 bg-white border border-slate-200 rounded px-2 py-1 text-right font-mono text-sm" />
+                        <input type="number" step="0.01" value={x.row.gross} onChange={(e) => setRow(i, 'gross', +e.target.value)} className="w-28 bg-white border border-zinc-200 rounded px-2 py-1 text-right font-mono text-sm" />
                       </td>
                       <td className="px-3 py-3 text-center">
-                        <input type="number" min="0" max="10" value={x.row.childCount} onChange={(e) => setRow(i, 'childCount', +e.target.value)} className="w-14 bg-white border border-slate-200 rounded px-2 py-1 text-center font-mono text-sm" />
+                        <input type="number" min="0" max="10" value={x.row.childCount} onChange={(e) => setRow(i, 'childCount', +e.target.value)} className="w-14 bg-white border border-zinc-200 rounded px-2 py-1 text-center font-mono text-sm" />
                       </td>
-                      <td className="px-3 py-3 text-right font-mono text-slate-700">{fmtEur(x.calc.emp_sp)}</td>
-                      <td className="px-3 py-3 text-right font-mono text-slate-700">{fmtEur(x.calc.emp_zp)}</td>
-                      <td className="px-3 py-3 text-right font-mono text-slate-700">{fmtEur(x.calc.tax)}</td>
-                      <td className="px-3 py-3 text-right font-mono font-bold text-slate-900 bg-blue-50/40">{fmtEur(x.calc.net)}</td>
-                      <td className="px-3 py-3 text-right font-mono text-slate-700">{fmtEur(x.calc.employer_contributions)}</td>
+                      <td className="px-3 py-3 text-right font-mono text-zinc-700">{fmtEur(x.calc.emp_sp)}</td>
+                      <td className="px-3 py-3 text-right font-mono text-zinc-700">{fmtEur(x.calc.emp_zp)}</td>
+                      <td className="px-3 py-3 text-right font-mono text-zinc-700">{fmtEur(x.calc.tax)}</td>
+                      <td className="px-3 py-3 text-right font-mono font-bold text-zinc-900 bg-zinc-50/40">{fmtEur(x.calc.net)}</td>
+                      <td className="px-3 py-3 text-right font-mono text-zinc-700">{fmtEur(x.calc.employer_contributions)}</td>
                       <td className="px-5 py-3 text-right font-mono font-medium">{fmtEur(x.calc.totalCost)}</td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-slate-900 text-white text-sm font-semibold">
+                  <tr className="bg-zinc-900 text-white text-sm font-semibold">
                     <td className="px-5 py-3">Spolu</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(totals.gross)}</td>
                     <td></td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(totals.emp_sp)}</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(totals.emp_zp)}</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(totals.tax)}</td>
-                    <td className="px-3 py-3 text-right font-mono bg-blue-700">{fmtEur(totals.net)}</td>
+                    <td className="px-3 py-3 text-right font-mono bg-zinc-900">{fmtEur(totals.net)}</td>
                     <td className="px-3 py-3 text-right font-mono">{fmtEur(totals.empr)}</td>
                     <td className="px-5 py-3 text-right font-mono">{fmtEur(totals.totalCost)}</td>
                   </tr>
@@ -252,10 +252,10 @@ export default function PayrollRunPage() {
           </Card>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <Card><div className="p-4"><div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Hrubé mzdy</div><div className="text-lg font-bold mt-1">{fmtEur(totals.gross)}</div></div></Card>
-            <Card><div className="p-4"><div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Čisté mzdy</div><div className="text-lg font-bold mt-1 text-emerald-600">{fmtEur(totals.net)}</div></div></Card>
-            <Card><div className="p-4"><div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Daň + SP/ZP zamest.</div><div className="text-lg font-bold mt-1 text-red-600">{fmtEur(totals.emp_sp + totals.emp_zp + totals.tax)}</div></div></Card>
-            <Card><div className="p-4"><div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Spolu náklad firmy</div><div className="text-lg font-bold mt-1">{fmtEur(totals.totalCost)}</div><div className="text-xs text-slate-500 mt-1">vrátane odvodov zam.dáv.</div></div></Card>
+            <Card><div className="p-4"><div className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Hrubé mzdy</div><div className="text-lg font-bold mt-1">{fmtEur(totals.gross)}</div></div></Card>
+            <Card><div className="p-4"><div className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Čisté mzdy</div><div className="text-lg font-bold mt-1 text-emerald-600">{fmtEur(totals.net)}</div></div></Card>
+            <Card><div className="p-4"><div className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Daň + SP/ZP zamest.</div><div className="text-lg font-bold mt-1 text-red-600">{fmtEur(totals.emp_sp + totals.emp_zp + totals.tax)}</div></div></Card>
+            <Card><div className="p-4"><div className="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Spolu náklad firmy</div><div className="text-lg font-bold mt-1">{fmtEur(totals.totalCost)}</div><div className="text-xs text-zinc-500 mt-1">vrátane odvodov zam.dáv.</div></div></Card>
           </div>
         </>
       )}

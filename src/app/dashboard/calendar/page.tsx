@@ -112,27 +112,27 @@ export default function CalendarPage() {
         <Card>
           <CardHeader title="Najbližších 30 dní" subtitle={`${next30.length} termínov`} />
           {next30.length === 0 ? (
-            <div className="p-8 text-center text-sm text-slate-500">Žiadne termíny v najbližšom mesiaci</div>
+            <div className="p-8 text-center text-sm text-zinc-500">Žiadne termíny v najbližšom mesiaci</div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-zinc-100">
               {next30.slice(0, 15).map((d, i) => {
                 const days = Math.ceil((d.date.getTime() - today.getTime()) / 86400000);
                 return (
                   <div key={i} className="flex items-center gap-3 px-4 py-3">
                     <div className="text-center w-12 flex-shrink-0">
-                      <div className="text-lg font-bold text-slate-900 leading-none">{d.date.getDate()}</div>
-                      <div className="text-[9px] uppercase tracking-wider text-slate-500 mt-1">
+                      <div className="text-lg font-bold text-zinc-900 leading-none">{d.date.getDate()}</div>
+                      <div className="text-[9px] uppercase tracking-wider text-zinc-500 mt-1">
                         {['JAN','FEB','MAR','APR','MÁJ','JÚN','JÚL','AUG','SEP','OKT','NOV','DEC'][d.date.getMonth()]}
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <div className="font-semibold text-sm text-slate-900">{d.title}</div>
+                        <div className="font-semibold text-sm text-zinc-900">{d.title}</div>
                         <Badge variant={sevColor[d.severity]}>{d.kind}</Badge>
                       </div>
-                      <div className="text-xs text-slate-500 mt-0.5">{d.desc}</div>
+                      <div className="text-xs text-zinc-500 mt-0.5">{d.desc}</div>
                     </div>
-                    <div className={`text-xs font-semibold whitespace-nowrap ${days <= 3 ? 'text-red-600' : days <= 7 ? 'text-amber-600' : 'text-slate-500'}`}>
+                    <div className={`text-xs font-semibold whitespace-nowrap ${days <= 3 ? 'text-red-600' : days <= 7 ? 'text-amber-600' : 'text-zinc-500'}`}>
                       {days === 0 ? 'dnes' : days === 1 ? 'zajtra' : `o ${days} dní`}
                     </div>
                   </div>
@@ -144,17 +144,17 @@ export default function CalendarPage() {
 
         <Card>
           <CardHeader title={`Tento rok — ${today.getFullYear()}`} subtitle={`${future.filter((d) => d.date.getFullYear() === today.getFullYear()).length} zostávajúcich`} />
-          <div className="divide-y divide-slate-100 max-h-[500px] overflow-auto">
+          <div className="divide-y divide-zinc-100 max-h-[500px] overflow-auto">
             {future
               .filter((d) => d.date.getFullYear() === today.getFullYear())
               .slice(0, 30)
               .map((d, i) => (
                 <div key={i} className="flex items-center justify-between px-4 py-2.5 text-sm">
                   <div className="flex items-center gap-2.5">
-                    <div className="font-mono text-xs text-slate-500 w-16">
+                    <div className="font-mono text-xs text-zinc-500 w-16">
                       {String(d.date.getDate()).padStart(2, '0')}.{String(d.date.getMonth() + 1).padStart(2, '0')}.
                     </div>
-                    <div className="text-slate-900">{d.title}</div>
+                    <div className="text-zinc-900">{d.title}</div>
                   </div>
                   <Badge variant={sevColor[d.severity]}>{d.kind}</Badge>
                 </div>

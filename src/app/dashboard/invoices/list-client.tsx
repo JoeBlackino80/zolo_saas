@@ -95,20 +95,20 @@ export default function InvoicesListClient({ invoices }: { invoices: Row[] }) {
     <>
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <div className="relative flex-1 min-w-[180px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input value={filter.q} onChange={(e) => setFilter({ ...filter, q: e.target.value })} placeholder="Hľadaj číslo alebo zákazníka…" className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-blue-500" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <input value={filter.q} onChange={(e) => setFilter({ ...filter, q: e.target.value })} placeholder="Hľadaj číslo alebo zákazníka…" className="w-full bg-white border border-zinc-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-zinc-900" />
         </div>
-        <select value={filter.type} onChange={(e) => setFilter({ ...filter, type: e.target.value })} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
+        <select value={filter.type} onChange={(e) => setFilter({ ...filter, type: e.target.value })} className="bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm">
           <option value="all">Všetky typy</option>
           {allTypes.map((t) => <option key={t} value={t}>{TYPE_LABEL[t] || t}</option>)}
         </select>
-        <select value={filter.status} onChange={(e) => setFilter({ ...filter, status: e.target.value })} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
+        <select value={filter.status} onChange={(e) => setFilter({ ...filter, status: e.target.value })} className="bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm">
           <option value="all">Všetky stavy</option>
           {allStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
         {selected.size > 0 && (
-          <div className="flex items-center gap-2 ml-auto bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg">
-            <span className="text-xs text-blue-700 font-semibold">{selected.size} vybratých</span>
+          <div className="flex items-center gap-2 ml-auto bg-zinc-50 border border-zinc-200 px-3 py-1.5 rounded-lg">
+            <span className="text-xs text-zinc-800 font-semibold">{selected.size} vybratých</span>
             <Button variant="secondary" onClick={markPaidBulk} disabled={busy}>Označiť zaplatené</Button>
             <Button variant="ghost" onClick={deleteBulk} disabled={busy}>Vymazať</Button>
           </div>
@@ -122,10 +122,10 @@ export default function InvoicesListClient({ invoices }: { invoices: Row[] }) {
           <div className="overflow-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+                <tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
                   <th className="px-4 py-3 w-8 text-center">
                     <button onClick={toggleAll} className="inline-flex">
-                      {selected.size === filtered.length && filtered.length > 0 ? <CheckSquare size={14} className="text-blue-600" /> : <Square size={14} className="text-slate-400" />}
+                      {selected.size === filtered.length && filtered.length > 0 ? <CheckSquare size={14} className="text-zinc-900" /> : <Square size={14} className="text-zinc-400" />}
                     </button>
                   </th>
                   <th className="text-left px-3 py-3">Typ</th>
@@ -138,21 +138,21 @@ export default function InvoicesListClient({ invoices }: { invoices: Row[] }) {
                   <th className="text-center px-3 py-3">Stav</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-zinc-100">
                 {filtered.map((i) => (
-                  <tr key={i.id} className={`hover:bg-slate-50 transition ${selected.has(i.id) ? 'bg-blue-50/40' : ''}`}>
+                  <tr key={i.id} className={`hover:bg-zinc-50 transition ${selected.has(i.id) ? 'bg-zinc-50/40' : ''}`}>
                     <td className="px-4 py-3 text-center">
                       <button onClick={() => toggle(i.id)} className="inline-flex">
-                        {selected.has(i.id) ? <CheckSquare size={14} className="text-blue-600" /> : <Square size={14} className="text-slate-400" />}
+                        {selected.has(i.id) ? <CheckSquare size={14} className="text-zinc-900" /> : <Square size={14} className="text-zinc-400" />}
                       </button>
                     </td>
                     <td className="px-3 py-3"><Link href={`/dashboard/invoices/${i.id}`}><Badge variant="blue">{TYPE_LABEL[i.type] || i.type}</Badge></Link></td>
-                    <td className="px-3 py-3"><Link href={`/dashboard/invoices/${i.id}`} className="font-mono text-xs font-medium text-blue-600 hover:underline">{i.number}</Link></td>
-                    <td className="px-3 py-3 text-slate-700">{i.customer_name || '—'}</td>
-                    <td className="px-3 py-3 text-right font-mono text-slate-900 font-medium">{fmtEur(Number(i.total || 0))}</td>
-                    <td className="px-3 py-3 text-center font-mono text-xs text-slate-600">{fmtDate(i.issue_date)}</td>
-                    <td className="px-3 py-3 text-center font-mono text-xs text-slate-600">{fmtDate(i.delivery_date || i.issue_date)}</td>
-                    <td className="px-3 py-3 text-center font-mono text-xs text-slate-600">{fmtDate(i.due_date)}</td>
+                    <td className="px-3 py-3"><Link href={`/dashboard/invoices/${i.id}`} className="font-mono text-xs font-medium text-zinc-900 hover:underline">{i.number}</Link></td>
+                    <td className="px-3 py-3 text-zinc-700">{i.customer_name || '—'}</td>
+                    <td className="px-3 py-3 text-right font-mono text-zinc-900 font-medium">{fmtEur(Number(i.total || 0))}</td>
+                    <td className="px-3 py-3 text-center font-mono text-xs text-zinc-600">{fmtDate(i.issue_date)}</td>
+                    <td className="px-3 py-3 text-center font-mono text-xs text-zinc-600">{fmtDate(i.delivery_date || i.issue_date)}</td>
+                    <td className="px-3 py-3 text-center font-mono text-xs text-zinc-600">{fmtDate(i.due_date)}</td>
                     <td className="px-3 py-3 text-center"><Badge variant={STATUS_BADGE[i.status] || 'gray'}>{i.status}</Badge></td>
                   </tr>
                 ))}

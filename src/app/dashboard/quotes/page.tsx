@@ -23,7 +23,7 @@ export default async function QuotesPage() {
       ) : (
         <Card>
           <table className="w-full text-sm">
-            <thead><tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+            <thead><tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
               <th className="text-left px-5 py-3">Číslo</th>
               <th className="text-left px-3 py-3">Zákazník</th>
               <th className="text-right px-3 py-3">Suma</th>
@@ -31,9 +31,9 @@ export default async function QuotesPage() {
               <th className="text-center px-3 py-3">Platí do</th>
               <th className="text-center px-3 py-3">Stav</th>
             </tr></thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {rows.map((q) => (
-                <tr key={q.id} className="hover:bg-slate-50">
+                <tr key={q.id} className="hover:bg-zinc-50">
                   <td className="px-5 py-3 font-mono text-xs">{q.quote_number}</td>
                   <td className="px-3 py-3">{q.customer_name}</td>
                   <td className="px-3 py-3 text-right font-mono">{fmtEur(Number(q.total_amount))}</td>

@@ -14,17 +14,17 @@ export default async function CostCentersPage() {
       ) : (
         <Card>
           <table className="w-full text-sm">
-            <thead><tr className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+            <thead><tr className="bg-zinc-50 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
               <th className="text-left px-5 py-3">Kód</th>
               <th className="text-left px-3 py-3">Názov</th>
               <th className="text-left px-3 py-3">Popis</th>
             </tr></thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-100">
               {cc.map((c) => (
-                <tr key={c.id} className="hover:bg-slate-50">
+                <tr key={c.id} className="hover:bg-zinc-50">
                   <td className="px-5 py-3 font-mono">{c.code}</td>
                   <td className="px-3 py-3 font-medium">{c.name}</td>
-                  <td className="px-3 py-3 text-slate-600">{c.description || '—'}</td>
+                  <td className="px-3 py-3 text-zinc-600">{c.description || '—'}</td>
                 </tr>
               ))}
             </tbody>

@@ -27,7 +27,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900">
       <div className="md:grid md:grid-cols-[256px_1fr] min-h-screen">
         <div className="bg-zinc-950 md:min-h-screen">
           <Sidebar companies={companies || []} userEmail={user.email || ''} />

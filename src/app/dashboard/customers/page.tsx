@@ -41,16 +41,16 @@ export default async function CustomersPage() {
             }
           />
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-zinc-100">
             {contacts.map((c) => (
-              <Link key={c.id} href={`/dashboard/customers/${c.id}`} className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition">
+              <Link key={c.id} href={`/dashboard/customers/${c.id}`} className="flex items-center justify-between px-5 py-3.5 hover:bg-zinc-50 transition">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-slate-200 text-slate-600 font-semibold flex items-center justify-center text-sm">
+                  <div className="w-9 h-9 rounded-full bg-zinc-200 text-zinc-600 font-semibold flex items-center justify-center text-sm">
                     {c.name[0]?.toUpperCase()}
                   </div>
                   <div>
-                    <div className="font-semibold text-slate-900 text-sm">{c.name}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">
+                    <div className="font-semibold text-zinc-900 text-sm">{c.name}</div>
+                    <div className="text-xs text-zinc-500 mt-0.5">
                       {c.ico ? `IČO ${c.ico}` : '—'} · {c.city || ''} {c.email && `· ${c.email}`}
                     </div>
                   </div>

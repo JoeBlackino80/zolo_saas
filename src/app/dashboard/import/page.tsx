@@ -154,7 +154,7 @@ kind="out" ak my sme dodávateľ, "in" ak my sme odberateľ.`;
         <CardHeader title="Pretiahni faktúry" subtitle="PDF, JPG, PNG, WebP — multi-select" />
         <div className="p-5">
           <label
-            className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-10 cursor-pointer transition"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-zinc-300 hover:border-zinc-500 rounded-xl p-10 cursor-pointer transition"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault();
@@ -162,9 +162,9 @@ kind="out" ak my sme dodávateľ, "in" ak my sme odberateľ.`;
               setFiles((f) => [...f, ...dropped]);
             }}
           >
-            <Upload size={32} className="text-slate-400 mb-3" />
-            <div className="text-sm font-semibold text-slate-700">Klikni alebo pretiahni súbory</div>
-            <div className="text-xs text-slate-500 mt-1">PDF · JPG · PNG · WebP (~$0.01/súbor cez Claude Vision)</div>
+            <Upload size={32} className="text-zinc-400 mb-3" />
+            <div className="text-sm font-semibold text-zinc-700">Klikni alebo pretiahni súbory</div>
+            <div className="text-xs text-zinc-500 mt-1">PDF · JPG · PNG · WebP (~$0.01/súbor cez Claude Vision)</div>
             <input
               ref={inputRef}
               type="file"
@@ -179,9 +179,9 @@ kind="out" ak my sme dodávateľ, "in" ak my sme odberateľ.`;
             <div className="mt-4 space-y-1.5">
               {files.map((f, i) => (
                 <div key={i} className="flex items-center gap-2 text-sm">
-                  <FileText size={14} className="text-slate-400" />
+                  <FileText size={14} className="text-zinc-400" />
                   <span className="flex-1 truncate">{f.name}</span>
-                  <span className="text-xs text-slate-500">{(f.size / 1024).toFixed(0)} kB</span>
+                  <span className="text-xs text-zinc-500">{(f.size / 1024).toFixed(0)} kB</span>
                   <button onClick={() => setFiles((arr) => arr.filter((_, j) => j !== i))} className="text-red-500 hover:bg-red-50 p-1 rounded">×</button>
                 </div>
               ))}
@@ -202,7 +202,7 @@ kind="out" ak my sme dodávateľ, "in" ak my sme odberateľ.`;
             title="Výsledky extrakcie"
             action={results.some((r) => r.data) && <Button variant="primary" onClick={applyToCloud}>Uložiť všetky</Button>}
           />
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-zinc-100">
             {results.map((r, i) => (
               <div key={i} className="px-5 py-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -211,11 +211,11 @@ kind="out" ak my sme dodávateľ, "in" ak my sme odberateľ.`;
                   {r.data && <Badge variant={r.data.kind === 'in' ? 'amber' : 'blue'}>{r.data.kind === 'in' ? 'Prijatá' : 'Vydaná'}</Badge>}
                 </div>
                 {r.data ? (
-                  <div className="grid grid-cols-4 gap-3 text-xs text-slate-600">
-                    <div><div className="text-slate-400 uppercase tracking-wider text-[10px]">Číslo</div><div className="font-mono">{r.data.number}</div></div>
-                    <div><div className="text-slate-400 uppercase tracking-wider text-[10px]">Dátum</div><div className="font-mono">{r.data.date}</div></div>
-                    <div><div className="text-slate-400 uppercase tracking-wider text-[10px]">Partner</div><div className="font-medium truncate">{r.data.partnerName}</div></div>
-                    <div><div className="text-slate-400 uppercase tracking-wider text-[10px]">Suma</div><div className="font-mono font-semibold">{fmtEur(r.data.total)}</div></div>
+                  <div className="grid grid-cols-4 gap-3 text-xs text-zinc-600">
+                    <div><div className="text-zinc-400 uppercase tracking-wider text-[10px]">Číslo</div><div className="font-mono">{r.data.number}</div></div>
+                    <div><div className="text-zinc-400 uppercase tracking-wider text-[10px]">Dátum</div><div className="font-mono">{r.data.date}</div></div>
+                    <div><div className="text-zinc-400 uppercase tracking-wider text-[10px]">Partner</div><div className="font-medium truncate">{r.data.partnerName}</div></div>
+                    <div><div className="text-zinc-400 uppercase tracking-wider text-[10px]">Suma</div><div className="font-mono font-semibold">{fmtEur(r.data.total)}</div></div>
                   </div>
                 ) : (
                   <div className="text-xs text-red-600">{r.error}</div>

@@ -75,9 +75,9 @@ export default function NotificationsPage() {
         <Card>
           <div className="divide-y divide-zinc-100">
             {items.map((n) => (
-              <div key={n.id} className={`px-5 py-3 flex items-start justify-between gap-3 ${!n.is_read ? 'bg-blue-50/30' : ''}`}>
+              <div key={n.id} className={`px-5 py-3 flex items-start justify-between gap-3 ${!n.is_read ? 'bg-zinc-50/30' : ''}`}>
                 <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${!n.is_read ? 'bg-blue-100 text-blue-700' : 'bg-zinc-100 text-zinc-500'}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${!n.is_read ? 'bg-zinc-100 text-zinc-800' : 'bg-zinc-100 text-zinc-500'}`}>
                     <Bell size={14} />
                   </div>
                   <div className="min-w-0">

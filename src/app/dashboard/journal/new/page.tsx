@@ -74,7 +74,7 @@ export default function NewJournalEntryPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/journal" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3"><ArrowLeft size={14} /> Späť na denník</Link>
+      <Link href="/dashboard/journal" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3"><ArrowLeft size={14} /> Späť na denník</Link>
       <PageHeader title="Nový účtovný zápis" subtitle="Podvojné účtovanie: MD = Dal" />
 
       <form onSubmit={save} className="space-y-4">
@@ -94,7 +94,7 @@ export default function NewJournalEntryPage() {
             action={<Button type="button" variant="secondary" onClick={() => setLines([...lines, { account_code: '', debit_amount: 0, credit_amount: 0 }])}><Plus size={14} /> Pridať riadok</Button>}
           />
           <div className="p-5 space-y-3">
-            <div className="grid grid-cols-[120px_1fr_130px_130px_50px] gap-2 text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+            <div className="grid grid-cols-[120px_1fr_130px_130px_50px] gap-2 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
               <div>Účet</div>
               <div>Popis</div>
               <div className="text-right">Má dať (D)</div>
@@ -111,11 +111,11 @@ export default function NewJournalEntryPage() {
               </div>
             ))}
           </div>
-          <div className="border-t border-slate-100 px-5 py-4 bg-slate-50">
+          <div className="border-t border-zinc-100 px-5 py-4 bg-zinc-50">
             <div className="flex justify-end gap-8 text-sm font-mono">
-              <div><div className="text-xs text-slate-500">Σ MD</div><div className="font-bold">{fmtEur(totalDebit)}</div></div>
-              <div><div className="text-xs text-slate-500">Σ Dal</div><div className="font-bold">{fmtEur(totalCredit)}</div></div>
-              <div><div className="text-xs text-slate-500">Rozdiel</div><div className={`font-bold ${balanced ? 'text-emerald-600' : 'text-red-600'}`}>{fmtEur(totalDebit - totalCredit)} {balanced ? '✓' : '✗'}</div></div>
+              <div><div className="text-xs text-zinc-500">Σ MD</div><div className="font-bold">{fmtEur(totalDebit)}</div></div>
+              <div><div className="text-xs text-zinc-500">Σ Dal</div><div className="font-bold">{fmtEur(totalCredit)}</div></div>
+              <div><div className="text-xs text-zinc-500">Rozdiel</div><div className={`font-bold ${balanced ? 'text-emerald-600' : 'text-red-600'}`}>{fmtEur(totalDebit - totalCredit)} {balanced ? '✓' : '✗'}</div></div>
             </div>
           </div>
         </Card>

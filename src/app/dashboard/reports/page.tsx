@@ -60,7 +60,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         actions={
           <div className="flex gap-1">
             {[+year - 1, +year, +year + 1].map((y) => (
-              <Link key={y} href={`/dashboard/reports?year=${y}`} className={`px-3 py-1.5 text-sm rounded ${y === +year ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}>{y}</Link>
+              <Link key={y} href={`/dashboard/reports?year=${y}`} className={`px-3 py-1.5 text-sm rounded ${y === +year ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-100'}`}>{y}</Link>
             ))}
           </div>
         }
@@ -83,19 +83,19 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Výnosy</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Výnosy</div>
           <div className="text-2xl font-bold mt-2">{fmtEur(totalRevenue)}</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Náklady</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Náklady</div>
           <div className="text-2xl font-bold mt-2 text-red-600">{fmtEur(totalCosts)}</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Zisk</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Zisk</div>
           <div className={`text-2xl font-bold mt-2 ${profit >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmtEur(profit)}</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Marža</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Marža</div>
           <div className={`text-2xl font-bold mt-2 ${margin >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{margin.toFixed(1)}%</div>
         </div></Card>
       </div>
@@ -107,7 +107,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
             <div className="grid grid-cols-12 gap-2">
               {Object.entries(months).map(([m, v]) => (
                 <div key={m} className="flex flex-col items-center">
-                  <div className="text-[9px] text-slate-500 mb-1">{m}</div>
+                  <div className="text-[9px] text-zinc-500 mb-1">{m}</div>
                   <div className="flex-1 w-full min-h-[140px] flex flex-col items-stretch justify-end gap-0.5">
                     <div className="bg-emerald-500" style={{ height: `${(v.revenue / maxMonth) * 100}px` }} title={`Výnosy: ${fmtEur(v.revenue)}`} />
                     <div className="bg-red-500" style={{ height: `${(v.costs / maxMonth) * 100}px` }} title={`Náklady: ${fmtEur(v.costs)}`} />
@@ -126,7 +126,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
           <CardHeader title={<><PieChart className="inline mr-2" size={14} /> Top zákazníci</>} />
           <div className="p-5">
             {topCustomers.length === 0 ? (
-              <div className="text-center py-8 text-sm text-slate-500">Žiadne dáta</div>
+              <div className="text-center py-8 text-sm text-zinc-500">Žiadne dáta</div>
             ) : (
               <div className="space-y-3">
                 {topCustomers.map(([name, sum], i) => {
@@ -137,7 +137,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                         <span className="font-medium truncate flex-1">{name}</span>
                         <span className="font-mono font-medium ml-3">{fmtEur(sum)}</span>
                       </div>
-                      <div className="h-1.5 bg-slate-100 rounded-full">
+                      <div className="h-1.5 bg-zinc-100 rounded-full">
                         <div className="h-full bg-zinc-900 rounded-full" style={{ width: `${pct}%` }} />
                       </div>
                     </div>
@@ -152,10 +152,10 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
       <Card>
         <CardHeader title={<><TrendingUp className="inline mr-2" size={14} /> DPH agregát — ročne</>} />
         <div className="p-5 grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-          <div><div className="text-xs text-slate-500">DPH výstup</div><div className="text-xl font-mono font-bold">{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_out, 0))}</div></div>
-          <div><div className="text-xs text-slate-500">DPH vstup</div><div className="text-xl font-mono font-bold">{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_in, 0))}</div></div>
-          <div><div className="text-xs text-slate-500">Net DPH</div><div className={`text-xl font-mono font-bold ${(Object.values(months).reduce((s, m) => s + m.vat_out - m.vat_in, 0)) >= 0 ? 'text-red-600' : 'text-emerald-600'}`}>{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_out - m.vat_in, 0))}</div></div>
-          <div><div className="text-xs text-slate-500">Faktúr</div><div className="text-xl font-mono font-bold">{rows.length}</div></div>
+          <div><div className="text-xs text-zinc-500">DPH výstup</div><div className="text-xl font-mono font-bold">{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_out, 0))}</div></div>
+          <div><div className="text-xs text-zinc-500">DPH vstup</div><div className="text-xl font-mono font-bold">{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_in, 0))}</div></div>
+          <div><div className="text-xs text-zinc-500">Net DPH</div><div className={`text-xl font-mono font-bold ${(Object.values(months).reduce((s, m) => s + m.vat_out - m.vat_in, 0)) >= 0 ? 'text-red-600' : 'text-emerald-600'}`}>{fmtEur(Object.values(months).reduce((s, m) => s + m.vat_out - m.vat_in, 0))}</div></div>
+          <div><div className="text-xs text-zinc-500">Faktúr</div><div className="text-xl font-mono font-bold">{rows.length}</div></div>
         </div>
       </Card>
     </div>

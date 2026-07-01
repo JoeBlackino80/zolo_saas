@@ -30,29 +30,29 @@ export default function CookieBanner() {
   if (!open) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 left-4 sm:left-auto sm:max-w-sm z-50 bg-white rounded-xl shadow-2xl border border-slate-200 p-5">
+    <div className="fixed bottom-4 right-4 left-4 sm:left-auto sm:max-w-sm z-50 bg-white rounded-xl shadow-2xl border border-zinc-200 p-5">
       <button
         onClick={() => decide('essential')}
-        className="absolute top-3 right-3 text-slate-400 hover:text-slate-700"
+        className="absolute top-3 right-3 text-zinc-400 hover:text-zinc-700"
         aria-label="Zavrieť"
       >
         <X size={16} />
       </button>
-      <h3 className="font-semibold text-slate-900 mb-1.5">Cookies</h3>
-      <p className="text-sm text-slate-600 leading-relaxed mb-4">
+      <h3 className="font-semibold text-zinc-900 mb-1.5">Cookies</h3>
+      <p className="text-sm text-zinc-600 leading-relaxed mb-4">
         Používame iba nevyhnutné cookies pre prihlásenie. V budúcnosti môžeme pridať analytiku — vtedy si vyžiadame tvoj súhlas znova. Detaily v{' '}
-        <Link href="/cookies" className="text-blue-600 hover:underline">Cookies politike</Link>.
+        <Link href="/cookies" className="text-zinc-900 hover:underline">Cookies politike</Link>.
       </p>
       <div className="flex flex-col sm:flex-row gap-2">
         <button
           onClick={() => decide('accepted')}
-          className="flex-1 px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-md hover:bg-slate-800"
+          className="flex-1 px-4 py-2 bg-zinc-900 text-white text-sm font-semibold rounded-md hover:bg-zinc-800"
         >
           Akceptovať
         </button>
         <button
           onClick={() => decide('essential')}
-          className="flex-1 px-4 py-2 bg-slate-100 text-slate-900 text-sm font-semibold rounded-md hover:bg-slate-200"
+          className="flex-1 px-4 py-2 bg-zinc-100 text-zinc-900 text-sm font-semibold rounded-md hover:bg-zinc-200"
         >
           Iba nevyhnutné
         </button>

@@ -79,7 +79,7 @@ export default function EditInvoiceClient({ invoice, items: initItems, companies
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href={`/dashboard/invoices/${invoice.id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-3">
+      <Link href={`/dashboard/invoices/${invoice.id}`} className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na detail
       </Link>
       <PageHeader title={`Upraviť ${invoice.number}`} subtitle="Editácia hlavičky aj položiek" />
@@ -120,10 +120,10 @@ export default function EditInvoiceClient({ invoice, items: initItems, companies
               </div>
             ))}
           </div>
-          <div className="border-t border-slate-100 px-5 py-4 bg-slate-50 flex justify-end gap-8 text-sm">
-            <div><div className="text-xs text-slate-500">Základ</div><div className="font-mono font-medium">{fmtEur(totals.subtotal)}</div></div>
-            <div><div className="text-xs text-slate-500">DPH</div><div className="font-mono font-medium">{fmtEur(totals.vat)}</div></div>
-            <div><div className="text-xs text-slate-500">Spolu</div><div className="font-mono font-bold text-lg">{fmtEur(totals.total)}</div></div>
+          <div className="border-t border-zinc-100 px-5 py-4 bg-zinc-50 flex justify-end gap-8 text-sm">
+            <div><div className="text-xs text-zinc-500">Základ</div><div className="font-mono font-medium">{fmtEur(totals.subtotal)}</div></div>
+            <div><div className="text-xs text-zinc-500">DPH</div><div className="font-mono font-medium">{fmtEur(totals.vat)}</div></div>
+            <div><div className="text-xs text-zinc-500">Spolu</div><div className="font-mono font-bold text-lg">{fmtEur(totals.total)}</div></div>
           </div>
         </Card>
 

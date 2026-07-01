@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { PageHeader, Card, CardHeader, Field, Select } from '@/components/ui';
+import { SkeletonCard } from '@/components/Skeleton';
 import { fmtEur } from '@/lib/utils';
 import { aggregateVat } from '@/lib/vat';
 
@@ -81,7 +82,10 @@ export default function VatRecordsPage() {
       </Card>
 
       {loading ? (
-        <Card><div className="p-8 text-center text-zinc-500 text-sm">Načítavam…</div></Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SkeletonCard lines={7} />
+          <SkeletonCard lines={7} />
+        </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card>

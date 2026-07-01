@@ -57,9 +57,9 @@ export default function CommandPalette() {
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-start justify-center pt-32" onClick={() => setOpen(false)}>
-      <div className="w-full max-w-xl bg-white rounded-xl shadow-2xl border border-slate-200" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-100">
-          <Search size={18} className="text-slate-400" />
+      <div className="w-full max-w-xl bg-white rounded-xl shadow-2xl border border-zinc-200" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-zinc-100">
+          <Search size={18} className="text-zinc-400" />
           <input
             autoFocus
             value={query}
@@ -70,15 +70,15 @@ export default function CommandPalette() {
               if (e.key === 'Enter' && results[focused]) pick(results[focused]);
             }}
             placeholder="Hľadať firmy, faktúry, zákazníkov…"
-            className="flex-1 bg-transparent border-none outline-none text-sm text-slate-900 placeholder-slate-400"
+            className="flex-1 bg-transparent border-none outline-none text-sm text-zinc-900 placeholder-zinc-400"
           />
-          <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-1 rounded font-mono">ESC</span>
+          <span className="text-[10px] text-zinc-400 bg-zinc-100 px-2 py-1 rounded font-mono">ESC</span>
         </div>
         <div className="max-h-96 overflow-y-auto">
           {query.length < 2 ? (
-            <div className="px-5 py-8 text-center text-sm text-slate-400">Začni písať pre hľadanie…</div>
+            <div className="px-5 py-8 text-center text-sm text-zinc-400">Začni písať pre hľadanie…</div>
           ) : results.length === 0 ? (
-            <div className="px-5 py-8 text-center text-sm text-slate-400">Nič nenájdené</div>
+            <div className="px-5 py-8 text-center text-sm text-zinc-400">Nič nenájdené</div>
           ) : (
             results.map((r, i) => {
               const Icon = r.type === 'company' ? Building2 : r.type === 'invoice' ? FileText : Users;
@@ -86,12 +86,12 @@ export default function CommandPalette() {
                 <button
                   key={r.type + r.id}
                   onClick={() => pick(r)}
-                  className={`w-full flex items-center gap-3 px-5 py-3 text-left text-sm hover:bg-slate-50 transition ${i === focused ? 'bg-slate-50' : ''}`}
+                  className={`w-full flex items-center gap-3 px-5 py-3 text-left text-sm hover:bg-zinc-50 transition ${i === focused ? 'bg-zinc-50' : ''}`}
                 >
-                  <Icon size={16} className="text-slate-400" />
+                  <Icon size={16} className="text-zinc-400" />
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-slate-900 truncate">{r.title}</div>
-                    <div className="text-xs text-slate-500 truncate">{r.subtitle}</div>
+                    <div className="font-medium text-zinc-900 truncate">{r.title}</div>
+                    <div className="text-xs text-zinc-500 truncate">{r.subtitle}</div>
                   </div>
                 </button>
               );

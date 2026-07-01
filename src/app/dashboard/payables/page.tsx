@@ -52,7 +52,7 @@ export default async function PayablesPage() {
                   const isOverdue = r.due_date < today;
                   return (
                     <tr key={r.id} className="hover:bg-zinc-50 transition">
-                      <td className="px-3 py-3"><Link href={`/dashboard/invoices/${r.id}`} className="font-mono text-xs font-medium text-blue-600 hover:underline">{r.number}</Link></td>
+                      <td className="px-3 py-3"><Link href={`/dashboard/invoices/${r.id}`} className="font-mono text-xs font-medium text-zinc-900 hover:underline">{r.number}</Link></td>
                       <td className="px-3 py-3 text-zinc-700">{r.supplier_name || '—'}</td>
                       <td className="px-3 py-3 text-center font-mono text-xs text-zinc-600">{fmtDate(r.issue_date)}</td>
                       <td className={`px-3 py-3 text-center font-mono text-xs ${isOverdue ? 'text-red-600 font-bold' : 'text-zinc-600'}`}>{fmtDate(r.due_date)}</td>

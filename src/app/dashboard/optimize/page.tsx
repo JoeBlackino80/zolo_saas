@@ -37,27 +37,27 @@ export default async function OptimizePage({ searchParams }: { searchParams: Pro
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">K odvodu (brutto)</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">K odvodu (brutto)</div>
           <div className="text-2xl font-bold mt-2 text-red-600">{fmtEur(grossPay)}</div>
-          <div className="text-xs text-slate-500 mt-1">{positives.length} firiem platí</div>
+          <div className="text-xs text-zinc-500 mt-1">{positives.length} firiem platí</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Nárok na vrátenie</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Nárok na vrátenie</div>
           <div className="text-2xl font-bold mt-2 text-emerald-600">{fmtEur(grossRefund)}</div>
-          <div className="text-xs text-slate-500 mt-1">{negatives.length} firiem nárokuje</div>
+          <div className="text-xs text-zinc-500 mt-1">{negatives.length} firiem nárokuje</div>
         </div></Card>
         <Card><div className="p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Netto za skupinu</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Netto za skupinu</div>
           <div className="text-2xl font-bold mt-2">{fmtEur(totalNet)}</div>
-          <div className="text-xs text-slate-500 mt-1">súčet všetkých firiem</div>
+          <div className="text-xs text-zinc-500 mt-1">súčet všetkých firiem</div>
         </div></Card>
       </div>
 
       {savings > 100 && (
-        <Card className="mb-4 bg-gradient-to-br from-emerald-50 to-blue-50 border-emerald-200">
+        <Card className="mb-4 bg-gradient-to-br from-zinc-50 to-white border-zinc-200">
           <div className="p-5">
             <div className="text-xs font-bold uppercase tracking-wider text-emerald-700">Cash flow návrh</div>
-            <div className="text-base text-slate-700 mt-2 leading-relaxed">
+            <div className="text-base text-zinc-700 mt-2 leading-relaxed">
               Ak by sa interné toky vyrovnali, skupina by k 25. {period} platila <strong>{fmtEur(totalNet)}</strong> namiesto vyplácania <strong>{fmtEur(grossPay)}</strong> a čakania na vrátenie <strong>{fmtEur(grossRefund)}</strong>.
             </div>
             <div className="mt-3 text-lg font-bold text-emerald-700">
@@ -71,14 +71,14 @@ export default async function OptimizePage({ searchParams }: { searchParams: Pro
         <Card>
           <CardHeader title={`Firmy platia DPH (${positives.length})`} />
           {positives.length === 0 ? (
-            <div className="p-8 text-center text-sm text-slate-500">Žiadne firmy s povinnosťou</div>
+            <div className="p-8 text-center text-sm text-zinc-500">Žiadne firmy s povinnosťou</div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-zinc-100">
               {positives.map((r) => (
                 <div key={r.id} className="flex items-center justify-between px-5 py-3">
                   <div>
                     <div className="text-sm font-medium">{r.name}</div>
-                    <div className="text-xs text-slate-500 font-mono">{r.ic_dph || '—'}</div>
+                    <div className="text-xs text-zinc-500 font-mono">{r.ic_dph || '—'}</div>
                   </div>
                   <Badge variant="red">{fmtEur(r.obligation)}</Badge>
                 </div>
@@ -90,14 +90,14 @@ export default async function OptimizePage({ searchParams }: { searchParams: Pro
         <Card>
           <CardHeader title={`Firmy s nárokom (${negatives.length})`} />
           {negatives.length === 0 ? (
-            <div className="p-8 text-center text-sm text-slate-500">Žiadne firmy s nárokom</div>
+            <div className="p-8 text-center text-sm text-zinc-500">Žiadne firmy s nárokom</div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-zinc-100">
               {negatives.map((r) => (
                 <div key={r.id} className="flex items-center justify-between px-5 py-3">
                   <div>
                     <div className="text-sm font-medium">{r.name}</div>
-                    <div className="text-xs text-slate-500 font-mono">{r.ic_dph || '—'}</div>
+                    <div className="text-xs text-zinc-500 font-mono">{r.ic_dph || '—'}</div>
                   </div>
                   <Badge variant="green">{fmtEur(-r.obligation)}</Badge>
                 </div>
