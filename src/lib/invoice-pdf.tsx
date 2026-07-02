@@ -1,5 +1,27 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
+
+// Register Roboto TTF — obsahuje kompletný Latin Extended set vrátane
+// slovenských diakritík (Ľ, Č, Š, Ť, Ž, á, é, í, ó, ú, ý, ĺ, ŕ, ň, ď).
+// Helvetica (default v @react-pdf/renderer) diakritiku nemá → "DODÁVATEĽ"
+// sa renderuje ako "DODÁVATE=" a "Č" úplne mizne.
+Font.register({
+  family: 'Roboto',
+  fonts: [
+    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@main/src/hinted/Roboto-Regular.ttf', fontWeight: 400 },
+    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@main/src/hinted/Roboto-Medium.ttf', fontWeight: 500 },
+    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@main/src/hinted/Roboto-Bold.ttf', fontWeight: 700 },
+  ],
+});
+
+// Roboto Mono TTF pre monospace polia (VS/KS/SS čísla, IBAN, sumy)
+Font.register({
+  family: 'RobotoMono',
+  fonts: [
+    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/RobotoMono@main/fonts/ttf/RobotoMono-Regular.ttf', fontWeight: 400 },
+    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/RobotoMono@main/fonts/ttf/RobotoMono-Bold.ttf', fontWeight: 700 },
+  ],
+});
 
 type Item = {
   position: number;
@@ -66,7 +88,7 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 const styles = StyleSheet.create({
-  page: { fontFamily: 'Helvetica', fontSize: 9.5, padding: 38, color: '#0f172a', lineHeight: 1.4 },
+  page: { fontFamily: 'Roboto', fontSize: 9.5, padding: 38, color: '#0f172a', lineHeight: 1.4 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, borderBottom: '2 solid #2563eb', paddingBottom: 14 },
   brand: { flexDirection: 'column' },
   brandTitle: { fontSize: 22, fontWeight: 700, color: '#0f172a', letterSpacing: -0.3 },
@@ -109,7 +131,7 @@ const styles = StyleSheet.create({
   paymentGrid: { flexDirection: 'row', gap: 14, flexWrap: 'wrap' },
   paymentCol: { flexBasis: '48%' },
   paymentKey: { fontSize: 8, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 1 },
-  paymentVal: { fontSize: 10, color: '#0f172a', fontWeight: 700, fontFamily: 'Courier' },
+  paymentVal: { fontSize: 10, color: '#0f172a', fontWeight: 700, fontFamily: 'RobotoMono' },
   qrBox: { width: 100, alignItems: 'center', justifyContent: 'center' },
   qrImg: { width: 96, height: 96 },
   qrLabel: { fontSize: 7, color: '#94a3b8', marginTop: 3, textAlign: 'center' },
