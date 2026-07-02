@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { InvoicePdfDoc, type InvoiceForPdf } from '@/lib/invoice-pdf';
+import { CashReceiptPdfDoc } from '@/lib/cash-receipt-pdf';
+import { DeliveryNotePdfDoc } from '@/lib/delivery-note-pdf';
 import { rateLimit, getClientIp } from '@/lib/ratelimit';
 import { generatePayBySquareQR } from '@/lib/pay-by-square';
 import React from 'react';
@@ -106,8 +108,32 @@ export async function GET(req: NextRequest) {
     })),
   };
 
+  // Vybrať správnu template podľa typu dokladu.
+  // PPD / VPD → kompaktný cash receipt (A5)
+  // DL → dodací list bez cien so signature lines (A4)
+  // Ostatné (FA, PFA, ZF, DOB, STO, TCH, CP) → štandardná invoice template
+  let DocComponent: React.ComponentType<{ invoice: InvoiceForPdf; parentInvoiceNumber?: string | null }>;
+  if (invoice.type === 'cash_receipt' || invoice.type === 'cash_payout') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    DocComponent = CashReceiptPdfDoc as any;
+  } else if (invoice.type === 'delivery_note') {
+    DocComponent = DeliveryNotePdfDoc;
+  } else {
+    DocComponent = InvoicePdfDoc;
+  }
+
+  // Pre DL — načítať parent invoice number ak je linked na FA
+  let parentInvoiceNumber: string | null = null;
+  if (invoice.type === 'delivery_note') {
+    const parentId = (invoice as unknown as { parent_invoice_id?: string }).parent_invoice_id;
+    if (parentId) {
+      const { data: parent } = await sb.from('invoices').select('number').eq('id', parentId).maybeSingle();
+      parentInvoiceNumber = parent?.number || null;
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const buffer = await renderToBuffer(React.createElement(InvoicePdfDoc, { invoice: doc }) as any);
+  const buffer = await renderToBuffer(React.createElement(DocComponent, { invoice: doc, parentInvoiceNumber }) as any);
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       'Content-Type': 'application/pdf',

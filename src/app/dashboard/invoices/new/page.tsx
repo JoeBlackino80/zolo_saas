@@ -364,7 +364,8 @@ export default function NewInvoicePage() {
                 <option value="debit_note">Ťarchopis (TCH)</option>
                 <option value="storno">Storno (STO)</option>
                 <option value="delivery_note">Dodací list (DL)</option>
-                <option value="cash_receipt">Pokladnica (PPD)</option>
+                <option value="cash_receipt">Príjmový PPD</option>
+                <option value="cash_payout">Výdavkový VPD</option>
                 <option value="quote">Cenová ponuka (CP)</option>
               </Select>
             </Field>
