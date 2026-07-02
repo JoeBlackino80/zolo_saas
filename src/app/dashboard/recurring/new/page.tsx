@@ -119,10 +119,7 @@ export default function NewRecurringPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/recurring" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť na zoznam
-      </Link>
-      <PageHeader title="Nová opakujúca sa šablóna" subtitle="Nastav frekvenciu — FA sa potom vystavujú automaticky" />
+      <PageHeader back={{ href: "/dashboard/recurring" }} title="Nová opakujúca sa šablóna" subtitle="Nastav frekvenciu — FA sa potom vystavujú automaticky" />
 
       <form onSubmit={save} className="space-y-4">
         <Card>

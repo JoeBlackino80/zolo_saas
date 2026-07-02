@@ -92,10 +92,7 @@ export default function NewOrderPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/orders" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Nová objednávka" subtitle="Prijatá objednávka od zákazníka — neskôr konvertuješ na FA" />
+      <PageHeader back={{ href: "/dashboard/orders" }} title="Nová objednávka" subtitle="Prijatá objednávka od zákazníka — neskôr konvertuješ na FA" />
       <form onSubmit={save} className="space-y-4">
         <Card>
           <div className="p-5 grid sm:grid-cols-2 gap-4">

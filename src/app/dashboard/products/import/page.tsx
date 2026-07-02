@@ -84,10 +84,7 @@ export default function ProductImportPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/products" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Import cenníka z CSV / Excelu" subtitle="Hlavičky: name, sku, unit, vat_rate, selling_price, purchase_price, category (SK ekvivalenty fungujú tiež)" />
+      <PageHeader back={{ href: "/dashboard/products" }} title="Import cenníka z CSV / Excelu" subtitle="Hlavičky: name, sku, unit, vat_rate, selling_price, purchase_price, category (SK ekvivalenty fungujú tiež)" />
 
       <Card className="mb-4">
         <div className="p-6">

@@ -26,10 +26,7 @@ export default function TravelCalcPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/travel" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť na cestovné príkazy
-      </Link>
-      <PageHeader title="Kalkulačka cestovných náhrad" subtitle="SK 2026 sadzby — diéty + amortizácia auta + spotreba PHM" />
+      <PageHeader back={{ href: "/dashboard/travel" }} title="Kalkulačka cestovných náhrad" subtitle="SK 2026 sadzby — diéty + amortizácia auta + spotreba PHM" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>

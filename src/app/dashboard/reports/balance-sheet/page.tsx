@@ -69,7 +69,7 @@ export default async function BalanceSheetPage({ searchParams }: { searchParams:
 
   return (
     <div className="p-4 sm:p-8 max-w-6xl">
-      <PageHeader title={`Súvaha ${y}`} subtitle="Stav aktív a pasív k 31.12. zo zaúčtovaných operácií" />
+      <PageHeader back={{ href: "/dashboard/reports" }} title={`Súvaha ${y}`} subtitle="Stav aktív a pasív k 31.12. zo zaúčtovaných operácií" />
       <div className="grid md:grid-cols-2 gap-4">
         <Card>
           <CardHeader title="AKTÍVA" subtitle={fmtEur(sumAssets)} />

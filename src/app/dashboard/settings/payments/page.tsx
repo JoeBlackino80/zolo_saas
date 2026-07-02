@@ -53,10 +53,7 @@ export default function PaymentsSettingsPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť na nastavenia
-      </Link>
-      <PageHeader title="Platby (Stripe)" subtitle="Generuj payment linky pre tvojich klientov" />
+      <PageHeader back={{ href: "/dashboard/settings" }} title="Platby (Stripe)" subtitle="Generuj payment linky pre tvojich klientov" />
 
       <Card>
         <CardHeader title="Vyber firmu" />

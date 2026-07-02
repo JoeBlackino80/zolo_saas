@@ -15,10 +15,7 @@ export default function IntrastatPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/reports" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="INTRASTAT" subtitle="Hlásenie pre Štatistický úrad — pohyb tovaru v rámci EÚ" />
+      <PageHeader back={{ href: "/dashboard/reports" }} title="INTRASTAT" subtitle="Hlásenie pre Štatistický úrad — pohyb tovaru v rámci EÚ" />
 
       <Card>
         <div className="p-5 space-y-4">

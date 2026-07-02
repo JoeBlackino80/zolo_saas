@@ -50,7 +50,7 @@ export default async function SecurityPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <PageHeader title="Bezpečnosť" subtitle="História prihlásení a aktivita účtu" />
+      <PageHeader back={{ href: "/dashboard/settings" }} title="Bezpečnosť" subtitle="História prihlásení a aktivita účtu" />
 
       <Card>
         <CardHeader title="Posledných 50 prihlásení" />

@@ -43,8 +43,7 @@ export default function NewProjectPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-2xl">
-      <Link href="/dashboard/projects" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3"><ArrowLeft size={14} /> Späť</Link>
-      <PageHeader title="Nový projekt" />
+      <PageHeader back={{ href: "/dashboard/projects" }} title="Nový projekt" />
 
       <form onSubmit={save} className="space-y-4">
         <Card>

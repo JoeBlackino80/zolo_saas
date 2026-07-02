@@ -66,7 +66,7 @@ export default async function CashFlowPage({ searchParams }: { searchParams: Pro
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <PageHeader title={`Cash flow výkaz ${y}`} subtitle="Skutočné peňažné toky cez 211 a 221 účty" />
+      <PageHeader back={{ href: "/dashboard/reports" }} title={`Cash flow výkaz ${y}`} subtitle="Skutočné peňažné toky cez 211 a 221 účty" />
 
       <div className="grid grid-cols-3 gap-3 mb-4">
         <Card><div className="p-5"><div className="text-xs text-zinc-500 font-semibold uppercase">Stav na začiatku</div><div className="text-2xl font-bold mt-1 font-mono">{fmtEur(totalCashStart)}</div></div></Card>

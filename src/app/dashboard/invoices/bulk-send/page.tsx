@@ -74,10 +74,7 @@ export default function BulkSendPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-6xl">
-      <Link href="/dashboard/invoices" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Hromadné odoslanie faktúr" subtitle={`${invs.length} otvorených · ${withEmail} s emailom · ${withoutEmail} bez emailu`} />
+      <PageHeader back={{ href: "/dashboard/invoices" }} title="Hromadné odoslanie faktúr" subtitle={`${invs.length} otvorených · ${withEmail} s emailom · ${withoutEmail} bez emailu`} />
 
       <Card>
         <div className="px-5 py-3 border-b border-zinc-100 flex items-center justify-between">

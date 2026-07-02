@@ -63,10 +63,7 @@ export default function NewAssetPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/assets" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť na majetok
-      </Link>
-      <PageHeader title="Nový majetok" subtitle="DHM / DNM s automatickým výpočtom odpisov podľa § 26 ZDP" />
+      <PageHeader back={{ href: "/dashboard/assets" }} title="Nový majetok" subtitle="DHM / DNM s automatickým výpočtom odpisov podľa § 26 ZDP" />
 
       <form onSubmit={save} className="space-y-4">
         <Card>

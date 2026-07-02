@@ -54,7 +54,7 @@ export default async function IncomeStatementPage({ searchParams }: { searchPara
 
   return (
     <div className="p-4 sm:p-8 max-w-6xl">
-      <PageHeader title={`Výkaz ziskov a strát ${y}`} subtitle="Náklady, výnosy a výsledok hospodárenia" />
+      <PageHeader back={{ href: "/dashboard/reports" }} title={`Výkaz ziskov a strát ${y}`} subtitle="Náklady, výnosy a výsledok hospodárenia" />
       <div className="grid md:grid-cols-2 gap-4 mb-4">
         <Card>
           <CardHeader title="VÝNOSY" subtitle={fmtEur(sumRevs)} />

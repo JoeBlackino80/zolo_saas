@@ -54,10 +54,7 @@ export default async function VatCoefficientPage({ searchParams }: { searchParam
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/vat" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title={`Koeficient DPH ${y}`} subtitle="Pomerné odpočítavanie DPH pri mixovaných výnosoch (zdaniteľné + oslobodené)" />
+      <PageHeader back={{ href: "/dashboard/vat" }} title={`Koeficient DPH ${y}`} subtitle="Pomerné odpočítavanie DPH pri mixovaných výnosoch (zdaniteľné + oslobodené)" />
 
       <div className="grid grid-cols-3 gap-3 mb-4">
         <Card><div className="p-5"><div className="text-xs text-zinc-500 font-semibold uppercase">Zdaniteľné výnosy</div><div className="text-2xl font-bold mt-1 font-mono">{fmtEur(taxableRev)}</div></div></Card>

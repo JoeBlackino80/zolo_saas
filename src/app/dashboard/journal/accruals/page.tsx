@@ -52,10 +52,7 @@ export default function AccrualsPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-2xl">
-      <Link href="/dashboard/journal" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Časové rozlíšenie" subtitle="Rovnomerné rozloženie nákladu / výnosu na viac mesiacov (381 / 384)" />
+      <PageHeader back={{ href: "/dashboard/journal" }} title="Časové rozlíšenie" subtitle="Rovnomerné rozloženie nákladu / výnosu na viac mesiacov (381 / 384)" />
 
       <Card>
         <div className="p-5 space-y-4">

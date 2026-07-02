@@ -14,10 +14,7 @@ export default function PayrollCalcPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/payroll" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť na mzdy
-      </Link>
-      <PageHeader title="Mzdová kalkulačka 2026" subtitle="Slovenské sadzby SP/ZP/daň podľa zákona č. 595/2003 a 461/2003" />
+      <PageHeader back={{ href: "/dashboard/payroll" }} title="Mzdová kalkulačka 2026" subtitle="Slovenské sadzby SP/ZP/daň podľa zákona č. 595/2003 a 461/2003" />
 
       <div className="grid grid-cols-2 gap-4">
         <Card>

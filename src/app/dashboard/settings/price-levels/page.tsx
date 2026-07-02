@@ -66,10 +66,7 @@ export default function PriceLevelsPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Cenové úrovne" subtitle="Skupiny zákazníkov (VIP, distribútor, retail) so zľavou alebo prirážkou" />
+      <PageHeader back={{ href: "/dashboard/settings" }} title="Cenové úrovne" subtitle="Skupiny zákazníkov (VIP, distribútor, retail) so zľavou alebo prirážkou" />
 
       <Card className="mb-4">
         <div className="p-5">

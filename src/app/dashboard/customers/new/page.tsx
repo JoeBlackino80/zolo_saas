@@ -87,10 +87,7 @@ export default function NewCustomerPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/customers" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť na zoznam
-      </Link>
-      <PageHeader title="Nový zákazník" subtitle="Zadaj IČO — zvyšok sa doplní automaticky z ORSR" />
+      <PageHeader back={{ href: "/dashboard/customers" }} title="Nový zákazník" subtitle="Zadaj IČO — zvyšok sa doplní automaticky z ORSR" />
 
       <form onSubmit={save} className="space-y-4">
         <Card>

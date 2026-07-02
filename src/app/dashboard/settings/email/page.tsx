@@ -79,10 +79,7 @@ export default function EmailTemplatesPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť na nastavenia
-      </Link>
-      <PageHeader title="Email šablóny" subtitle="Texty emailov pre faktúry, upomienky, potvrdenia" />
+      <PageHeader back={{ href: "/dashboard/settings" }} title="Email šablóny" subtitle="Texty emailov pre faktúry, upomienky, potvrdenia" />
 
       <Card className="mb-4">
         <div className="p-5 grid grid-cols-2 gap-4">

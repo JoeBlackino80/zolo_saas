@@ -66,10 +66,7 @@ export default function BulkPostPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-6xl">
-      <Link href="/dashboard/journal" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Hromadné rozúčtovanie" subtitle="Doklady bez denníkového zápisu — hromadne spusti auto-posting" />
+      <PageHeader back={{ href: "/dashboard/journal" }} title="Hromadné rozúčtovanie" subtitle="Doklady bez denníkového zápisu — hromadne spusti auto-posting" />
 
       {loading ? (
         <Card><div className="p-10 text-center text-zinc-500"><Loader2 size={20} className="animate-spin mx-auto mb-2" /> Načítavam…</div></Card>

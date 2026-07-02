@@ -262,10 +262,7 @@ export default function NewInvoicePage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/invoices" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť na zoznam
-      </Link>
-      <PageHeader title="Nový doklad" subtitle="Vystaviť FA, ZF, DO, DL, PPD alebo CP" />
+      <PageHeader back={{ href: "/dashboard/invoices" }} title="Nový doklad" subtitle="Vystaviť FA, ZF, DO, DL, PPD alebo CP" />
 
       <form onSubmit={save} className="space-y-4">
         <Card>

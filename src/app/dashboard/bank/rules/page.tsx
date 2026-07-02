@@ -72,10 +72,7 @@ export default function BankRulesPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/bank" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Pravidlá auto-účtovania" subtitle="Pri importe bankového výpisu sa nezospárované transakcie skúsia napárovať podľa týchto pravidiel" />
+      <PageHeader back={{ href: "/dashboard/bank" }} title="Pravidlá auto-účtovania" subtitle="Pri importe bankového výpisu sa nezospárované transakcie skúsia napárovať podľa týchto pravidiel" />
 
       <Card className="mb-4">
         <div className="p-5">

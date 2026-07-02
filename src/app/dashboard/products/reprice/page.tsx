@@ -70,10 +70,7 @@ export default function RepricePage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
-      <Link href="/dashboard/products" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Hromadné preceňovanie" subtitle="Označ produkty a aplikuj pravidlo na všetky naraz" />
+      <PageHeader back={{ href: "/dashboard/products" }} title="Hromadné preceňovanie" subtitle="Označ produkty a aplikuj pravidlo na všetky naraz" />
 
       <Card className="mb-4">
         <div className="p-5 grid sm:grid-cols-3 gap-3 items-end">

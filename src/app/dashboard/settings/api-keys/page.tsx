@@ -67,10 +67,7 @@ export default function ApiKeysPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
-      <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="API kľúče" subtitle="Pre integrácie / vlastné skripty · REST API na /api/v1/*" />
+      <PageHeader back={{ href: "/dashboard/settings" }} title="API kľúče" subtitle="Pre integrácie / vlastné skripty · REST API na /api/v1/*" />
 
       {lastCreated && (
         <Card className="mb-4 border-emerald-200 bg-emerald-50">

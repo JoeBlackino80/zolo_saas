@@ -81,14 +81,22 @@ export function CardHeader({ title, subtitle, action }: { title: React.ReactNode
   );
 }
 
-export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: React.ReactNode }) {
+export function PageHeader({ title, subtitle, actions, back }: { title: string; subtitle?: string; actions?: React.ReactNode; back?: { href: string; label?: string } }) {
   return (
-    <div className="flex items-start justify-between gap-4 mb-7">
-      <div className="min-w-0">
-        <h1 className="text-[26px] sm:text-[28px] font-bold text-zinc-900 tracking-[-0.02em] leading-tight">{title}</h1>
-        {subtitle && <p className="text-[14px] text-zinc-500 mt-1.5">{subtitle}</p>}
+    <div className="mb-7">
+      {back && (
+        <a href={back.href} className="inline-flex items-center gap-1.5 text-[13px] text-zinc-500 hover:text-zinc-900 transition-colors mb-3 tracking-tight">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+          {back.label || 'Späť'}
+        </a>
+      )}
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-[26px] sm:text-[28px] font-bold text-zinc-900 tracking-[-0.02em] leading-tight">{title}</h1>
+          {subtitle && <p className="text-[14px] text-zinc-500 mt-1.5">{subtitle}</p>}
+        </div>
+        {actions && <div className="flex gap-2 shrink-0">{actions}</div>}
       </div>
-      {actions && <div className="flex gap-2 shrink-0">{actions}</div>}
     </div>
   );
 }

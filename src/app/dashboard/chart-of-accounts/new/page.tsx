@@ -39,8 +39,7 @@ export default function NewAccountPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-2xl">
-      <Link href="/dashboard/chart-of-accounts" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3"><ArrowLeft size={14} /> Späť</Link>
-      <PageHeader title="Nový účet" subtitle="Pridať do účtovej osnovy" />
+      <PageHeader back={{ href: "/dashboard/chart-of-accounts" }} title="Nový účet" subtitle="Pridať do účtovej osnovy" />
 
       <form onSubmit={save} className="space-y-4">
         <Card>

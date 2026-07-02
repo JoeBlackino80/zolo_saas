@@ -97,10 +97,7 @@ export default function TransferPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/stock-movements" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Prevodka medzi skladmi" subtitle="Tovar z jedného skladu do druhého · žiadny účtovný dopad" />
+      <PageHeader back={{ href: "/dashboard/stock-movements" }} title="Prevodka medzi skladmi" subtitle="Tovar z jedného skladu do druhého · žiadny účtovný dopad" />
       <form onSubmit={save} className="space-y-4">
         <Card>
           <div className="p-5 grid sm:grid-cols-2 gap-4">

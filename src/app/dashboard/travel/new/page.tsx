@@ -57,8 +57,7 @@ export default function NewTravelPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <Link href="/dashboard/travel" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3"><ArrowLeft size={14} /> Späť</Link>
-      <PageHeader title="Nový cestovný príkaz" />
+      <PageHeader back={{ href: "/dashboard/travel" }} title="Nový cestovný príkaz" />
 
       <form onSubmit={save} className="space-y-4">
         <Card>

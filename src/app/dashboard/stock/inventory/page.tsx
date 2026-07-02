@@ -108,10 +108,7 @@ export default function InventoryPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-6xl">
-      <Link href="/dashboard/stock" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
-        <ArrowLeft size={14} /> Späť
-      </Link>
-      <PageHeader title="Inventúra skladu" subtitle="Spočítaj skutočný stav a porovnaj so systémovým" />
+      <PageHeader back={{ href: "/dashboard/stock" }} title="Inventúra skladu" subtitle="Spočítaj skutočný stav a porovnaj so systémovým" />
 
       <Card className="mb-4">
         <div className="p-5 grid sm:grid-cols-3 gap-3 items-end">
