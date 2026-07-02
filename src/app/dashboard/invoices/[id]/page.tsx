@@ -75,7 +75,11 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             )}
             {(invoice.type === 'proforma' || invoice.type === 'quote' || invoice.type === 'delivery_note') && (
               <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=invoice&parent=${invoice.id}`}>
-                <Button variant="primary">Vystaviť FA</Button>
+                <Button variant="primary" title={invoice.type === 'proforma' && Number(invoice.paid_amount || 0) > 0 ? `Auto odpočet zálohy ${Number(invoice.paid_amount).toFixed(2)} €` : undefined}>
+                  {invoice.type === 'proforma' && Number(invoice.paid_amount || 0) > 0
+                    ? `Vystaviť FA (−${Number(invoice.paid_amount).toFixed(2)} €)`
+                    : 'Vystaviť FA'}
+                </Button>
               </Link>
             )}
             <Link href={`/dashboard/invoices/${invoice.id}/edit`}>

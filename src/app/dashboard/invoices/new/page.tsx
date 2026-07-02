@@ -138,18 +138,43 @@ export default function NewInvoicePage() {
               customer_ic_dph: parent.customer_ic_dph || '',
               currency: parent.currency || 'EUR',
               customer_email: parent.customer_email || f.customer_email,
-              notes: presetType === 'credit_note' ? `Dobropis k ${parent.number}` : presetType === 'storno' ? `Storno ${parent.number}` : presetType === 'proforma' ? `Zálohová k ${parent.number}` : parent.notes || f.notes,
+              notes: presetType === 'credit_note' ? `Dobropis k ${parent.number}`
+                : presetType === 'storno' ? `Storno ${parent.number}`
+                : presetType === 'proforma' ? `Zálohová k ${parent.number}`
+                : (parent.type === 'proforma' && presetType === 'invoice' && Number(parent.paid_amount || 0) > 0)
+                  ? `Vystavené na základe ZF ${parent.number}. Odpočítaná záloha: ${Number(parent.paid_amount).toFixed(2)} €`
+                  : parent.notes || f.notes,
               // parent_invoice_id only when this is a derivative doc, NOT plain duplicate
               parent_invoice_id: search.get('parent') ? parent.id : null,
             }));
             if (Array.isArray(parent.invoice_items) && parent.invoice_items.length) {
-              setItems(parent.invoice_items.map((it: { description: string; quantity: number; unit: string; unit_price: number; vat_rate: number }) => ({
+              const clonedItems: Item[] = parent.invoice_items.map((it: { description: string; quantity: number; unit: string; unit_price: number; vat_rate: number }) => ({
                 description: it.description,
                 quantity: it.quantity * signFlip,
                 unit: it.unit,
                 unit_price: it.unit_price,
                 vat_rate: it.vat_rate,
-              })));
+              }));
+
+              // ZF → FA: pridaj "Odpočet zálohy" ako mínusový riadok ak
+              // zálohovka bola aspoň čiastočne uhradená.
+              const isProformaToInvoice = parent.type === 'proforma' && presetType === 'invoice';
+              const advancePaid = Number(parent.paid_amount || 0);
+              if (isProformaToInvoice && advancePaid > 0) {
+                // Zvoľ dominantnú VAT rate z originálnych položiek pre správne
+                // rozdelenie základu a DPH pri odpočte.
+                const dominantVat = clonedItems[0]?.vat_rate ?? 23;
+                const advanceBase = +(advancePaid / (1 + dominantVat / 100)).toFixed(2);
+                clonedItems.push({
+                  description: `Odpočet zálohy z ${parent.number} (uhradená ${(parent.paid_amount ? (Number(advancePaid).toFixed(2) + ' €') : '')})`,
+                  quantity: 1,
+                  unit: 'ks',
+                  unit_price: -advanceBase,
+                  vat_rate: dominantVat,
+                });
+              }
+
+              setItems(clonedItems);
             }
             await peekNumber(parent.company_id || cid, presetType || 'invoice');
             return;
