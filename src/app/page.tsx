@@ -237,7 +237,9 @@ export default async function Home() {
             links={[
               { href: '/terms', label: 'Obchodné podmienky' },
               { href: '/privacy', label: 'Ochrana údajov' },
+              { href: '/dpa', label: 'DPA (GDPR)' },
               { href: '/cookies', label: 'Cookies' },
+              { href: '/docs', label: 'API dokumentácia' },
             ]}
           />
         </div>
