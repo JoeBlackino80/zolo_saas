@@ -51,14 +51,27 @@ const PROMPT = `Si expert na slovenské účtovníctvo. Analyzuj túto faktúru 
   "vatRate": číslo (23, 19, 10 alebo 0),
   "items": [{"description":"...","quantity":1,"unit_price":0,"vat_rate":23}],
   "kind": "in",
-  "confidence": "high | medium | low"
+  "confidence": "high | medium | low",
+  "suggestedAccount": "504 | 518 | 511 | 512 | 513 | 501 | 132 (predkontácia)",
+  "suggestedAccountReason": "krátke vysvetlenie prečo tento účet"
 }
 
 kind je vždy "in" (my sme príjemca).
 Ak nejaké pole nie je viditeľné, dá null.
 Sumy sú čísla bez menových značiek (napr. 123.45).
 Ak sú položky nečitateľné, items môže byť prázdny [] a použiješ len subtotal/vatAmount/total.
-Ak je viac položiek s rôznymi DPH sadzbami, items zoznam ich detailizuje.`;
+Ak je viac položiek s rôznymi DPH sadzbami, items zoznam ich detailizuje.
+
+Predkontácia (suggestedAccount) — vyber najvhodnejší účet MD podľa
+podnikania:
+  504 — Predaný tovar (obchodné firmy)
+  518 — Ostatné služby (IT, poradenstvo, telko, marketing)
+  511 — Opravy a udržiavanie
+  512 — Cestovné (letenka, hotel, taxík)
+  513 — Reprezentácia (obed s klientom, kvety)
+  501 — Spotreba materiálu (kancelárske potreby)
+  132 — Tovar na sklade (nákup na predaj)
+Vyber JEDEN kód podľa dominantného charakteru dokladu.`;
 
 async function extractOne(base64: string, mediaType: string): Promise<ExtractedInvoice> {
   const apiKey = process.env.ANTHROPIC_API_KEY;

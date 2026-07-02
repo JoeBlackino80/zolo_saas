@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation';
 import { Card, CardHeader } from '@/components/ui';
 import { fmtEur, fmtDate } from '@/lib/utils';
 import Link from 'next/link';
-import { TrendingUp, TrendingDown, FileText, Building2, Clock, Calendar, Plus, ArrowUpRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, FileText, Building2, Clock, Calendar, Plus, ArrowUpRight, Percent } from 'lucide-react';
+import { aggregateVat } from '@/lib/vat';
 
 export default async function DashboardPage() {
   const sb = await createClient();
@@ -13,12 +14,34 @@ export default async function DashboardPage() {
   const thisMonthStart = `${thisMonth}-01`;
   const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1).toISOString().slice(0, 10);
 
-  const [{ data: companies }, { data: invoices }, { data: recent }, { data: overdue }] = await Promise.all([
+  const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1).toISOString().slice(0, 10);
+
+  const [{ data: companies }, { data: invoices }, { data: recent }, { data: overdue }, { data: vatOut }, { data: vatIn }] = await Promise.all([
     sb.from('companies').select('id, name').is('deleted_at', null),
     sb.from('invoices').select('total, type, status, issue_date, paid_amount').is('deleted_at', null),
     sb.from('invoices').select('id, number, customer_name, total, status, issue_date, companies(name)').is('deleted_at', null).order('issue_date', { ascending: false }).limit(8),
     sb.from('invoices').select('id, number, customer_name, total, due_date').is('deleted_at', null).eq('type', 'invoice').in('status', ['issued', 'sent', 'partially_paid']).lt('due_date', today.toISOString().slice(0, 10)).limit(5),
+    // DPH agregát za tento mesiac — výstupné plnenia (predaj)
+    sb.from('invoices')
+      .select('invoice_items(vat_rate, subtotal, vat_amount)')
+      .in('type', ['invoice', 'credit_note'])
+      .gte('delivery_date', thisMonthStart)
+      .lt('delivery_date', nextMonthStart)
+      .is('deleted_at', null),
+    // DPH agregát za tento mesiac — vstupné plnenia (nákupy)
+    sb.from('invoices')
+      .select('invoice_items(vat_rate, subtotal, vat_amount)')
+      .eq('type', 'received_invoice')
+      .gte('delivery_date', thisMonthStart)
+      .lt('delivery_date', nextMonthStart)
+      .is('deleted_at', null),
   ]);
+
+  type RawItem = { vat_rate: number; subtotal: number; vat_amount: number };
+  const outItems: RawItem[] = (vatOut || []).flatMap((i) => (i.invoice_items as RawItem[]) || []);
+  const inItems: RawItem[] = (vatIn || []).flatMap((i) => (i.invoice_items as RawItem[]) || []);
+  const vatTotals = aggregateVat(outItems, inItems);
+  const vatDeadline = `25. ${String(today.getMonth() + 2).padStart(2, '0')}.`;
 
   const totalCompanies = companies?.length || 0;
   const allInv = invoices || [];
@@ -97,7 +120,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Secondary metrics — smaller, denser */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
         <MetricCard
           label="Nezaplatené"
           value={fmtEur(unpaidTotal)}
@@ -106,6 +129,14 @@ export default async function DashboardPage() {
           valueVariant="red"
           icon={<Clock size={14} />}
           href="/dashboard/receivables"
+        />
+        <MetricCard
+          label={vatTotals.obligation >= 0 ? `DPH k odvodu · do ${vatDeadline}` : `Nadmerný odpočet · do ${vatDeadline}`}
+          value={fmtEur(Math.abs(vatTotals.obligation))}
+          hint={vatTotals.obligation >= 0 ? 'do štátneho rozpočtu' : 'štát vráti'}
+          valueVariant={vatTotals.obligation >= 0 ? 'red' : 'green'}
+          icon={<Percent size={14} />}
+          href="/dashboard/vat-return"
         />
         <MetricCard
           label="Faktúry tento rok"
