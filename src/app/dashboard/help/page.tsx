@@ -1,5 +1,6 @@
 import { PageHeader, Card, CardHeader } from '@/components/ui';
-import { Mail, MessageSquare, Sparkles } from 'lucide-react';
+import { Mail, MessageSquare, Sparkles, PlayCircle } from 'lucide-react';
+import SeedSampleDataButton from './seed-button';
 
 export default function HelpPage() {
   return (
@@ -55,10 +56,48 @@ export default function HelpPage() {
         </div>
       </Card>
 
+      <Card className="mb-4">
+        <CardHeader title="Časté otázky (FAQ)" />
+        <div className="p-5 space-y-3">
+          <Faq q="Prečo mi FA nezaúčtovala DPH správne?"
+               a="Skontroluj či máš v položkách zadaný správny vat_rate (23/19/10/0). Pri type='received_invoice' (PFA) sa DPH ide do MD 34301 (nárok na odpočet), pri type='invoice' do D 34302 (výstupná). Ak vidíš MD 311 / D 602 ale žiadny 34302, položka má vat_rate=0." />
+          <Faq q="Ako naimportujem PFA-čky ktoré dostávam mailom?"
+               a="Otvor Fakturácia → Prijaté faktúry → drag-drop PDF alebo foto. AI (Claude Vision) automaticky vyplní číslo, dátum, dodávateľa, sumy, DPH. Skontroluj, uprav ak treba, uložit. Zaúčtuje sa automaticky." />
+          <Faq q="Ako prepojím zálohovú (ZF) na ostrú FA so zalohou?"
+               a="Vystav ZF. Označ zaplatené (napr. 500€). Otvor detail ZF → klik Vystaviť FA. Nová FA sa vytvorí s automatickým Odpočet zálohy riadkom a paid_amount sa prevedie. K úhrade uvidíš len zvyšok." />
+          <Faq q="Prečo sa mi PFA neobjaví v KV DPH B1 sekcii?"
+               a="B1 sekcia obsahuje len PFA od SK dodávateľov (IČ DPH začína SK). Ak dodávateľ nemá IČ DPH alebo je zahraničný, pôjde do B2 (>=100€) alebo B3 (<100€)." />
+          <Faq q="Ako fungujú opakované faktúry?"
+               a="V Fakturácia → Opakované → Nová vytvor šablónu (mesačne/štvrťročne/ročne). pg_cron denne o 6:00 UTC prejde všetky aktívne šablóny a vygeneruje FA ku next_generation_date. Ak máš auto_send zapnuté, hneď odošle mailom." />
+          <Faq q="Kedy chodia pripomienky platby?"
+               a="Automaticky 3 dni PRED splatnosťou (jemné), v deň splatnosti (pripomínam), 7 dní PO (dôraznejšie), 30 dní PO (posledná). Chodia z noreply@zolo.sk cez Resend. Vypneš per FA pri vystavení (checkbox Automatické pripomienky)." />
+          <Faq q="Ako spárujem bankové platby s FA?"
+               a="Banka → Import výpisu (CSV) → nahodíš CSV zo SLSP/Tatra/VÚB/Fio. Systém automaticky spáruje transakcie s otvorenými FA cez variabilný symbol. Klikni Označiť N FA ako zaplatené → hromadne sa auto-zaúčtujú MD 221 / D 311." />
+          <Faq q="Ako platím všetkých dodávateľov naraz?"
+               a="Financie → Záväzky → označ checkboxy PFA-čiek → klik SEPA XML. Stiahne sa pain.001.001.03 súbor. Nahodíš do svojej banky (SLSP/Tatra podporujú SEPA batch), autorizuješ jednou platbou." />
+        </div>
+      </Card>
+
+      <Card className="mb-4">
+        <CardHeader title="Vyskúšaj s ukážkovými dátami" subtitle="Vytvorí 3 klientov, 3 produkty, 3 vydané FA + 1 PFA v tvojej firme" />
+        <div className="p-5">
+          <SeedSampleDataButton />
+          <p className="text-[12px] text-zinc-500 mt-3">
+            Ukážkové dáta obsahujú 1 zaplatenú FA, 1 čerstvú FA, 1 overdue FA a 1 nezaplatenú PFA — dobré na demo alebo skúšku funkcionality. Môžeš ich zmazať kedykoľvek.
+          </p>
+        </div>
+      </Card>
+
       <Card>
         <CardHeader title="Klávesové skratky" />
         <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-          <KbShortcut keys="⌘K" desc="Rýchle hľadanie (firmy, faktúry, zákazníci)" />
+          <KbShortcut keys="⌘K" desc="Príkazová paleta (rýchly search)" />
+          <KbShortcut keys="⌘D" desc="Skok na Dashboard" />
+          <KbShortcut keys="⌘I" desc="Skok na Fakturácia" />
+          <KbShortcut keys="⌘U" desc="Skok na Zákazníci" />
+          <KbShortcut keys="⌘B" desc="Skok na Banka" />
+          <KbShortcut keys="⌘J" desc="Skok na Denník" />
+          <KbShortcut keys="⌘R" desc="Skok na Reporty" />
           <KbShortcut keys="Esc" desc="Zavrieť modálne okno" />
         </div>
       </Card>
@@ -85,5 +124,17 @@ function KbShortcut({ keys, desc }: { keys: string; desc: string }) {
       <kbd className="px-2.5 py-1 bg-zinc-100 border border-zinc-200 rounded text-xs font-mono font-semibold">{keys}</kbd>
       <span className="text-zinc-700">{desc}</span>
     </div>
+  );
+}
+
+function Faq({ q, a }: { q: string; a: string }) {
+  return (
+    <details className="group border-b border-zinc-100 last:border-b-0 pb-3 last:pb-0">
+      <summary className="cursor-pointer list-none flex items-center justify-between gap-3 py-1 hover:bg-zinc-50 rounded px-2 -mx-2">
+        <span className="text-[13.5px] font-medium text-zinc-900">{q}</span>
+        <PlayCircle size={14} className="text-zinc-400 group-open:rotate-90 transition-transform shrink-0" />
+      </summary>
+      <p className="mt-2 text-[13px] text-zinc-600 leading-relaxed px-2 -mx-2">{a}</p>
+    </details>
   );
 }
