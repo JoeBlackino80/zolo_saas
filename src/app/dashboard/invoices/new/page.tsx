@@ -319,6 +319,18 @@ export default function NewInvoicePage() {
     const { data: inv, error: invErr } = await sb.from('invoices').insert([invoice]).select().single();
     if (invErr) { setError(invErr.message); setSaving(false); return; }
 
+    // ZF → FA konverzia: prenieß paid_amount zo zálohy do novej FA
+    // aby FA hneď ukazovala čiastočnú platbu, a označ ZF ako converted.
+    if (form.type === 'invoice' && form.parent_invoice_id) {
+      const { data: parent } = await sb.from('invoices').select('type, paid_amount, status').eq('id', form.parent_invoice_id).maybeSingle();
+      if (parent?.type === 'proforma' && Number(parent.paid_amount || 0) > 0) {
+        // Prenes advance ako paid_amount na novú FA
+        await sb.from('invoices').update({ paid_amount: Number(parent.paid_amount) }).eq('id', inv.id);
+        // ZF sa označí ako converted (status) — už sa z nej nedá vystaviť ďalšia FA
+        await sb.from('invoices').update({ status: 'converted', paid_amount: Number(parent.paid_amount) }).eq('id', form.parent_invoice_id);
+      }
+    }
+
     const itemRows = items.map((it, idx) => ({
       company_id: form.company_id,
       invoice_id: inv.id,
