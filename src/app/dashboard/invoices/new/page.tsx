@@ -7,6 +7,7 @@ import { Button, Input, Field, Card, CardHeader, PageHeader, Select } from '@/co
 import { ArrowLeft, Plus, Trash2, RotateCcw, UserPlus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { fmtEur } from '@/lib/utils';
+import AddContactModal, { type NewContact } from '@/components/AddContactModal';
 
 type Item = {
   description: string;
@@ -58,6 +59,7 @@ export default function NewInvoicePage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [contactQuery, setContactQuery] = useState('');
   const [showContactDropdown, setShowContactDropdown] = useState(false);
+  const [showAddContactModal, setShowAddContactModal] = useState(false);
 
   // Fetch contacts when company changes
   useEffect(() => {
@@ -353,9 +355,9 @@ export default function NewInvoicePage() {
             title={form.type === 'received_invoice' ? 'Dodávateľ' : 'Odberateľ'}
             subtitle={form.type === 'received_invoice' ? 'Kto ti vystavil FA' : undefined}
             action={
-              <Link href={`/dashboard/customers/new?return=${encodeURIComponent('/dashboard/invoices/new')}`} target="_blank">
-                <Button type="button" variant="ghost"><UserPlus size={14} /> Pridať nového</Button>
-              </Link>
+              <Button type="button" variant="ghost" onClick={() => setShowAddContactModal(true)} disabled={!form.company_id}>
+                <UserPlus size={14} /> Pridať nového
+              </Button>
             }
           />
           <div className="p-5 space-y-4">
@@ -394,7 +396,10 @@ export default function NewInvoicePage() {
                 )}
                 {showContactDropdown && filteredContacts.length === 0 && contactQuery && (
                   <div className="absolute z-10 mt-1 w-full bg-white border border-zinc-200 rounded-lg shadow-lg p-3 text-sm text-zinc-500">
-                    Žiadny zákazník &quot;{contactQuery}&quot;. <Link href={`/dashboard/customers/new`} target="_blank" className="text-zinc-900 hover:underline">Pridať nového →</Link>
+                    Žiadny zákazník &quot;{contactQuery}&quot;.{' '}
+                    <button type="button" onClick={() => setShowAddContactModal(true)} className="text-zinc-900 hover:underline">
+                      Pridať nového →
+                    </button>
                   </div>
                 )}
               </div>
@@ -505,6 +510,28 @@ export default function NewInvoicePage() {
           <Link href="/dashboard/invoices"><Button type="button" variant="ghost">Zrušiť</Button></Link>
         </div>
       </form>
+
+      {showAddContactModal && form.company_id && (
+        <AddContactModal
+          companyId={form.company_id}
+          initialType={form.type === 'received_invoice' ? 'supplier' : 'customer'}
+          onClose={() => setShowAddContactModal(false)}
+          onCreated={(contact: NewContact) => {
+            // Auto-populate + auto-select the new contact
+            setForm((f) => ({
+              ...f,
+              contact_id: contact.id,
+              customer_name: contact.name,
+              customer_ico: contact.ico || '',
+              customer_ic_dph: contact.ic_dph || '',
+              customer_email: contact.email || f.customer_email,
+            }));
+            setContacts((prev) => [...prev, contact as unknown as Contact]);
+            setContactQuery(contact.name);
+            setShowAddContactModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }
