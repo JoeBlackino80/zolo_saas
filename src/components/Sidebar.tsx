@@ -96,7 +96,7 @@ const SECTIONS: NavSection[] = [
         children: [
           { label: 'Všetky doklady',   href: '/dashboard/invoices' },
           { label: 'Vydané faktúry',   href: '/dashboard/invoices?type=invoice' },
-          { label: 'Prijaté faktúry',   href: '/dashboard/invoices?type=received_invoice' },
+          { label: 'Prijaté faktúry',   href: '/dashboard/invoices/received' },
           { label: 'Zálohové faktúry',  href: '/dashboard/invoices?type=proforma' },
           { label: 'Dobropisy',         href: '/dashboard/invoices?type=credit_note' },
           { label: 'Storno',            href: '/dashboard/invoices?type=storno' },
