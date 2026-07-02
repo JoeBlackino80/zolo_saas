@@ -16,6 +16,20 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   applicationName: 'ZOLO',
   keywords: ['účtovníctvo', 'fakturácia', 'DPH', 'mzdy', 'eKasa', 'eDane', 'Slovensko', 'SaaS'],
+  appleWebApp: {
+    capable: true,
+    title: 'ZOLO',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    icon: [
+      { url: '/icon-192.svg', sizes: '192x192', type: 'image/svg+xml' },
+      { url: '/icon-512.svg', sizes: '512x512', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/icon-192.svg', sizes: '192x192', type: 'image/svg+xml' },
+    ],
+  },
   openGraph: {
     type: 'website',
     locale: 'sk_SK',
@@ -32,9 +46,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#3b82f6',
+  themeColor: '#18181b',
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

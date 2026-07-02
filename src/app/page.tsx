@@ -60,16 +60,16 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Product showcase strip */}
+      {/* Product showcase — dashboard mockup */}
       <section className="px-6 pb-20 sm:pb-28">
         <div className="max-w-6xl mx-auto">
-          <div className="relative bg-zinc-50 rounded-3xl overflow-hidden border border-zinc-100">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/40 pointer-events-none" />
-            <div className="p-8 sm:p-12 grid sm:grid-cols-3 gap-8 sm:gap-12 relative">
-              <Stat number="91" label="cloudových tabuliek" sub="Účtovníctvo · sklady · mzdy · DPH" />
-              <Stat number="3" label="XML výkazov 1 klikom" sub="DP DPH · KV · SV" />
-              <Stat number="∞" label="firiem pod účtom" sub="Multi-tenant cez user_company_roles" />
-            </div>
+          <div className="relative bg-gradient-to-b from-zinc-50 to-white rounded-3xl overflow-hidden border border-zinc-100 p-4 sm:p-8">
+            <DashboardMockup />
+          </div>
+          <div className="mt-12 grid sm:grid-cols-3 gap-8 sm:gap-12">
+            <Stat number="91" label="cloudových tabuliek" sub="Účtovníctvo · sklady · mzdy · DPH" />
+            <Stat number="8" label="XML výkazov 1 klikom" sub="DP DPH · KV · SV · DPPO · DPFO-A/B · DPMV" />
+            <Stat number="∞" label="firiem pod účtom" sub="Multi-tenant, tímové role" />
           </div>
         </div>
       </section>
@@ -246,6 +246,86 @@ export default async function Home() {
           <div>Hostované v EÚ · Made in Slovakia</div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function DashboardMockup() {
+  return (
+    <div className="rounded-2xl overflow-hidden bg-white shadow-xl ring-1 ring-zinc-900/5">
+      {/* Browser chrome */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-100 bg-zinc-50">
+        <div className="flex gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+        </div>
+        <div className="flex-1 flex justify-center">
+          <div className="text-[10px] font-mono text-zinc-500 bg-white px-3 py-1 rounded border border-zinc-200">
+            app.zolo.sk/dashboard
+          </div>
+        </div>
+      </div>
+      {/* App content */}
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-48 bg-zinc-950 text-zinc-300 p-3 hidden sm:block">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-6 h-6 rounded-md bg-white text-zinc-900 flex items-center justify-center font-black text-xs">Z</div>
+            <span className="font-semibold text-white text-xs">ZOLO</span>
+          </div>
+          <div className="space-y-1 text-[10px]">
+            {['Prehľad', 'Predaj', 'Financie', 'Účtovníctvo', 'Dane', 'Reporty', 'Nastavenia'].map((s, i) => (
+              <div key={s} className={`px-2 py-1 rounded ${i === 0 ? 'bg-white/[0.08] text-white' : 'text-zinc-500'}`}>
+                {s}
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Main */}
+        <div className="flex-1 p-5 bg-white">
+          <div className="text-[9px] uppercase tracking-widest text-zinc-500 font-semibold mb-2">Prehľad · Jún 2026</div>
+          <div className="text-[32px] sm:text-[42px] font-bold tracking-[-0.03em] leading-none">42 380 €</div>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[10px] text-zinc-500">tržby tento mesiac</span>
+            <span className="text-[9px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded-full font-semibold">+18.4%</span>
+          </div>
+          {/* Metric cards */}
+          <div className="grid grid-cols-4 gap-2 mt-5">
+            {[
+              { label: 'Nezaplatené', value: '8 240 €', color: 'text-red-600' },
+              { label: 'DPH k odvodu', value: '2 156 €', color: 'text-red-600' },
+              { label: 'Faktúry', value: '127', color: 'text-zinc-900' },
+              { label: 'Firmy', value: '3', color: 'text-zinc-900' },
+            ].map((m) => (
+              <div key={m.label} className="border border-zinc-100 rounded-lg p-2">
+                <div className="text-[8px] uppercase tracking-wider text-zinc-500 font-semibold">{m.label}</div>
+                <div className={`text-[14px] font-bold tabular-nums mt-1 ${m.color}`}>{m.value}</div>
+              </div>
+            ))}
+          </div>
+          {/* Recent list */}
+          <div className="mt-5 border border-zinc-100 rounded-lg">
+            <div className="text-[10px] font-semibold text-zinc-900 px-3 py-2 border-b border-zinc-100 flex justify-between">
+              <span>Posledné doklady</span>
+              <span className="text-zinc-400 font-normal">Všetky →</span>
+            </div>
+            {[
+              { n: 'FA-2026-0134', c: 'Alza.sk s.r.o.', a: '369,00 €' },
+              { n: 'FA-2026-0133', c: 'Slovnaft a.s.', a: '1 107,00 €' },
+              { n: 'PFA-DPD-0012', c: 'DPD SK s.r.o.', a: '55,35 €' },
+            ].map((r) => (
+              <div key={r.n} className="flex items-center justify-between px-3 py-2 text-[10px] border-b border-zinc-50 last:border-0">
+                <div>
+                  <div className="font-mono font-medium text-zinc-900">{r.n}</div>
+                  <div className="text-zinc-500">{r.c}</div>
+                </div>
+                <div className="font-mono font-semibold tabular-nums">{r.a}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
