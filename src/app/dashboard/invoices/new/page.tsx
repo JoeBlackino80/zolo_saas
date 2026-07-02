@@ -4,12 +4,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input, Field, Card, CardHeader, PageHeader, Select } from '@/components/ui';
-import { ArrowLeft, Plus, Trash2, RotateCcw, UserPlus, Search } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, RotateCcw, UserPlus, Search, Package } from 'lucide-react';
 import Link from 'next/link';
 import { fmtEur } from '@/lib/utils';
 import AddContactModal, { type NewContact } from '@/components/AddContactModal';
+import ProductPickerModal, { type PickedProduct } from '@/components/ProductPickerModal';
 
 type Item = {
+  product_id?: string | null;
+  product_sku?: string | null;
   description: string;
   quantity: number;
   unit: string;
@@ -64,6 +67,7 @@ export default function NewInvoicePage() {
   const [contactQuery, setContactQuery] = useState('');
   const [showContactDropdown, setShowContactDropdown] = useState(false);
   const [showAddContactModal, setShowAddContactModal] = useState(false);
+  const [productPickerRow, setProductPickerRow] = useState<number | null>(null);
 
   // Fetch contacts when company changes
   useEffect(() => {
@@ -294,6 +298,7 @@ export default function NewInvoicePage() {
       company_id: form.company_id,
       invoice_id: inv.id,
       position: idx + 1,
+      product_id: it.product_id ?? null,
       description: it.description,
       quantity: it.quantity,
       unit: it.unit,
@@ -522,7 +527,22 @@ export default function NewInvoicePage() {
             {items.map((it, i) => (
               <div key={i} className="grid grid-cols-[1fr_90px_80px_120px_90px_60px_auto] gap-2 items-end">
                 <Field label={i === 0 ? 'Popis' : ''}>
-                  <Input value={it.description} onChange={(e) => setItem(i, 'description', e.target.value)} placeholder="Tovar / služba" />
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setProductPickerRow(i)}
+                      className={`shrink-0 flex items-center gap-1 px-2.5 rounded-lg text-[11px] font-mono tracking-tight border transition-colors ${
+                        it.product_id
+                          ? 'bg-zinc-900 border-zinc-900 text-white hover:bg-zinc-800'
+                          : 'bg-white border-zinc-200 text-zinc-500 hover:border-zinc-300 hover:text-zinc-900'
+                      }`}
+                      title={it.product_id ? `Prepojené: ${it.product_sku || '—'}` : 'Vybrať z cenníka'}
+                    >
+                      <Package size={11} />
+                      {it.product_sku || 'Kód'}
+                    </button>
+                    <Input value={it.description} onChange={(e) => setItem(i, 'description', e.target.value)} placeholder="Tovar / služba" />
+                  </div>
                 </Field>
                 <Field label={i === 0 ? 'Množstvo' : ''}>
                   <Input
@@ -629,6 +649,27 @@ export default function NewInvoicePage() {
         <option value="sada" />
         <option value="pár" />
       </datalist>
+
+      {productPickerRow !== null && form.company_id && (
+        <ProductPickerModal
+          companyId={form.company_id}
+          onClose={() => setProductPickerRow(null)}
+          onPicked={(p: PickedProduct) => {
+            const idx = productPickerRow;
+            setItems((prev) => prev.map((it, i) => i !== idx ? it : {
+              ...it,
+              product_id: p.id,
+              product_sku: p.sku,
+              description: p.name,
+              unit: p.unit,
+              unit_price: p.selling_price,
+              vat_rate: p.vat_rate,
+              quantity: it.quantity || 1,
+            }));
+            setProductPickerRow(null);
+          }}
+        />
+      )}
 
       {showAddContactModal && form.company_id && (
         <AddContactModal
