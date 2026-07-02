@@ -142,8 +142,9 @@ const SECTIONS: NavSection[] = [
       { icon: Landmark, label: 'Banka', href: '/dashboard/bank', segments: ['bank'], shortcut: '⌘B',
         children: [
           { label: 'Prehľad',            href: '/dashboard/bank' },
-          { label: 'Pravidlá párovania', href: '/dashboard/bank/rules' },
-          { label: 'Platobné príkazy',   href: '/dashboard/bank/payment-orders' },
+          { label: 'Import výpisu (CSV)', href: '/dashboard/bank/import' },
+          { label: 'Pravidlá párovania',  href: '/dashboard/bank/rules' },
+          { label: 'Platobné príkazy',    href: '/dashboard/bank/payment-orders' },
         ],
       },
       { icon: TrendingUp, label: 'Cash flow', href: '/dashboard/cashflow', segments: ['cashflow'] },
