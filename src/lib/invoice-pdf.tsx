@@ -88,29 +88,29 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 const styles = StyleSheet.create({
-  page: { fontFamily: 'Roboto', fontSize: 9.5, padding: 38, color: '#0f172a', lineHeight: 1.5 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, borderBottom: '2 solid #2563eb', paddingBottom: 14 },
+  page: { fontFamily: 'Roboto', fontSize: 9.5, padding: 38, color: '#18181b', lineHeight: 1.5 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, borderBottom: '2 solid #18181b', paddingBottom: 14 },
   brand: { flexDirection: 'column', width: '65%' },
-  brandTitle: { fontSize: 20, fontWeight: 700, color: '#0f172a', letterSpacing: -0.3, marginBottom: 6, lineHeight: 1.15 },
-  brandSubtitle: { fontSize: 9, color: '#64748b', marginTop: 3, lineHeight: 1.4 },
+  brandTitle: { fontSize: 20, fontWeight: 700, color: '#18181b', letterSpacing: -0.3, marginBottom: 6, lineHeight: 1.15 },
+  brandSubtitle: { fontSize: 9, color: '#71717a', marginTop: 3, lineHeight: 1.4 },
   docNumber: { textAlign: 'right', width: '35%' },
-  docType: { fontSize: 10, color: '#2563eb', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 },
-  docNo: { fontSize: 18, fontWeight: 700, marginTop: 4, color: '#0f172a', lineHeight: 1.15 },
+  docType: { fontSize: 10, color: '#18181b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 },
+  docNo: { fontSize: 18, fontWeight: 700, marginTop: 4, color: '#18181b', lineHeight: 1.15 },
   parties: { flexDirection: 'row', gap: 16, marginBottom: 18 },
-  partyBox: { flex: 1, border: '1 solid #e2e8f0', borderRadius: 6, padding: 12 },
-  partyLabel: { fontSize: 8, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.6, fontWeight: 700, marginBottom: 6 },
-  partyName: { fontSize: 11, fontWeight: 700, marginBottom: 4, color: '#0f172a', lineHeight: 1.3 },
-  partyLine: { fontSize: 9, color: '#475569', marginBottom: 2, lineHeight: 1.4 },
-  partyKey: { color: '#94a3b8' },
-  meta: { flexDirection: 'row', gap: 16, marginBottom: 18, paddingVertical: 10, borderTop: '1 solid #e2e8f0', borderBottom: '1 solid #e2e8f0' },
+  partyBox: { flex: 1, border: '1 solid #e4e4e7', borderRadius: 6, padding: 12 },
+  partyLabel: { fontSize: 8, color: '#71717a', textTransform: 'uppercase', letterSpacing: 0.6, fontWeight: 700, marginBottom: 6 },
+  partyName: { fontSize: 11, fontWeight: 700, marginBottom: 4, color: '#18181b', lineHeight: 1.3 },
+  partyLine: { fontSize: 9, color: '#3f3f46', marginBottom: 2, lineHeight: 1.4 },
+  partyKey: { color: '#a1a1aa' },
+  meta: { flexDirection: 'row', gap: 16, marginBottom: 18, paddingVertical: 10, borderTop: '1 solid #e4e4e7', borderBottom: '1 solid #e4e4e7' },
   metaCell: { flex: 1 },
-  metaLabel: { fontSize: 8, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 700, marginBottom: 3 },
-  metaValue: { fontSize: 11, fontWeight: 700, color: '#0f172a', lineHeight: 1.3 },
+  metaLabel: { fontSize: 8, color: '#71717a', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 700, marginBottom: 3 },
+  metaValue: { fontSize: 11, fontWeight: 700, color: '#18181b', lineHeight: 1.3 },
   table: { marginBottom: 16 },
-  tableHeader: { flexDirection: 'row', backgroundColor: '#f1f5f9', paddingVertical: 7, paddingHorizontal: 8 },
-  tableHeaderCell: { fontSize: 8, color: '#475569', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.2, paddingRight: 4 },
-  tableRow: { flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, borderBottom: '1 solid #f1f5f9' },
-  tableCell: { fontSize: 9.5, color: '#0f172a', paddingRight: 4 },
+  tableHeader: { flexDirection: 'row', backgroundColor: '#f4f4f5', paddingVertical: 7, paddingHorizontal: 8 },
+  tableHeaderCell: { fontSize: 8, color: '#3f3f46', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.2, paddingRight: 4 },
+  tableRow: { flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, borderBottom: '1 solid #f4f4f5' },
+  tableCell: { fontSize: 9.5, color: '#18181b', paddingRight: 4 },
   c1: { width: '5%' },
   c2: { width: '38%' },
   c3: { width: '10%', textAlign: 'right' },
@@ -120,23 +120,24 @@ const styles = StyleSheet.create({
   c7: { width: '17%', textAlign: 'right' },
   totalsBox: { alignSelf: 'flex-end', width: 260, marginTop: 4 },
   totalsRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 },
-  totalsLabel: { fontSize: 10, color: '#475569' },
-  totalsValue: { fontSize: 10, color: '#0f172a' },
-  grandTotalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, marginTop: 4, borderTop: '2 solid #2563eb' },
-  grandTotalLabel: { fontSize: 12, fontWeight: 700, color: '#0f172a' },
-  grandTotalValue: { fontSize: 14, fontWeight: 700, color: '#2563eb' },
-  payment: { marginTop: 22, padding: 14, backgroundColor: '#f8fafc', borderRadius: 6, flexDirection: 'row', gap: 12 },
+  totalsLabel: { fontSize: 10, color: '#3f3f46' },
+  totalsValue: { fontSize: 10, color: '#18181b' },
+  grandTotalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, marginTop: 4, borderTop: '2 solid #18181b' },
+  grandTotalLabel: { fontSize: 12, fontWeight: 700, color: '#18181b' },
+  grandTotalValue: { fontSize: 14, fontWeight: 700, color: '#18181b' },
+  payment: { marginTop: 22, padding: 14, backgroundColor: '#fafafa', borderRadius: 6, flexDirection: 'row', gap: 12 },
   paymentLeft: { flex: 1 },
-  paymentTitle: { fontSize: 9, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.6, fontWeight: 700, marginBottom: 7 },
+  paymentTitle: { fontSize: 9, color: '#71717a', textTransform: 'uppercase', letterSpacing: 0.6, fontWeight: 700, marginBottom: 7 },
   paymentGrid: { flexDirection: 'row', gap: 14, flexWrap: 'wrap' },
   paymentCol: { flexBasis: '48%' },
-  paymentKey: { fontSize: 8, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 1 },
-  paymentVal: { fontSize: 10, color: '#0f172a', fontWeight: 700, fontFamily: 'RobotoMono' },
+  paymentKey: { fontSize: 8, color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 1 },
+  paymentVal: { fontSize: 10, color: '#18181b', fontWeight: 700, fontFamily: 'RobotoMono' },
   qrBox: { width: 100, alignItems: 'center', justifyContent: 'center' },
   qrImg: { width: 96, height: 96 },
-  qrLabel: { fontSize: 7, color: '#94a3b8', marginTop: 3, textAlign: 'center' },
-  notes: { marginTop: 16, fontSize: 9, color: '#475569', fontStyle: 'italic' },
-  footer: { position: 'absolute', bottom: 24, left: 38, right: 38, textAlign: 'center', fontSize: 8, color: '#94a3b8', borderTop: '1 solid #e2e8f0', paddingTop: 8 },
+  qrLabel: { fontSize: 7, color: '#a1a1aa', marginTop: 3, textAlign: 'center' },
+  notes: { marginTop: 16, fontSize: 9, color: '#3f3f46', fontStyle: 'italic' },
+  footer: { position: 'absolute', bottom: 20, left: 38, right: 38, textAlign: 'center', fontSize: 8, color: '#a1a1aa', borderTop: '1 solid #e4e4e7', paddingTop: 6 },
+  watermark: { fontSize: 7, color: '#d4d4d8', marginTop: 3, letterSpacing: 0.3 },
 });
 
 function fmtDate(d: string | null | undefined): string {
@@ -152,10 +153,17 @@ function fmtMoney(n: number, currency = 'EUR'): string {
 export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
   const co = invoice.company;
   const b = invoice.branding || {};
-  const primary = b.primary_color || '#2563eb';
-  // Override header border + docType color with brand primary
-  const headerStyle = { ...styles.header, borderBottom: `2 solid ${primary}` };
-  const docTypeStyle = { ...styles.docType, color: primary };
+  // Default zinc-900 (ZOLO corporate identity). Ak firma nastavi brand color,
+  // použije sa len ako subtílny akcent (docType + veľká suma) — nie ako
+  // dominantný layout driver. Ostatné borders zostávajú monochromatic.
+  const primary = b.primary_color || '#18181b';
+  const isDefault = primary === '#18181b' || primary === '#000000';
+  // Header border a totals border zostávajú vždy zinc-200 pre monochromatic look.
+  // Custom brand color sa zobrazí len na docType label + grand total value.
+  const headerStyle = { ...styles.header, borderBottom: `1 solid #e4e4e7` };
+  const docTypeStyle = { ...styles.docType, color: isDefault ? '#71717a' : primary };
+  const grandTotalRowStyle = { ...styles.grandTotalRow, borderTop: `2 solid ${isDefault ? '#18181b' : primary}` };
+  const grandTotalValueStyle = { ...styles.grandTotalValue, color: isDefault ? '#18181b' : primary };
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -229,7 +237,7 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
         <View style={styles.totalsBox}>
           <View style={styles.totalsRow}><Text style={styles.totalsLabel}>Základ DPH:</Text><Text style={styles.totalsValue}>{fmtMoney(Number(invoice.subtotal), invoice.currency)}</Text></View>
           <View style={styles.totalsRow}><Text style={styles.totalsLabel}>DPH:</Text><Text style={styles.totalsValue}>{fmtMoney(Number(invoice.vat_amount), invoice.currency)}</Text></View>
-          <View style={styles.grandTotalRow}><Text style={styles.grandTotalLabel}>K úhrade</Text><Text style={styles.grandTotalValue}>{fmtMoney(Number(invoice.total), invoice.currency)}</Text></View>
+          <View style={grandTotalRowStyle}><Text style={styles.grandTotalLabel}>K úhrade</Text><Text style={grandTotalValueStyle}>{fmtMoney(Number(invoice.total), invoice.currency)}</Text></View>
         </View>
 
         {(co.iban || co.bank_name) && (
@@ -255,7 +263,10 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
         {invoice.notes && (<Text style={styles.notes}>{invoice.notes}</Text>)}
         {b.footer_text && (<Text style={{ ...styles.notes, fontStyle: 'normal', marginTop: 8 }}>{b.footer_text}</Text>)}
 
-        <Text style={styles.footer} fixed render={({ pageNumber, totalPages }) => `${co.name} · strana ${pageNumber} / ${totalPages}`} />
+        <View style={styles.footer} fixed>
+          <Text render={({ pageNumber, totalPages }) => `${co.name} · strana ${pageNumber} / ${totalPages}`} />
+          <Text style={styles.watermark}>Doklad vygenerovaný systémom ZOLO · zolo.sk</Text>
+        </View>
       </Page>
     </Document>
   );
