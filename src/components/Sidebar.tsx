@@ -440,10 +440,7 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
         </div>
 
         <button
-          onClick={() => {
-            // Open CommandPalette via keyboard event (⌘K)
-            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true }));
-          }}
+          onClick={() => router.push('/dashboard/search')}
           className="w-full flex items-center gap-2 bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.06] rounded-lg px-2.5 py-2 text-[13px] text-zinc-400 hover:text-zinc-200 transition-colors"
         >
           <Search size={13} strokeWidth={2.2} />

@@ -37,6 +37,7 @@ export default function NewInvoicePage() {
     company_id: '',
     type: presetType || 'invoice',
     number: '',
+    contact_id: null as string | null,
     customer_name: '',
     customer_ico: '',
     customer_ic_dph: '',
@@ -84,6 +85,7 @@ export default function NewInvoicePage() {
   function pickContact(c: Contact) {
     setForm((f) => ({
       ...f,
+      contact_id: c.id,
       customer_name: c.name,
       customer_ico: c.ico || '',
       customer_ic_dph: c.ic_dph || '',

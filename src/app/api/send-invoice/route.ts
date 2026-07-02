@@ -70,7 +70,7 @@ export async function POST(request: Request) {
   crypto.getRandomValues(tokenBytes);
   const portalToken = Array.from(tokenBytes, b => b.toString(16).padStart(2, '0')).join('');
   const portalExpires = new Date(Date.now() + 60 * 86400 * 1000).toISOString(); // 60 days
-  await sb.from('portal_tokens').insert({ token: portalToken, invoice_id: invoiceId, expires_at: portalExpires, created_by: user.id });
+  await sb.from('portal_tokens').insert({ company_id: invoice.company_id, token: portalToken, invoice_id: invoiceId, expires_at: portalExpires, created_by: user.id });
   const origin = new URL(request.url).origin.replace(/^http:\/\/localhost.*/, 'https://zolo.sk');
   const portalUrl = `${origin}/portal/${portalToken}`;
 

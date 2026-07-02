@@ -46,7 +46,16 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; tot
         body: JSON.stringify({ invoiceId: invoice.id, to: emailTo, subject: emailSubject, body: emailBody }),
       });
       const j = await r.json();
-      if (!r.ok) { toast(j.error || 'Odoslanie zlyhalo', 'error'); setSending(false); return; }
+      if (!r.ok) {
+        if (r.status === 429) {
+          const retryAfter = r.headers.get('Retry-After');
+          const msg = retryAfter ? `Skús znova o ${retryAfter} s` : 'Príliš veľa pokusov. Skús neskôr.';
+          toast(msg, 'error');
+        } else {
+          toast(j.error || 'Odoslanie zlyhalo', 'error');
+        }
+        setSending(false); return;
+      }
       toast('Faktúra odoslaná na ' + emailTo, 'success');
       setShowSend(false);
       router.refresh();
