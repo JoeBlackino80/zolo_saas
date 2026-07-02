@@ -153,17 +153,14 @@ function fmtMoney(n: number, currency = 'EUR'): string {
 export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
   const co = invoice.company;
   const b = invoice.branding || {};
-  // Default zinc-900 (ZOLO corporate identity). Ak firma nastavi brand color,
-  // použije sa len ako subtílny akcent (docType + veľká suma) — nie ako
-  // dominantný layout driver. Ostatné borders zostávajú monochromatic.
-  const primary = b.primary_color || '#18181b';
-  const isDefault = primary === '#18181b' || primary === '#000000';
-  // Header border a totals border zostávajú vždy zinc-200 pre monochromatic look.
-  // Custom brand color sa zobrazí len na docType label + grand total value.
+  // Doklady majú vždy ZOLO corporate identity (monochromatic zinc).
+  // Custom branding.primary_color sa ignoruje v štrukturálnych prvkoch
+  // pretože user chce konzistentnú SaaS identitu naprieč všetkými firmami.
+  // Ak si firma potrebuje odlíšiť brand → nahranie farebného loga.
   const headerStyle = { ...styles.header, borderBottom: `1 solid #e4e4e7` };
-  const docTypeStyle = { ...styles.docType, color: isDefault ? '#71717a' : primary };
-  const grandTotalRowStyle = { ...styles.grandTotalRow, borderTop: `2 solid ${isDefault ? '#18181b' : primary}` };
-  const grandTotalValueStyle = { ...styles.grandTotalValue, color: isDefault ? '#18181b' : primary };
+  const docTypeStyle = { ...styles.docType, color: '#71717a' };
+  const grandTotalRowStyle = { ...styles.grandTotalRow, borderTop: `2 solid #18181b` };
+  const grandTotalValueStyle = { ...styles.grandTotalValue, color: '#18181b' };
   return (
     <Document>
       <Page size="A4" style={styles.page}>
