@@ -23,36 +23,36 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
 
         {!invite && (
           <>
-            <h1 className="text-xl font-bold text-slate-900">Pozvánka neplatí</h1>
-            <p className="text-sm text-slate-500 mt-2">Odkaz je nesprávny alebo už bol použitý. Požiadaj o novú pozvánku.</p>
-            <Link href="/login" className="inline-block mt-5 text-sm text-blue-600 hover:underline">Prejsť na prihlásenie →</Link>
+            <h1 className="text-xl font-bold text-zinc-900">Pozvánka neplatí</h1>
+            <p className="text-sm text-zinc-500 mt-2">Odkaz je nesprávny alebo už bol použitý. Požiadaj o novú pozvánku.</p>
+            <Link href="/login" className="inline-block mt-5 text-sm text-zinc-900 hover:underline">Prejsť na prihlásenie →</Link>
           </>
         )}
 
         {invite && invite.status === 'accepted' && (
           <>
-            <h1 className="text-xl font-bold text-slate-900">Pozvánka už bola prijatá</h1>
-            <p className="text-sm text-slate-500 mt-2">Stačí sa prihlásiť ako <strong>{invite.invited_email}</strong>.</p>
-            <Link href="/login" className="inline-block mt-5 text-sm text-blue-600 hover:underline">Prejsť na prihlásenie →</Link>
+            <h1 className="text-xl font-bold text-zinc-900">Pozvánka už bola prijatá</h1>
+            <p className="text-sm text-zinc-500 mt-2">Stačí sa prihlásiť ako <strong>{invite.invited_email}</strong>.</p>
+            <Link href="/login" className="inline-block mt-5 text-sm text-zinc-900 hover:underline">Prejsť na prihlásenie →</Link>
           </>
         )}
 
         {invite && invite.status === 'pending' && expired && (
           <>
-            <h1 className="text-xl font-bold text-slate-900">Pozvánka exspirovala</h1>
-            <p className="text-sm text-slate-500 mt-2">Odkaz platil do {new Date(invite.expires_at).toLocaleDateString('sk-SK')}. Požiadaj o novú.</p>
+            <h1 className="text-xl font-bold text-zinc-900">Pozvánka exspirovala</h1>
+            <p className="text-sm text-zinc-500 mt-2">Odkaz platil do {new Date(invite.expires_at).toLocaleDateString('sk-SK')}. Požiadaj o novú.</p>
           </>
         )}
 
         {invite && invite.status === 'pending' && !expired && (
           <>
-            <h1 className="text-xl font-bold text-slate-900">Pozvánka do {co?.name || 'firmy'}</h1>
-            <p className="text-sm text-slate-600 mt-3">Boli si pozvaný(á) ako <strong>{roleLabel[invite.role] || invite.role}</strong>.</p>
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 mt-4 text-sm space-y-1">
-              <div className="flex justify-between"><span className="text-slate-500">Firma</span><span className="font-medium text-slate-900">{co?.name || '?'}</span></div>
-              {co?.ico && <div className="flex justify-between"><span className="text-slate-500">IČO</span><span className="font-mono text-xs text-slate-700">{co.ico}</span></div>}
-              <div className="flex justify-between"><span className="text-slate-500">Pozvaný email</span><span className="text-xs text-slate-700">{invite.invited_email}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Platí do</span><span className="text-xs text-slate-700">{new Date(invite.expires_at).toLocaleDateString('sk-SK')}</span></div>
+            <h1 className="text-xl font-bold text-zinc-900">Pozvánka do {co?.name || 'firmy'}</h1>
+            <p className="text-sm text-zinc-600 mt-3">Boli si pozvaný(á) ako <strong>{roleLabel[invite.role] || invite.role}</strong>.</p>
+            <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-3 mt-4 text-sm space-y-1">
+              <div className="flex justify-between"><span className="text-zinc-500">Firma</span><span className="font-medium text-zinc-900">{co?.name || '?'}</span></div>
+              {co?.ico && <div className="flex justify-between"><span className="text-zinc-500">IČO</span><span className="font-mono text-xs text-zinc-700">{co.ico}</span></div>}
+              <div className="flex justify-between"><span className="text-zinc-500">Pozvaný email</span><span className="text-xs text-zinc-700">{invite.invited_email}</span></div>
+              <div className="flex justify-between"><span className="text-zinc-500">Platí do</span><span className="text-xs text-zinc-700">{new Date(invite.expires_at).toLocaleDateString('sk-SK')}</span></div>
             </div>
             {user ? (
               user.email?.toLowerCase() === invite.invited_email.toLowerCase()

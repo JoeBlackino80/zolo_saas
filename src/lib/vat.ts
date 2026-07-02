@@ -59,7 +59,7 @@ export function escapeXml(s: string | null | undefined): string {
 export function generateDpDphXml(firm: { dic: string | null; ic_dph: string | null; name: string }, period: string, t: VatTotals): string {
   const [y, m] = period.split('-');
   const r = (n: number) => n.toFixed(2);
-  return `<?xml version="1.0" encoding="windows-1250"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <DPHv24 xmlns="http://www.financnasprava.sk/dphv24">
   <Identifikacia>
     <DIC>${escapeXml(firm.dic)}</DIC>
@@ -160,7 +160,7 @@ export function generateKvDphXml(
     </${tag === 'D1' ? 'SekciaD1' : 'SekciaD2'}>`;
   };
 
-  return `<?xml version="1.0" encoding="windows-1250"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <KVDPHv21 xmlns="http://www.financnasprava.sk/kvdphv21">
   <Identifikacia>
     <DIC>${escapeXml(firm.dic)}</DIC>
@@ -198,7 +198,7 @@ export function generateSvDphXml(firm: { dic: string | null; ic_dph: string | nu
     const key = (i.customer_ic_dph || 'UNKNOWN').toUpperCase();
     grouped[key] = (grouped[key] || 0) + i.baseEu;
   }
-  return `<?xml version="1.0" encoding="windows-1250"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <SVDPHv21 xmlns="http://www.financnasprava.sk/svdphv21">
   <Identifikacia>
     <DIC>${escapeXml(firm.dic)}</DIC>

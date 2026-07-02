@@ -76,7 +76,7 @@ function esc(s: string | null | undefined): string {
 
 export function generateDppoXml(firm: { dic: string | null; ic_dph: string | null; name: string }, year: number | string, r: DzpResult): string {
   const fmt = (n: number) => n.toFixed(2);
-  return `<?xml version="1.0" encoding="windows-1250"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <DPPOv26 xmlns="http://www.financnasprava.sk/dppov26">
   <Identifikacia>
     <DIC>${esc(firm.dic)}</DIC>
@@ -142,7 +142,7 @@ export function calcDpfoA(i: DpfoAInput): DpfoAResult {
 
 export function generateDpfoAXml(firm: { dic: string | null; name: string }, year: number | string, r: DpfoAResult): string {
   const fmt = (n: number) => n.toFixed(2);
-  return `<?xml version="1.0" encoding="windows-1250"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <DPFOAv26 xmlns="http://www.financnasprava.sk/dpfoav26">
   <Identifikacia>
     <DIC>${esc(firm.dic)}</DIC>
@@ -190,7 +190,7 @@ export function generateWithholdingXml(firm: { dic: string | null; ic_dph: strin
       <Sadzba>${r.rate}</Sadzba>
       <ZrazkaDan>${fmt(r.withheld)}</ZrazkaDan>
     </Zaznam>`).join('');
-  return `<?xml version="1.0" encoding="windows-1250"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <HlZD43v26 xmlns="http://www.financnasprava.sk/hlzd43v26">
   <Identifikacia>
     <DIC>${esc(firm.dic)}</DIC>
@@ -209,7 +209,7 @@ export function generateWithholdingXml(firm: { dic: string | null; ic_dph: strin
 export function generateDpfoBXml(firm: { dic: string | null; name: string }, year: number | string, r: DzpResult, opts: { childCount?: number } = {}): string {
   const fmt = (n: number) => n.toFixed(2);
   const bonus = (opts.childCount || 0) * 600;
-  return `<?xml version="1.0" encoding="windows-1250"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <DPFOBv26 xmlns="http://www.financnasprava.sk/dpfobv26">
   <Identifikacia>
     <DIC>${esc(firm.dic)}</DIC>
@@ -262,7 +262,7 @@ export function generateDpmvXml(firm: { dic: string | null; ic_dph: string | nul
       <PrvaEvidencia>${esc(v.first_registration)}</PrvaEvidencia>
       <RocnaDan>${fmt(v.annual_tax)}</RocnaDan>
     </Vozidlo>`).join('');
-  return `<?xml version="1.0" encoding="windows-1250"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <DMPVv26 xmlns="http://www.financnasprava.sk/dmpvv26">
   <Identifikacia>
     <DIC>${esc(firm.dic)}</DIC>

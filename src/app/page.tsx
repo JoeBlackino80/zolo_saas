@@ -126,6 +126,56 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* How it works */}
+      <section className="px-6 pb-20 sm:pb-28">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.05] max-w-3xl">
+            Do 60 sekúnd
+            <span className="text-zinc-400"> vystavíš prvú faktúru.</span>
+          </h2>
+          <div className="mt-12 grid sm:grid-cols-3 gap-4 sm:gap-5">
+            <StepCard n="01" title="Registrácia" desc="Emailom alebo Google. Bez kreditnej karty. 15 sekúnd." />
+            <StepCard n="02" title="Onboarding" desc="Zadaj IČO, ostatné doplníme z ORSR. Vyber farbu značky, pozvi kolegu." />
+            <StepCard n="03" title="Prvá FA" desc="Vyber zákazníka, položky, pošli mailom rovno z appky. Pošli QR na platbu." />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="px-6 pb-20 sm:pb-28">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.05] mb-10">
+            Časté otázky
+          </h2>
+          <div className="space-y-3">
+            <Faq
+              q="Ako sa líši ZOLO od KROS alebo Omega?"
+              a="ZOLO je cloud-first — nič sa neinštaluje, funguje aj na mobile, aktualizácie automaticky. KROS/Omega sú desktop, drahé licencie, ťažké prepnutie medzi firmami. My máme neobmedzene firiem pod jedným účtom."
+            />
+            <Faq
+              q="Podporujete slovenskú DPH a Finančnú správu?"
+              a="Áno. Generujeme DP DPH, KV DPH, SV DPH, DPPO, DPFO A/B, DPMV a zrážkovú daň ako XML pripravené na podanie cez portál FS SR. Vyplňujú sa presne podľa aktuálnych schém."
+            />
+            <Faq
+              q="Sú moje dáta v bezpečí?"
+              a="Áno. MFA/TOTP, Row-Level Security na DB, GDPR-compliant DPA, hosting v EÚ (Frankfurt), Sentry monitoring, 30-min idle logout. Audit log každej zmeny."
+            />
+            <Faq
+              q="Môžem preniesť dáta z KROS/Omega?"
+              a="Áno. Podporujeme CSV import faktúr, zákazníkov, produktov a účtovnej osnovy. Pomôžeme aj s migráciou keď potrebuješ."
+            />
+            <Faq
+              q="Ako to funguje pre viac firiem alebo účtovníčku?"
+              a="Neobmedzene firiem pod účtom. Účtovníčka sa prihlási s vlastným emailom a pridelíš jej firmy cez tímovú pozvánku. Každý má vlastnú rolu (admin, člen, len čítanie)."
+            />
+            <Faq
+              q="Aké sú ceny?"
+              a="Free navždy zadarmo pre 1 firmu a 10 FA mesačne. Pro €15/mes bez limitov. Business €49/mes s API, integráciami, mzdami. Bez záväzkov, kedykoľvek zrušiť."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Pricing teaser */}
       <section className="px-6 pb-20 sm:pb-28">
         <div className="max-w-5xl mx-auto bg-zinc-950 text-white rounded-3xl p-10 sm:p-16 text-center">
@@ -244,6 +294,28 @@ function FeatureCard({
       </div>
       <p className={`mt-2 text-[14px] leading-relaxed ${dark ? 'text-zinc-400' : 'text-zinc-600'}`}>{desc}</p>
     </div>
+  );
+}
+
+function StepCard({ n, title, desc }: { n: string; title: string; desc: string }) {
+  return (
+    <div className="rounded-2xl p-7 sm:p-8 bg-zinc-50 border border-zinc-100">
+      <div className="text-[11px] font-bold text-zinc-400 tracking-[0.15em]">{n}</div>
+      <h3 className="text-[19px] font-semibold text-zinc-900 tracking-tight mt-2">{title}</h3>
+      <p className="mt-2 text-[14px] leading-relaxed text-zinc-600">{desc}</p>
+    </div>
+  );
+}
+
+function Faq({ q, a }: { q: string; a: string }) {
+  return (
+    <details className="group bg-white border border-zinc-100 rounded-2xl p-5 sm:p-6 open:bg-zinc-50 transition-colors">
+      <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
+        <span className="text-[15px] sm:text-[16px] font-semibold text-zinc-900 tracking-tight">{q}</span>
+        <ArrowRight size={16} className="text-zinc-400 group-open:rotate-90 transition-transform shrink-0" />
+      </summary>
+      <p className="mt-3 text-[14px] leading-relaxed text-zinc-600">{a}</p>
+    </details>
   );
 }
 

@@ -3,7 +3,7 @@ import { Home } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-zinc-50 p-6">
       <div className="text-center max-w-md">
         <div className="text-8xl font-bold tracking-[-0.04em] text-zinc-900">404</div>
         <h1 className="text-2xl font-bold text-zinc-900 mt-4 tracking-tight">Stránka neexistuje</h1>

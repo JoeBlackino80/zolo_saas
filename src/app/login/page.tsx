@@ -116,16 +116,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-slate-200">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 text-zinc-200">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_30%,rgba(59,130,246,0.15)_0%,transparent_50%),radial-gradient(circle_at_80%_70%,rgba(139,92,246,0.12)_0%,transparent_50%)]" />
-      <div className="relative w-full max-w-md bg-slate-900/70 backdrop-blur-xl border border-white/10 rounded-2xl p-9 shadow-2xl">
+      <div className="relative w-full max-w-md bg-zinc-900/70 backdrop-blur-xl border border-white/10 rounded-2xl p-9 shadow-2xl">
         <div className="flex items-center gap-3 mb-7">
           <div className="w-11 h-11 rounded-xl bg-white text-zinc-900 flex items-center justify-center font-black text-2xl tracking-tighter">
             Z
           </div>
           <div>
             <div className="text-xl font-bold text-white tracking-tight">ZOLO</div>
-            <div className="text-xs text-slate-400">Slovak Tax & Accounting Platform</div>
+            <div className="text-xs text-zinc-400">Slovak Tax & Accounting Platform</div>
           </div>
         </div>
 
@@ -133,14 +133,14 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => { setMode('login'); setRequiresMfa(false); setStatus(null); }}
-            className={`flex-1 py-2 rounded-md text-sm font-semibold transition ${mode === 'login' ? 'bg-white/10 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`flex-1 py-2 rounded-md text-sm font-semibold transition ${mode === 'login' ? 'bg-white/10 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             Prihlásiť
           </button>
           <button
             type="button"
             onClick={() => { setMode('signup'); setRequiresMfa(false); setStatus(null); }}
-            className={`flex-1 py-2 rounded-md text-sm font-semibold transition ${mode === 'signup' ? 'bg-white/10 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`flex-1 py-2 rounded-md text-sm font-semibold transition ${mode === 'signup' ? 'bg-white/10 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             Registrácia
           </button>
@@ -150,7 +150,7 @@ export default function LoginPage() {
           <form onSubmit={handleMfa} className="space-y-3">
             <div className="text-center mb-4">
               <div className="text-base font-semibold text-white">Dvojfaktorová autentifikácia</div>
-              <div className="text-xs text-slate-400 mt-1">Zadaj 6-ciferný kód z autentikátora</div>
+              <div className="text-xs text-zinc-400 mt-1">Zadaj 6-ciferný kód z autentikátora</div>
             </div>
             <input
               type="text"
@@ -161,7 +161,7 @@ export default function LoginPage() {
               value={mfaCode}
               onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ''))}
               placeholder="000000"
-              className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-center text-2xl tracking-[0.5em] font-mono text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-center text-2xl tracking-[0.5em] font-mono text-white focus:outline-none focus:border-zinc-500"
             />
             <button
               type="submit"
@@ -183,7 +183,7 @@ export default function LoginPage() {
               Prihlásiť sa
             </button>
             <div className="text-center">
-              <button type="button" onClick={handleForgot} className="text-xs text-slate-400 hover:text-blue-300 underline">
+              <button type="button" onClick={handleForgot} className="text-xs text-zinc-400 hover:text-white underline">
                 Zabudol som heslo
               </button>
             </div>
@@ -205,14 +205,14 @@ export default function LoginPage() {
         {status && (
           <div
             className={`mt-4 text-sm text-center ${
-              status.kind === 'error' ? 'text-red-300' : status.kind === 'success' ? 'text-green-300' : 'text-slate-400'
+              status.kind === 'error' ? 'text-red-300' : status.kind === 'success' ? 'text-green-300' : 'text-zinc-400'
             }`}
           >
             {status.msg}
           </div>
         )}
 
-        <div className="text-center text-xs text-slate-500 mt-6">
+        <div className="text-center text-xs text-zinc-500 mt-6">
           Šifrované cez Supabase · GDPR compliant · Hostované v EÚ
         </div>
       </div>
@@ -235,14 +235,14 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{label}</label>
+      <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         autoComplete={autoComplete}
         required
-        className="bg-black/30 border border-white/10 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-blue-500 focus:bg-black/40 transition"
+        className="bg-black/30 border border-white/10 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-zinc-500 focus:bg-black/40 transition"
       />
     </div>
   );

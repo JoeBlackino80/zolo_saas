@@ -40,7 +40,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       ? sb.from('invoices').select('id, type, number, total').eq('id', invoice.parent_invoice_id).is('deleted_at', null).maybeSingle()
       : Promise.resolve({ data: null }),
     sb.from('invoices').select('id, type, number, total').eq('parent_invoice_id', invoice.id).is('deleted_at', null).order('issue_date', { ascending: false }),
-    sb.from('delivery_notes').select('id, number, delivery_date').eq('invoice_id', invoice.id).is('deleted_at', null).order('delivery_date', { ascending: false }),
+    // DL sú v `invoices` s type='delivery_note' + parent_invoice_id
+    sb.from('invoices').select('id, number, delivery_date').eq('parent_invoice_id', invoice.id).eq('type', 'delivery_note').is('deleted_at', null).order('delivery_date', { ascending: false }),
   ]);
   const hasLinks = !!parent || (children?.length ?? 0) > 0 || (linkedDeliveryNotes?.length ?? 0) > 0;
   const canIssueCredit = invoice.type === 'invoice' && !(children?.some((c) => c.type === 'storno'));
@@ -77,6 +78,9 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 <Button variant="primary">Vystaviť FA</Button>
               </Link>
             )}
+            <Link href={`/dashboard/invoices/${invoice.id}/edit`}>
+              <Button variant="secondary">Upraviť</Button>
+            </Link>
             <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=${invoice.type}`}>
               <Button variant="ghost">Duplikovať</Button>
             </Link>
@@ -111,7 +115,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             {(linkedDeliveryNotes || []).map((dn) => (
               <div key={dn.id} className="flex items-center gap-2">
                 <Badge variant="gray">Dodací list</Badge>
-                <Link href={`/dashboard/delivery-notes/${dn.id}`} className="text-zinc-900 hover:underline font-mono">{dn.number}</Link>
+                <Link href={`/dashboard/invoices/${dn.id}`} className="text-zinc-900 hover:underline font-mono">{dn.number}</Link>
                 <span className="text-zinc-500">— {fmtDate(dn.delivery_date)}</span>
               </div>
             ))}
