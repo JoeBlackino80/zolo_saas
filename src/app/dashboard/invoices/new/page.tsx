@@ -525,13 +525,36 @@ export default function NewInvoicePage() {
                   <Input value={it.description} onChange={(e) => setItem(i, 'description', e.target.value)} placeholder="Tovar / služba" />
                 </Field>
                 <Field label={i === 0 ? 'Množstvo' : ''}>
-                  <Input type="number" step="0.01" value={it.quantity} onChange={(e) => setItem(i, 'quantity', +e.target.value)} />
+                  <Input
+                    type="text"
+                    inputMode="decimal"
+                    value={it.quantity === 0 ? '' : String(it.quantity)}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(',', '.').replace(/[^\d.]/g, '');
+                      setItem(i, 'quantity', raw === '' ? 0 : parseFloat(raw) || 0);
+                    }}
+                    placeholder="1"
+                  />
                 </Field>
                 <Field label={i === 0 ? 'MJ' : ''}>
-                  <Input value={it.unit} onChange={(e) => setItem(i, 'unit', e.target.value)} />
+                  <Input
+                    list="mj-options"
+                    value={it.unit}
+                    onChange={(e) => setItem(i, 'unit', e.target.value)}
+                    placeholder="ks"
+                  />
                 </Field>
-                <Field label={i === 0 ? 'Cena/ks' : ''}>
-                  <Input type="number" step="0.01" value={it.unit_price} onChange={(e) => setItem(i, 'unit_price', +e.target.value)} />
+                <Field label={i === 0 ? `Cena za ${it.unit || 'MJ'}` : ''}>
+                  <Input
+                    type="text"
+                    inputMode="decimal"
+                    value={it.unit_price === 0 ? '' : String(it.unit_price)}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(',', '.').replace(/[^\d.]/g, '');
+                      setItem(i, 'unit_price', raw === '' ? 0 : parseFloat(raw) || 0);
+                    }}
+                    placeholder="0.00"
+                  />
                 </Field>
                 <Field label={i === 0 ? 'DPH%' : ''}>
                   <Select value={it.vat_rate} onChange={(e) => setItem(i, 'vat_rate', +e.target.value)}>
@@ -584,6 +607,28 @@ export default function NewInvoicePage() {
           <Link href="/dashboard/invoices"><Button type="button" variant="ghost">Zrušiť</Button></Link>
         </div>
       </form>
+
+      {/* Globálny datalist pre MJ — používaný cez list="mj-options" */}
+      <datalist id="mj-options">
+        <option value="ks" />
+        <option value="hod" />
+        <option value="mes" />
+        <option value="deň" />
+        <option value="rok" />
+        <option value="kg" />
+        <option value="g" />
+        <option value="tona" />
+        <option value="l" />
+        <option value="ml" />
+        <option value="m" />
+        <option value="m²" />
+        <option value="m³" />
+        <option value="km" />
+        <option value="bal" />
+        <option value="paleta" />
+        <option value="sada" />
+        <option value="pár" />
+      </datalist>
 
       {showAddContactModal && form.company_id && (
         <AddContactModal
