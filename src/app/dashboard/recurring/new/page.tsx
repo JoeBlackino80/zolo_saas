@@ -230,6 +230,13 @@ export default function NewRecurringPage() {
           <Link href="/dashboard/recurring"><Button type="button" variant="ghost">Zrušiť</Button></Link>
         </div>
       </form>
+
+      <datalist id="mj-options-recurring">
+        <option value="ks" /><option value="hod" /><option value="mes" /><option value="deň" /><option value="rok" />
+        <option value="kg" /><option value="g" /><option value="tona" /><option value="l" /><option value="ml" />
+        <option value="m" /><option value="m²" /><option value="m³" /><option value="km" />
+        <option value="bal" /><option value="paleta" /><option value="sada" /><option value="pár" />
+      </datalist>
     </div>
   );
 }

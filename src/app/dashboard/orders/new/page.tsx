@@ -137,13 +137,31 @@ export default function NewOrderPage() {
                   </div>
                 </Field>
                 <Field label={i === 0 ? 'Množstvo' : ''}>
-                  <Input type="number" step="0.01" min="0" value={l.quantity} onChange={(e) => updateLine(i, { quantity: Number(e.target.value) })} required />
+                  <Input
+                    type="text"
+                    inputMode="decimal"
+                    value={l.quantity === 0 ? '' : String(l.quantity)}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(',', '.').replace(/[^\d.]/g, '');
+                      updateLine(i, { quantity: raw === '' ? 0 : parseFloat(raw) || 0 });
+                    }}
+                    required
+                  />
                 </Field>
                 <Field label={i === 0 ? 'MJ' : ''}>
-                  <Input value={l.unit} onChange={(e) => updateLine(i, { unit: e.target.value })} />
+                  <Input list="mj-options-orders" value={l.unit} onChange={(e) => updateLine(i, { unit: e.target.value })} />
                 </Field>
-                <Field label={i === 0 ? 'Cena/ks' : ''}>
-                  <Input type="number" step="0.01" min="0" value={l.unit_price} onChange={(e) => updateLine(i, { unit_price: Number(e.target.value) })} required />
+                <Field label={i === 0 ? `Cena za ${l.unit || 'MJ'}` : ''}>
+                  <Input
+                    type="text"
+                    inputMode="decimal"
+                    value={l.unit_price === 0 ? '' : String(l.unit_price)}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(',', '.').replace(/[^\d.]/g, '');
+                      updateLine(i, { unit_price: raw === '' ? 0 : parseFloat(raw) || 0 });
+                    }}
+                    required
+                  />
                 </Field>
                 <Field label={i === 0 ? 'DPH %' : ''}>
                   <Input type="number" step="1" min="0" value={l.vat_rate} onChange={(e) => updateLine(i, { vat_rate: Number(e.target.value) })} required />
@@ -164,6 +182,13 @@ export default function NewOrderPage() {
           <Button type="submit" variant="primary" disabled={saving}>{saving ? 'Ukladám…' : 'Vytvoriť'}</Button>
         </div>
       </form>
+
+      <datalist id="mj-options-orders">
+        <option value="ks" /><option value="hod" /><option value="mes" /><option value="deň" /><option value="rok" />
+        <option value="kg" /><option value="g" /><option value="tona" /><option value="l" /><option value="ml" />
+        <option value="m" /><option value="m²" /><option value="m³" /><option value="km" />
+        <option value="bal" /><option value="paleta" /><option value="sada" /><option value="pár" />
+      </datalist>
     </div>
   );
 }
