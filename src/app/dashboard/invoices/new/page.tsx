@@ -28,11 +28,15 @@ function addDays(base: string, days: number): string {
   return d.toISOString().slice(0, 10);
 }
 
+const DRAFT_KEY = 'zolo_draft_invoice_v1';
+
 export default function NewInvoicePage() {
   const router = useRouter();
   const search = useSearchParams();
   const cloneFromId = search.get('from');
   const presetType = search.get('type');
+  const newContactId = search.get('new_contact_id');
+  const [draftAvailable, setDraftAvailable] = useState<{ form: unknown; items: unknown } | null>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [form, setForm] = useState({
     company_id: '',
@@ -160,6 +164,65 @@ export default function NewInvoicePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.company_id, form.type]);
 
+  // Auto-save draft — safety net proti strate rozpracovanej FA
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const t = setTimeout(() => {
+      const hasContent = form.customer_name.trim() || items.some((i) => i.description.trim() || i.unit_price > 0);
+      if (hasContent) {
+        try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ form, items, savedAt: Date.now() })); } catch {}
+      }
+    }, 500);
+    return () => clearTimeout(t);
+  }, [form, items]);
+
+  // On mount: check existujúci draft (nie pri clone alebo return z /customers/new)
+  useEffect(() => {
+    if (cloneFromId || newContactId) return;
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (Date.now() - (parsed.savedAt || 0) > 86_400_000) { localStorage.removeItem(DRAFT_KEY); return; }
+      setDraftAvailable({ form: parsed.form, items: parsed.items });
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Po návrate z /customers/new?return=... s new_contact_id → auto-select nového kontaktu
+  useEffect(() => {
+    if (!newContactId || !form.company_id) return;
+    (async () => {
+      const sb = createClient();
+      const { data } = await sb.from('contacts').select('id, name, ico, dic, ic_dph, street, city, zip, email').eq('id', newContactId).maybeSingle();
+      if (data) {
+        setForm((f) => ({
+          ...f,
+          contact_id: data.id,
+          customer_name: data.name,
+          customer_ico: data.ico || '',
+          customer_ic_dph: data.ic_dph || '',
+          customer_email: data.email || f.customer_email,
+        }));
+        setContacts((prev) => prev.some((c) => c.id === data.id) ? prev : [data as unknown as Contact, ...prev]);
+        router.replace('/dashboard/invoices/new');
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newContactId, form.company_id]);
+
+  function restoreDraft() {
+    if (!draftAvailable) return;
+    const d = draftAvailable as { form: typeof form; items: typeof items };
+    setForm(d.form);
+    setItems(d.items);
+    setDraftAvailable(null);
+  }
+  function discardDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
+    setDraftAvailable(null);
+  }
+
   function setItem(i: number, key: keyof Item, val: string | number) {
     const next = [...items];
     // @ts-expect-error generic
@@ -256,6 +319,8 @@ export default function NewInvoicePage() {
       if (stErr) console.warn('Stock movement skipped:', stErr.message);
     }
 
+    // Successful save — clear draft
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
     router.push('/dashboard/invoices');
     router.refresh();
   }
@@ -263,6 +328,18 @@ export default function NewInvoicePage() {
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
       <PageHeader back={{ href: "/dashboard/invoices" }} title="Nový doklad" subtitle="Vystaviť FA, ZF, DO, DL, PPD alebo CP" />
+
+      {draftAvailable && (
+        <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+          <div className="text-[13px] text-amber-900">
+            <strong>Rozpracovaný doklad nájdený.</strong> Chceš pokračovať tam kde si prestal?
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <Button type="button" variant="primary" onClick={restoreDraft}>Obnoviť</Button>
+            <Button type="button" variant="ghost" onClick={discardDraft}>Zahodiť</Button>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={save} className="space-y-4">
         <Card>

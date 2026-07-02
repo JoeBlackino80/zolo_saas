@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input, Field, Card, CardHeader, PageHeader, Select } from '@/components/ui';
-import { ArrowLeft, Search } from 'lucide-react';
-import Link from 'next/link';
+import { Search } from 'lucide-react';
 import { useToast } from '@/components/Toast';
 
-export default function NewCustomerPage() {
+function NewCustomerInner() {
   const router = useRouter();
+  const search = useSearchParams();
+  const returnTo = search.get('return');
   const toast = useToast();
   const [companies, setCompanies] = useState<{ id: string; name: string }[]>([]);
   const [form, setForm] = useState({
@@ -78,16 +79,26 @@ export default function NewCustomerPage() {
     const sb = createClient();
     const { data: { user } } = await sb.auth.getUser();
     if (!user) { toast('Nie si prihlásený', 'error'); setSaving(false); return; }
-    const { error } = await sb.from('contacts').insert([{ ...form, created_by: user.id }]);
+    const { data, error } = await sb.from('contacts').insert([{ ...form, created_by: user.id }]).select('id').single();
     if (error) { toast(error.message, 'error'); setSaving(false); return; }
     toast('Zákazník pridaný', 'success');
-    router.push('/dashboard/customers');
+    // Ak prišiel z inej formy s ?return=..., presmeruj naspäť s ID nového zákazníka
+    if (returnTo) {
+      const sep = returnTo.includes('?') ? '&' : '?';
+      router.push(`${returnTo}${sep}new_contact_id=${data?.id || ''}`);
+    } else {
+      router.push('/dashboard/customers');
+    }
     router.refresh();
   }
 
   return (
     <div className="p-4 sm:p-8 max-w-3xl">
-      <PageHeader back={{ href: "/dashboard/customers" }} title="Nový zákazník" subtitle="Zadaj IČO — zvyšok sa doplní automaticky z ORSR" />
+      <PageHeader
+        back={{ href: returnTo || '/dashboard/customers', label: returnTo ? 'Späť na formulár' : 'Späť' }}
+        title="Nový zákazník"
+        subtitle={returnTo ? 'Po uložení sa vrátiš do rozpracovaného dokladu' : 'Zadaj IČO — zvyšok sa doplní automaticky z ORSR'}
+      />
 
       <form onSubmit={save} className="space-y-4">
         <Card>
@@ -150,10 +161,26 @@ export default function NewCustomerPage() {
         </Card>
 
         <div className="flex gap-2">
-          <Button type="submit" variant="primary" disabled={saving}>{saving ? 'Ukladám…' : 'Pridať zákazníka'}</Button>
-          <Link href="/dashboard/customers"><Button type="button" variant="ghost">Zrušiť</Button></Link>
+          <Button type="submit" variant="primary" disabled={saving}>
+            {saving ? 'Ukladám…' : returnTo ? 'Pridať a vrátiť sa' : 'Pridať zákazníka'}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => router.push(returnTo || '/dashboard/customers')}
+          >
+            Zrušiť
+          </Button>
         </div>
       </form>
     </div>
+  );
+}
+
+export default function NewCustomerPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-zinc-500 text-sm">Načítavam…</div>}>
+      <NewCustomerInner />
+    </Suspense>
   );
 }
