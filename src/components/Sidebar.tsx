@@ -288,6 +288,7 @@ const SECTIONS: NavSection[] = [
           { label: 'Platby',          href: '/dashboard/settings/payments' },
           { label: 'Cenové úrovne',   href: '/dashboard/settings/price-levels' },
           { label: 'Notifikácie',     href: '/dashboard/settings/notifications' },
+          { label: 'Monitorovanie',   href: '/dashboard/settings/monitoring' },
           { label: 'Predplatné',      href: '/dashboard/settings/subscription' },
           { label: 'Preferencie',     href: '/dashboard/settings/preferences' },
         ],

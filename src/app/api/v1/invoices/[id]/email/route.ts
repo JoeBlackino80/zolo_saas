@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { guardV1 } from '@/lib/api-guard';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -8,14 +8,10 @@ export const dynamic = 'force-dynamic';
 // Body: { to: string, subject?, body? }
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
-  const auth = req.headers.get('authorization') || '';
-  const m = auth.match(/^Bearer\s+(zk_[a-f0-9]+)\b/);
-  if (!m) return NextResponse.json({ ok: false, error: 'Missing Bearer token' }, { status: 401 });
-
-  const sb = await createClient();
-  const { data: keyRows } = await sb.rpc('api_key_validate', { p_key: m[1] });
-  const key = Array.isArray(keyRows) ? keyRows[0] : keyRows;
-  if (!key) return NextResponse.json({ ok: false, error: 'Invalid key' }, { status: 401 });
+  const g = await guardV1(req, 'write');
+  if (g instanceof NextResponse) return g;
+  const sb = g.sb;
+  const key = g.key;
 
   // Verify ownership
   const { data: inv } = await sb.from('invoices').select('id, number, customer_email').eq('id', id).eq('company_id', key.company_id).is('deleted_at', null).single();

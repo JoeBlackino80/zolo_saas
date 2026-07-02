@@ -1,26 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { guardV1 } from '@/lib/api-guard';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-async function authenticate(req: NextRequest) {
-  const auth = req.headers.get('authorization') || '';
-  const m = auth.match(/^Bearer\s+(zk_[a-f0-9]+)\b/);
-  if (!m) return { error: 'Missing Bearer token', status: 401 } as const;
-  const sb = await createClient();
-  const { data: keyRows } = await sb.rpc('api_key_validate', { p_key: m[1] });
-  const key = Array.isArray(keyRows) ? keyRows[0] : keyRows;
-  if (!key) return { error: 'Invalid key', status: 401 } as const;
-  return { key, sb };
-}
-
-// POST /api/v1/journal/post
-// Body: { entry_type: 'ID'|'FA'|'BV'|'PPD'|'VPD'|'PFA', entry_date, description,
-//         lines: [{ account_code, side: 'MD'|'D', amount, description? }] }
 export async function POST(req: NextRequest) {
-  const a = await authenticate(req);
-  if ('error' in a) return NextResponse.json({ ok: false, error: a.error }, { status: a.status });
+  const g = await guardV1(req, 'write');
+  if (g instanceof NextResponse) return g;
 
   let body: {
     entry_type?: string; entry_date?: string; description?: string;
@@ -34,17 +20,15 @@ export async function POST(req: NextRequest) {
   const lines = body.lines || [];
   if (lines.length < 2) return NextResponse.json({ ok: false, error: 'At least 2 lines required' }, { status: 400 });
 
-  // Verify balance
   const sumMd = lines.filter((l) => l.side === 'MD').reduce((s, l) => s + Number(l.amount || 0), 0);
   const sumD = lines.filter((l) => l.side === 'D').reduce((s, l) => s + Number(l.amount || 0), 0);
   if (Math.abs(sumMd - sumD) > 0.01) return NextResponse.json({ ok: false, error: 'MD ≠ D (must balance)' }, { status: 400 });
 
-  // Look up accounts + fiscal year + entry number via RPCs
-  const { data: fyId } = await a.sb.rpc('_zolo_ensure_fiscal_year', { p_company: a.key.company_id, p_date: entryDate });
-  const { data: entryNo } = await a.sb.rpc('_zolo_next_entry_number', { p_company: a.key.company_id, p_type: entryType, p_date: entryDate });
+  const { data: fyId } = await g.sb.rpc('_zolo_ensure_fiscal_year', { p_company: g.key.company_id, p_date: entryDate });
+  const { data: entryNo } = await g.sb.rpc('_zolo_next_entry_number', { p_company: g.key.company_id, p_type: entryType, p_date: entryDate });
 
-  const { data: je, error } = await a.sb.from('journal_entries').insert({
-    company_id: a.key.company_id,
+  const { data: je, error } = await g.sb.from('journal_entries').insert({
+    company_id: g.key.company_id,
     entry_number: entryNo,
     entry_type: entryType,
     entry_date: entryDate,
@@ -56,13 +40,12 @@ export async function POST(req: NextRequest) {
   }).select('id, entry_number').single();
   if (error || !je) return NextResponse.json({ ok: false, error: error?.message || 'JE insert failed' }, { status: 500 });
 
-  // Resolve accounts and insert lines
   for (const l of lines) {
-    const { data: acc } = await a.sb.from('chart_of_accounts').select('id').eq('company_id', a.key.company_id).eq('account_code', l.account_code).eq('is_active', true).limit(1).maybeSingle();
+    const { data: acc } = await g.sb.from('chart_of_accounts').select('id').eq('company_id', g.key.company_id).eq('account_code', l.account_code).eq('is_active', true).limit(1).maybeSingle();
     if (!acc) continue;
     const isDebit = l.side === 'MD';
-    await a.sb.from('journal_entry_lines').insert({
-      company_id: a.key.company_id,
+    await g.sb.from('journal_entry_lines').insert({
+      company_id: g.key.company_id,
       journal_entry_id: je.id,
       account_id: acc.id,
       account_code: l.account_code,
