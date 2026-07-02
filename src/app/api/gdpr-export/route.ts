@@ -1,12 +1,23 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { rateLimit, getClientIp } from '@/lib/ratelimit';
+import type { NextRequest } from 'next/server';
 
 // GET /api/gdpr-export
 // Returns ZIP/JSON of all user's data (GDPR Article 20 — Right to Data Portability)
-export async function GET() {
+// Rate limited to 3/hour per user (heavy DB read across 13 tables)
+export async function GET(req: NextRequest) {
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+
+  const rl = await rateLimit(`gdpr-export:${user.id}:${getClientIp(req)}`, 3, 3600_000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { ok: false, error: 'Rate limit exceeded — max 3 exportov za hodinu' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } }
+    );
+  }
 
   // Fetch all user data
   const [companies, contacts, invoices, items, payments, journal, jLines, accounts, employees, payslips, assets, products, audit] = await Promise.all([

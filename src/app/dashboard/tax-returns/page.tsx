@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { PageHeader, Card, EmptyState, Badge } from '@/components/ui';
 import { FileCheck } from 'lucide-react';
+import Link from 'next/link';
 import { fmtEur, fmtDate } from '@/lib/utils';
 
 export default async function TaxReturnsPage() {
@@ -18,7 +19,12 @@ export default async function TaxReturnsPage() {
     <div className="p-4 sm:p-8 max-w-7xl">
       <PageHeader title="Daňové priznania — história" subtitle={`${rows.length} podaní · DPH, DZP, KV, SV`} />
       {rows.length === 0 ? (
-        <Card><EmptyState icon={<FileCheck size={24} />} title="Žiadne podania" description="Vygeneruj prvé daňové priznanie cez DP DPH alebo Income Tax." /></Card>
+        <Card><EmptyState
+          icon={<FileCheck size={24} />}
+          title="Žiadne podania"
+          description="Vygeneruj prvé daňové priznanie cez DP DPH alebo Daň z príjmov."
+          action={<Link href="/dashboard/vat-return" className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium bg-zinc-900 text-white hover:bg-zinc-700 tracking-tight">Vytvoriť DP DPH →</Link>}
+        /></Card>
       ) : (
         <Card>
           <table className="w-full text-sm">

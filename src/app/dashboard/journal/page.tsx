@@ -47,7 +47,8 @@ export default async function JournalPage() {
           <EmptyState
             icon={<Book size={24} />}
             title="Denník je prázdny"
-            description="Účtovné zápisy sa pridajú automaticky pri vystavovaní faktúr (auto-posting)."
+            description="Účtovné zápisy sa pridajú automaticky pri vystavovaní faktúr. Alebo pridaj manuálny zápis."
+            action={<Link href="/dashboard/journal/new" className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium bg-zinc-900 text-white hover:bg-zinc-700 tracking-tight">Manuálny zápis →</Link>}
           />
         </Card>
       ) : (

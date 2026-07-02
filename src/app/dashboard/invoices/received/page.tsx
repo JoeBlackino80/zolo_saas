@@ -122,6 +122,7 @@ export default function ReceivedInvoicesPage() {
     if (!user || !firmId) { toast('Vyber firmu v sidebar', 'error'); setSaving(false); return; }
 
     let ok = 0;
+    let dupes = 0;
     for (let i = 0; i < results.length; i++) {
       const r = results[i];
       if (!r.edited || r.saved) continue;
@@ -132,6 +133,23 @@ export default function ReceivedInvoicesPage() {
       const total = Number(d.total || 0);
       const subtotal = Number(d.subtotal || (total / (1 + (d.vatRate ?? 23) / 100)));
       const vatAmount = Number(d.vatAmount || (total - subtotal));
+
+      // Dedupe check: rovnaká PFA (supplier_ico + number) už existuje?
+      if (d.partnerIco && d.number) {
+        const { data: existing } = await sb.from('invoices')
+          .select('id, number')
+          .eq('company_id', firmId)
+          .eq('type', 'received_invoice')
+          .eq('supplier_ico', d.partnerIco)
+          .eq('number', d.number)
+          .is('deleted_at', null)
+          .maybeSingle();
+        if (existing) {
+          dupes++;
+          setResults((prev) => prev.map((rr, j) => j !== i ? rr : { ...rr, error: `Už existuje: ${existing.number}` }));
+          continue;
+        }
+      }
 
       const { data: inv, error } = await sb.from('invoices').insert({
         company_id: firmId,
@@ -167,7 +185,11 @@ export default function ReceivedInvoicesPage() {
       ok++;
     }
     setSaving(false);
-    toast(`${ok}/${toSave.length} PFA uložených`, 'success');
+    if (dupes > 0) {
+      toast(`${ok} uložených · ${dupes} duplicitných (už existujú)`, 'error');
+    } else {
+      toast(`${ok}/${toSave.length} PFA uložených`, 'success');
+    }
     setFiles([]);
     loadPfas();
   }

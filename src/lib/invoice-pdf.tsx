@@ -5,21 +5,27 @@ import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/
 // slovenských diakritík (Ľ, Č, Š, Ť, Ž, á, é, í, ó, ú, ý, ĺ, ŕ, ň, ď).
 // Helvetica (default v @react-pdf/renderer) diakritiku nemá → "DODÁVATEĽ"
 // sa renderuje ako "DODÁVATE=" a "Č" úplne mizne.
+//
+// Pinned na konkrétny commit hash (nie @main branch) aby sa Roboto Flex
+// migrácia alebo repo rename neprejavili silent break every PDF.
+// Commit: googlefonts/roboto@0e5a76a (Roboto v2.138, stable 2024-11).
+const ROBOTO_CDN = 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@0e5a76a/src/hinted';
+const ROBOTO_MONO_CDN = 'https://cdn.jsdelivr.net/gh/googlefonts/RobotoMono@fe3c974/fonts/ttf';
+
 Font.register({
   family: 'Roboto',
   fonts: [
-    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@main/src/hinted/Roboto-Regular.ttf', fontWeight: 400 },
-    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@main/src/hinted/Roboto-Medium.ttf', fontWeight: 500 },
-    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@main/src/hinted/Roboto-Bold.ttf', fontWeight: 700 },
+    { src: `${ROBOTO_CDN}/Roboto-Regular.ttf`, fontWeight: 400 },
+    { src: `${ROBOTO_CDN}/Roboto-Medium.ttf`, fontWeight: 500 },
+    { src: `${ROBOTO_CDN}/Roboto-Bold.ttf`, fontWeight: 700 },
   ],
 });
 
-// Roboto Mono TTF pre monospace polia (VS/KS/SS čísla, IBAN, sumy)
 Font.register({
   family: 'RobotoMono',
   fonts: [
-    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/RobotoMono@main/fonts/ttf/RobotoMono-Regular.ttf', fontWeight: 400 },
-    { src: 'https://cdn.jsdelivr.net/gh/googlefonts/RobotoMono@main/fonts/ttf/RobotoMono-Bold.ttf', fontWeight: 700 },
+    { src: `${ROBOTO_MONO_CDN}/RobotoMono-Regular.ttf`, fontWeight: 400 },
+    { src: `${ROBOTO_MONO_CDN}/RobotoMono-Bold.ttf`, fontWeight: 700 },
   ],
 });
 

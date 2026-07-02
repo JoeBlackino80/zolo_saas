@@ -1,10 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
+import { rateLimit, getClientIp } from '@/lib/ratelimit';
 
 // GET /api/validate-vat?vat=SK1234567890
 // Validates EU VAT ID via VIES (VAT Information Exchange System)
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const vat = (url.searchParams.get('vat') || '').toUpperCase().replace(/\s/g, '');
+// Rate limited: 60/min per IP — VIES is slow, prevent abuse.
+export async function GET(request: NextRequest) {
+  const rl = await rateLimit(`validate-vat:${getClientIp(request)}`, 60, 60_000);
+  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Rate limit exceeded' }, { status: 429 });
+
+  const vat = (request.nextUrl.searchParams.get('vat') || '').toUpperCase().replace(/\s/g, '');
   if (!vat || vat.length < 8) return NextResponse.json({ ok: false, error: 'Invalid VAT format' }, { status: 400 });
 
   const country = vat.slice(0, 2);

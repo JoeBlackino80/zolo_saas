@@ -345,7 +345,14 @@ export default function NewInvoicePage() {
       vat_amount: it.quantity * it.unit_price * (it.vat_rate / 100),
       total: it.quantity * it.unit_price * (1 + it.vat_rate / 100),
     }));
-    await sb.from('invoice_items').insert(itemRows);
+    const { error: itemsErr } = await sb.from('invoice_items').insert(itemRows);
+    if (itemsErr) {
+      // Rollback: delete orphaned invoice header so sekvencia čísla sa vráti späť
+      await sb.from('invoices').delete().eq('id', inv.id);
+      setError(`Položky uložené nepodarilo — doklad zrušený: ${itemsErr.message}`);
+      setSaving(false);
+      return;
+    }
 
     // Auto-post journal entry + stock movement
     // invoice / received_invoice / credit_note / storno → journal entry
