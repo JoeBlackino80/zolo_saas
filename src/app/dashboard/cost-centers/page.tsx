@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
-import { PageHeader, Card, EmptyState } from '@/components/ui';
-import { Target } from 'lucide-react';
+import { PageHeader, Card, EmptyState, Button } from '@/components/ui';
+import { Target, Plus } from 'lucide-react';
+import Link from 'next/link';
 
 export default async function CostCentersPage() {
   const sb = await createClient();
@@ -10,7 +11,14 @@ export default async function CostCentersPage() {
     <div className="p-4 sm:p-8 max-w-6xl">
       <PageHeader title="Nákladové strediská" subtitle={`${cc?.length || 0} stredísk · vnútorná organizácia výdavkov`} />
       {!cc?.length ? (
-        <Card><EmptyState icon={<Target size={24} />} title="Žiadne nákladové strediská" description="Rozdeľ náklady podľa oddelenia, pobočky alebo strediska." /></Card>
+        <Card>
+          <EmptyState
+            icon={<Target size={24} />}
+            title="Žiadne nákladové strediská"
+            description="Rozdeľ náklady podľa oddelenia, pobočky alebo strediska. Neskôr môžeš pri každom doklade priradiť stredisko."
+            action={<Link href="/dashboard/cost-centers/new"><Button variant="primary"><Plus size={14} /> Vytvoriť stredisko</Button></Link>}
+          />
+        </Card>
       ) : (
         <Card>
           <table className="w-full text-sm">

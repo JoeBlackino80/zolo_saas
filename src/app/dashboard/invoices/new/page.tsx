@@ -193,7 +193,23 @@ export default function NewInvoicePage() {
       if (m) await sb.rpc('bump_document_number', { p_company_id: form.company_id, p_type: form.type, p_used_number: parseInt(m[1], 10) });
     }
 
-    const invoice = {
+    // Pre PFA (received_invoice) mapuj customer_* fieldy → supplier_* aby
+    // KV DPH generátor našiel dodávateľa. Odberateľ = naša firma.
+    const isPfa = form.type === 'received_invoice';
+    const invoice = isPfa ? {
+      ...form,
+      customer_name: null, customer_ico: null, customer_ic_dph: null, customer_email: null,
+      supplier_name: form.customer_name,
+      supplier_ico: form.customer_ico,
+      supplier_ic_dph: form.customer_ic_dph,
+      number: finalNumber,
+      subtotal: +totals.subtotal.toFixed(2),
+      vat_amount: +totals.vat.toFixed(2),
+      total: +totals.total.toFixed(2),
+      paid_amount: 0,
+      status: 'issued',
+      created_by: user.id,
+    } : {
       ...form,
       number: finalNumber,
       subtotal: +totals.subtotal.toFixed(2),
@@ -332,7 +348,8 @@ export default function NewInvoicePage() {
 
         <Card>
           <CardHeader
-            title="Odberateľ"
+            title={form.type === 'received_invoice' ? 'Dodávateľ' : 'Odberateľ'}
+            subtitle={form.type === 'received_invoice' ? 'Kto ti vystavil FA' : undefined}
             action={
               <Link href={`/dashboard/customers/new?return=${encodeURIComponent('/dashboard/invoices/new')}`} target="_blank">
                 <Button type="button" variant="ghost"><UserPlus size={14} /> Pridať nového</Button>
@@ -381,7 +398,7 @@ export default function NewInvoicePage() {
               </div>
             </Field>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Field label="Názov zákazníka">
+              <Field label={form.type === 'received_invoice' ? 'Názov dodávateľa' : 'Názov zákazníka'}>
                 <Input value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} />
               </Field>
               <Field label="IČO">
@@ -390,15 +407,19 @@ export default function NewInvoicePage() {
               <Field label="IČ DPH">
                 <Input value={form.customer_ic_dph} onChange={(e) => setForm({ ...form, customer_ic_dph: e.target.value })} placeholder="SK1234567890" />
               </Field>
-              <Field label="Email zákazníka" hint="Sem chodia pripomienky platby">
-                <Input type="email" value={form.customer_email} onChange={(e) => setForm({ ...form, customer_email: e.target.value })} placeholder="zakaznik@firma.sk" />
-              </Field>
-              <div className="sm:col-span-2 lg:col-span-2">
-                <label className="flex items-center gap-2 text-sm pt-7">
-                  <input type="checkbox" checked={form.reminders_enabled} onChange={(e) => setForm({ ...form, reminders_enabled: e.target.checked })} />
-                  <span>Automatické pripomienky platby <span className="text-zinc-500">(3 dni pred splatnosťou · v deň splatnosti · +7 dní · +30 dní)</span></span>
-                </label>
-              </div>
+              {form.type !== 'received_invoice' && (
+                <>
+                  <Field label="Email zákazníka" hint="Sem chodia pripomienky platby">
+                    <Input type="email" value={form.customer_email} onChange={(e) => setForm({ ...form, customer_email: e.target.value })} placeholder="zakaznik@firma.sk" />
+                  </Field>
+                  <div className="sm:col-span-2 lg:col-span-2">
+                    <label className="flex items-center gap-2 text-sm pt-7">
+                      <input type="checkbox" checked={form.reminders_enabled} onChange={(e) => setForm({ ...form, reminders_enabled: e.target.checked })} />
+                      <span>Automatické pripomienky platby <span className="text-zinc-500">(3 dni pred splatnosťou · v deň splatnosti · +7 dní · +30 dní)</span></span>
+                    </label>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </Card>

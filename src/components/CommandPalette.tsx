@@ -40,7 +40,7 @@ export default function CommandPalette() {
       const rs: Result[] = [];
       (companies.data || []).forEach((c) => rs.push({ type: 'company', id: c.id, title: c.name, subtitle: `IČO ${c.ico || '—'}`, href: `/dashboard/settings/companies/${c.id}` }));
       (invoices.data || []).forEach((i) => rs.push({ type: 'invoice', id: i.id, title: i.number, subtitle: i.customer_name || '—', href: `/dashboard/invoices/${i.id}` }));
-      (contacts.data || []).forEach((c) => rs.push({ type: 'contact', id: c.id, title: c.name, subtitle: `IČO ${c.ico || '—'}`, href: `/dashboard/customers/${c.id}` }));
+      (contacts.data || []).forEach((c) => rs.push({ type: 'contact', id: c.id, title: c.name, subtitle: `IČO ${c.ico || '—'}`, href: `/dashboard/customers?highlight=${c.id}` }));
       setResults(rs);
       setFocused(0);
     }, 200);

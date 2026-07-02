@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { fmtEur } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 
-type Invoice = Record<string, unknown> & { id: string; company_id: string; type: string; number: string; customer_name: string | null; customer_ico: string | null; customer_ic_dph: string | null; issue_date: string; delivery_date: string | null; due_date: string; currency: string; notes: string | null };
+type Invoice = Record<string, unknown> & { id: string; company_id: string; type: string; number: string; customer_name: string | null; customer_ico: string | null; customer_ic_dph: string | null; customer_email: string | null; reminders_enabled: boolean | null; issue_date: string; delivery_date: string | null; due_date: string; currency: string; notes: string | null };
 type Item = { id?: string; position: number; description: string; quantity: number; unit: string; unit_price: number; vat_rate: number; subtotal?: number; vat_amount?: number; total?: number };
 type Company = { id: string; name: string };
 
@@ -23,6 +23,8 @@ export default function EditInvoiceClient({ invoice, items: initItems, companies
     customer_name: invoice.customer_name || '',
     customer_ico: invoice.customer_ico || '',
     customer_ic_dph: invoice.customer_ic_dph || '',
+    customer_email: invoice.customer_email || '',
+    reminders_enabled: invoice.reminders_enabled ?? true,
     issue_date: invoice.issue_date,
     delivery_date: invoice.delivery_date || invoice.issue_date,
     due_date: invoice.due_date,
@@ -103,6 +105,15 @@ export default function EditInvoiceClient({ invoice, items: initItems, companies
             <Field label="Názov"><Input value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} /></Field>
             <Field label="IČO"><Input value={form.customer_ico} onChange={(e) => setForm({ ...form, customer_ico: e.target.value })} /></Field>
             <Field label="IČ DPH"><Input value={form.customer_ic_dph} onChange={(e) => setForm({ ...form, customer_ic_dph: e.target.value })} /></Field>
+            <Field label="Email zákazníka" hint="Kam chodia pripomienky platby">
+              <Input type="email" value={form.customer_email} onChange={(e) => setForm({ ...form, customer_email: e.target.value })} placeholder="zakaznik@firma.sk" />
+            </Field>
+            <div className="col-span-2 flex items-end">
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={form.reminders_enabled} onChange={(e) => setForm({ ...form, reminders_enabled: e.target.checked })} />
+                <span>Automatické pripomienky platby</span>
+              </label>
+            </div>
           </div>
         </Card>
 
