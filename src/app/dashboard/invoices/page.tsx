@@ -23,9 +23,9 @@ export default async function InvoicesPage() {
             <Link href="/dashboard/invoices/bulk-send">
               <Button variant="secondary">Hromadne poslať</Button>
             </Link>
-            <a href="/api/export/invoices" download>
-              <Button variant="secondary">Export CSV</Button>
-            </a>
+            <Link href="/dashboard/invoices/export">
+              <Button variant="secondary">Export CSV / ZIP</Button>
+            </Link>
             <Link href="/dashboard/invoices/new">
               <Button variant="primary"><Plus size={14} /> Nový doklad</Button>
             </Link>
