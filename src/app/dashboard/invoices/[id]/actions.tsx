@@ -74,9 +74,14 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; tot
       <a href={`/api/invoice-pdf?id=${invoice.id}&inline=1`} target="_blank" rel="noopener noreferrer">
         <Button variant="secondary"><Eye size={14} /> Náhľad PDF</Button>
       </a>
-      <a href={`/api/invoice-pdf?id=${invoice.id}`}>
-        <Button variant="secondary"><FileText size={14} /> Stiahnuť PDF</Button>
-      </a>
+      <div className="relative group">
+        <Button variant="secondary"><FileText size={14} /> PDF ▾</Button>
+        <div className="absolute right-0 top-full mt-1 hidden group-hover:block bg-white border border-zinc-200 rounded-lg shadow-lg z-10 min-w-[180px]">
+          <a href={`/api/invoice-pdf?id=${invoice.id}`} className="block px-4 py-2 text-[13px] hover:bg-zinc-50">🇸🇰 Slovenčina</a>
+          <a href={`/api/invoice-pdf?id=${invoice.id}&lang=en`} className="block px-4 py-2 text-[13px] hover:bg-zinc-50">🇬🇧 English</a>
+          <a href={`/api/invoice-pdf?id=${invoice.id}&lang=de`} className="block px-4 py-2 text-[13px] hover:bg-zinc-50">🇩🇪 Deutsch</a>
+        </div>
+      </div>
       <a href={`/api/invoice-isdoc?id=${invoice.id}`}>
         <Button variant="secondary"><FileText size={14} /> ISDOC</Button>
       </a>

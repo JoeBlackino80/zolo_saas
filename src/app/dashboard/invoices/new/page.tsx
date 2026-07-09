@@ -55,6 +55,7 @@ export default function NewInvoicePage() {
     delivery_date: new Date().toISOString().slice(0, 10),
     due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); })(),
     currency: 'EUR',
+    language: 'sk',
     notes: '',
     parent_invoice_id: search.get('parent') || null as string | null,
   });
@@ -469,6 +470,13 @@ export default function NewInvoicePage() {
                 <option value="EUR">EUR</option>
                 <option value="CZK">CZK</option>
                 <option value="USD">USD</option>
+              </Select>
+            </Field>
+            <Field label="Jazyk PDF">
+              <Select value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })}>
+                <option value="sk">🇸🇰 Slovenčina</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="de">🇩🇪 Deutsch</option>
               </Select>
             </Field>
           </div>

@@ -44,6 +44,7 @@ type Item = {
 export type InvoiceForPdf = {
   number: string;
   type: string;
+  language?: string;
   issue_date: string;
   delivery_date: string | null;
   due_date: string;
@@ -82,16 +83,7 @@ export type InvoiceForPdf = {
   items: Item[];
 };
 
-const TYPE_LABEL: Record<string, string> = {
-  invoice: 'Faktúra',
-  received_invoice: 'Prijatá faktúra',
-  proforma: 'Zálohová faktúra',
-  credit_note: 'Dobropis',
-  storno: 'Storno doklad',
-  delivery_note: 'Dodací list',
-  quote: 'Cenová ponuka',
-  cash_receipt: 'Pokladničný príjmový doklad',
-};
+import { getT, type PdfLang } from './pdf-i18n';
 
 const styles = StyleSheet.create({
   page: { fontFamily: 'Roboto', fontSize: 9.5, padding: 38, color: '#18181b', lineHeight: 1.5 },
@@ -159,14 +151,16 @@ function fmtMoney(n: number, currency = 'EUR'): string {
 export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
   const co = invoice.company;
   const b = invoice.branding || {};
-  // Doklady majú vždy ZOLO corporate identity (monochromatic zinc).
-  // Custom branding.primary_color sa ignoruje v štrukturálnych prvkoch
-  // pretože user chce konzistentnú SaaS identitu naprieč všetkými firmami.
-  // Ak si firma potrebuje odlíšiť brand → nahranie farebného loga.
+  const lang = (invoice.language || 'sk') as PdfLang;
+  const t = getT(lang);
+  const docType = (t as unknown as Record<string, string>)[invoice.type] || invoice.type;
+
   const headerStyle = { ...styles.header, borderBottom: `1 solid #e4e4e7` };
   const docTypeStyle = { ...styles.docType, color: '#71717a' };
   const grandTotalRowStyle = { ...styles.grandTotalRow, borderTop: `2 solid #18181b` };
   const grandTotalValueStyle = { ...styles.grandTotalValue, color: '#18181b' };
+  const numLocale = lang === 'de' ? 'de-DE' : lang === 'en' ? 'en-US' : 'sk-SK';
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -178,57 +172,57 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
             ) : null}
             <Text style={styles.brandTitle}>{co.name}</Text>
             <Text style={styles.brandSubtitle}>{co.street ? `${co.street}, ` : ''}{co.zip} {co.city}</Text>
-            <Text style={styles.brandSubtitle}>IČO {co.ico || '—'} · DIČ {co.dic || '—'}{co.ic_dph ? ` · IČ DPH ${co.ic_dph}` : ''}</Text>
+            <Text style={styles.brandSubtitle}>{t.ico} {co.ico || '—'} · {t.dic} {co.dic || '—'}{co.ic_dph ? ` · ${t.icDph} ${co.ic_dph}` : ''}</Text>
           </View>
           <View style={styles.docNumber}>
-            <Text style={docTypeStyle}>{TYPE_LABEL[invoice.type] || invoice.type}</Text>
+            <Text style={docTypeStyle}>{docType}</Text>
             <Text style={styles.docNo}>{invoice.number}</Text>
           </View>
         </View>
 
         <View style={styles.parties}>
           <View style={styles.partyBox}>
-            <Text style={styles.partyLabel}>Dodávateľ</Text>
+            <Text style={styles.partyLabel}>{t.supplier}</Text>
             <Text style={styles.partyName}>{co.name}</Text>
             {co.street && <Text style={styles.partyLine}>{co.street}</Text>}
             {(co.zip || co.city) && <Text style={styles.partyLine}>{co.zip || ''} {co.city || ''}</Text>}
-            <Text style={styles.partyLine}><Text style={styles.partyKey}>IČO: </Text>{co.ico || '—'}</Text>
-            <Text style={styles.partyLine}><Text style={styles.partyKey}>DIČ: </Text>{co.dic || '—'}</Text>
-            {co.ic_dph && <Text style={styles.partyLine}><Text style={styles.partyKey}>IČ DPH: </Text>{co.ic_dph}</Text>}
+            <Text style={styles.partyLine}><Text style={styles.partyKey}>{t.ico}: </Text>{co.ico || '—'}</Text>
+            <Text style={styles.partyLine}><Text style={styles.partyKey}>{t.dic}: </Text>{co.dic || '—'}</Text>
+            {co.ic_dph && <Text style={styles.partyLine}><Text style={styles.partyKey}>{t.icDph}: </Text>{co.ic_dph}</Text>}
           </View>
           <View style={styles.partyBox}>
-            <Text style={styles.partyLabel}>Odberateľ</Text>
+            <Text style={styles.partyLabel}>{t.customer}</Text>
             <Text style={styles.partyName}>{invoice.customer_name || '—'}</Text>
             {invoice.customer_street && <Text style={styles.partyLine}>{invoice.customer_street}</Text>}
             {(invoice.customer_zip || invoice.customer_city) && <Text style={styles.partyLine}>{invoice.customer_zip || ''} {invoice.customer_city || ''}</Text>}
-            <Text style={styles.partyLine}><Text style={styles.partyKey}>IČO: </Text>{invoice.customer_ico || '—'}</Text>
-            <Text style={styles.partyLine}><Text style={styles.partyKey}>DIČ: </Text>{invoice.customer_dic || '—'}</Text>
-            {invoice.customer_ic_dph && <Text style={styles.partyLine}><Text style={styles.partyKey}>IČ DPH: </Text>{invoice.customer_ic_dph}</Text>}
+            <Text style={styles.partyLine}><Text style={styles.partyKey}>{t.ico}: </Text>{invoice.customer_ico || '—'}</Text>
+            <Text style={styles.partyLine}><Text style={styles.partyKey}>{t.dic}: </Text>{invoice.customer_dic || '—'}</Text>
+            {invoice.customer_ic_dph && <Text style={styles.partyLine}><Text style={styles.partyKey}>{t.icDph}: </Text>{invoice.customer_ic_dph}</Text>}
           </View>
         </View>
 
         <View style={styles.meta}>
-          <View style={styles.metaCell}><Text style={styles.metaLabel}>Vystavená</Text><Text style={styles.metaValue}>{fmtDate(invoice.issue_date)}</Text></View>
-          <View style={styles.metaCell}><Text style={styles.metaLabel}>DZP</Text><Text style={styles.metaValue}>{fmtDate(invoice.delivery_date || invoice.issue_date)}</Text></View>
-          <View style={styles.metaCell}><Text style={styles.metaLabel}>Splatná</Text><Text style={styles.metaValue}>{fmtDate(invoice.due_date)}</Text></View>
-          <View style={styles.metaCell}><Text style={styles.metaLabel}>Var. symbol</Text><Text style={styles.metaValue}>{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</Text></View>
+          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.issueDate}</Text><Text style={styles.metaValue}>{fmtDate(invoice.issue_date)}</Text></View>
+          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.deliveryDate}</Text><Text style={styles.metaValue}>{fmtDate(invoice.delivery_date || invoice.issue_date)}</Text></View>
+          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.dueDate}</Text><Text style={styles.metaValue}>{fmtDate(invoice.due_date)}</Text></View>
+          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.variableSymbolShort}</Text><Text style={styles.metaValue}>{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</Text></View>
         </View>
 
         <View style={styles.table}>
           <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderCell, styles.c1]}>#</Text>
-            <Text style={[styles.tableHeaderCell, styles.c2]}>Popis</Text>
-            <Text style={[styles.tableHeaderCell, styles.c3]}>Množstvo</Text>
-            <Text style={[styles.tableHeaderCell, styles.c4]}>MJ</Text>
-            <Text style={[styles.tableHeaderCell, styles.c5]}>Cena/MJ</Text>
-            <Text style={[styles.tableHeaderCell, styles.c6]}>DPH</Text>
-            <Text style={[styles.tableHeaderCell, styles.c7]}>Spolu</Text>
+            <Text style={[styles.tableHeaderCell, styles.c1]}>{t.colHash}</Text>
+            <Text style={[styles.tableHeaderCell, styles.c2]}>{t.colDescription}</Text>
+            <Text style={[styles.tableHeaderCell, styles.c3]}>{t.colQuantity}</Text>
+            <Text style={[styles.tableHeaderCell, styles.c4]}>{t.colUnit}</Text>
+            <Text style={[styles.tableHeaderCell, styles.c5]}>{t.colUnitPrice}</Text>
+            <Text style={[styles.tableHeaderCell, styles.c6]}>{t.colVat}</Text>
+            <Text style={[styles.tableHeaderCell, styles.c7]}>{t.colTotal}</Text>
           </View>
           {invoice.items.map((it) => (
             <View key={it.position} style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.c1]}>{it.position}</Text>
               <Text style={[styles.tableCell, styles.c2]}>{it.description}</Text>
-              <Text style={[styles.tableCell, styles.c3]}>{Number(it.quantity).toLocaleString('sk-SK')}</Text>
+              <Text style={[styles.tableCell, styles.c3]}>{Number(it.quantity).toLocaleString(numLocale)}</Text>
               <Text style={[styles.tableCell, styles.c4]}>{it.unit}</Text>
               <Text style={[styles.tableCell, styles.c5]}>{fmtMoney(Number(it.unit_price), invoice.currency)}</Text>
               <Text style={[styles.tableCell, styles.c6]}>{it.vat_rate}%</Text>
@@ -238,26 +232,26 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
         </View>
 
         <View style={styles.totalsBox}>
-          <View style={styles.totalsRow}><Text style={styles.totalsLabel}>Základ DPH:</Text><Text style={styles.totalsValue}>{fmtMoney(Number(invoice.subtotal), invoice.currency)}</Text></View>
-          <View style={styles.totalsRow}><Text style={styles.totalsLabel}>DPH:</Text><Text style={styles.totalsValue}>{fmtMoney(Number(invoice.vat_amount), invoice.currency)}</Text></View>
-          <View style={grandTotalRowStyle}><Text style={styles.grandTotalLabel}>K úhrade</Text><Text style={grandTotalValueStyle}>{fmtMoney(Number(invoice.total), invoice.currency)}</Text></View>
+          <View style={styles.totalsRow}><Text style={styles.totalsLabel}>{t.subtotal}</Text><Text style={styles.totalsValue}>{fmtMoney(Number(invoice.subtotal), invoice.currency)}</Text></View>
+          <View style={styles.totalsRow}><Text style={styles.totalsLabel}>{t.vat}</Text><Text style={styles.totalsValue}>{fmtMoney(Number(invoice.vat_amount), invoice.currency)}</Text></View>
+          <View style={grandTotalRowStyle}><Text style={styles.grandTotalLabel}>{t.amountDue}</Text><Text style={grandTotalValueStyle}>{fmtMoney(Number(invoice.total), invoice.currency)}</Text></View>
         </View>
 
         {(co.iban || co.bank_name) && (
           <View style={styles.payment}>
             <View style={styles.paymentLeft}>
-              <Text style={styles.paymentTitle}>Platobné údaje</Text>
+              <Text style={styles.paymentTitle}>{t.paymentDetails}</Text>
               <View style={styles.paymentGrid}>
-                <View style={styles.paymentCol}><Text style={styles.paymentKey}>IBAN</Text><Text style={styles.paymentVal}>{co.iban || '—'}</Text></View>
-                <View style={styles.paymentCol}><Text style={styles.paymentKey}>BIC / SWIFT</Text><Text style={styles.paymentVal}>{co.bic || '—'}</Text></View>
-                <View style={styles.paymentCol}><Text style={styles.paymentKey}>Banka</Text><Text style={styles.paymentVal}>{co.bank_name || '—'}</Text></View>
-                <View style={styles.paymentCol}><Text style={styles.paymentKey}>Variabilný symbol</Text><Text style={styles.paymentVal}>{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</Text></View>
+                <View style={styles.paymentCol}><Text style={styles.paymentKey}>{t.iban}</Text><Text style={styles.paymentVal}>{co.iban || '—'}</Text></View>
+                <View style={styles.paymentCol}><Text style={styles.paymentKey}>{t.bicSwift}</Text><Text style={styles.paymentVal}>{co.bic || '—'}</Text></View>
+                <View style={styles.paymentCol}><Text style={styles.paymentKey}>{t.bank}</Text><Text style={styles.paymentVal}>{co.bank_name || '—'}</Text></View>
+                <View style={styles.paymentCol}><Text style={styles.paymentKey}>{t.variableSymbol}</Text><Text style={styles.paymentVal}>{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</Text></View>
               </View>
             </View>
             {invoice.qr_data_url && (
               <View style={styles.qrBox}>
                 <Image src={invoice.qr_data_url} style={styles.qrImg} />
-                <Text style={styles.qrLabel}>PAY by square</Text>
+                <Text style={styles.qrLabel}>{t.payBySquare}</Text>
               </View>
             )}
           </View>
@@ -267,8 +261,8 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
         {b.footer_text && (<Text style={{ ...styles.notes, fontStyle: 'normal', marginTop: 8 }}>{b.footer_text}</Text>)}
 
         <View style={styles.footer} fixed>
-          <Text render={({ pageNumber, totalPages }) => `${co.name} · strana ${pageNumber} / ${totalPages}`} />
-          <Text style={styles.watermark}>Doklad vygenerovaný systémom ZOLO · zolo.sk</Text>
+          <Text render={({ pageNumber, totalPages }) => `${co.name} · ${t.pageOf} ${pageNumber} / ${totalPages}`} />
+          <Text style={styles.watermark}>{t.generatedBy}</Text>
         </View>
       </Page>
     </Document>

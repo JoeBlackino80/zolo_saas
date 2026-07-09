@@ -64,9 +64,11 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  const langParam = req.nextUrl.searchParams.get('lang');
   const doc: InvoiceForPdf = {
     number: invoice.number,
     type: invoice.type,
+    language: langParam || (invoice as unknown as { language?: string }).language || 'sk',
     issue_date: invoice.issue_date,
     delivery_date: invoice.delivery_date,
     due_date: invoice.due_date,
