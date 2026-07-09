@@ -14,6 +14,8 @@ type Translations = {
   invoice: string;
   received_invoice: string;
   proforma: string;
+  advance_invoice: string;
+  received_proforma: string;
   credit_note: string;
   received_credit_note: string;
   storno: string;
@@ -97,6 +99,8 @@ export const T: Record<PdfLang, Translations> = {
     invoice: 'Faktúra',
     received_invoice: 'Prijatá faktúra',
     proforma: 'Zálohová faktúra',
+    advance_invoice: 'Preddavková faktúra',
+    received_proforma: 'Prijatá zálohová faktúra',
     credit_note: 'Dobropis',
     received_credit_note: 'Prijatý dobropis',
     storno: 'Storno doklad',
@@ -171,6 +175,8 @@ export const T: Record<PdfLang, Translations> = {
     invoice: 'Invoice',
     received_invoice: 'Received invoice',
     proforma: 'Proforma invoice',
+    advance_invoice: 'Advance invoice',
+    received_proforma: 'Received proforma',
     credit_note: 'Credit note',
     received_credit_note: 'Received credit note',
     storno: 'Cancellation note',
@@ -245,6 +251,8 @@ export const T: Record<PdfLang, Translations> = {
     invoice: 'Rechnung',
     received_invoice: 'Eingangsrechnung',
     proforma: 'Proforma-Rechnung',
+    advance_invoice: 'Vorauszahlungsrechnung',
+    received_proforma: 'Eingangs-Proforma',
     credit_note: 'Gutschrift',
     received_credit_note: 'Eingangs-Gutschrift',
     storno: 'Stornorechnung',

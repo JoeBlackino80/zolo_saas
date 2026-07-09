@@ -356,8 +356,8 @@ export default function NewInvoicePage() {
     }
 
     // Auto-post journal entry + stock movement
-    // Extended in batch 56 — PPD/VPD + PDOB tiež zaúčtovaní
-    const journalTypes = ['invoice', 'credit_note', 'storno', 'received_invoice', 'received_credit_note', 'debit_note', 'cash_receipt', 'cash_payout'];
+    // Extended in batch 60 — advance_invoice tiež zaúčtovaná (received_proforma len evidenčná)
+    const journalTypes = ['invoice', 'credit_note', 'storno', 'received_invoice', 'received_credit_note', 'debit_note', 'cash_receipt', 'cash_payout', 'advance_invoice'];
     const stockTypes = ['invoice', 'credit_note', 'storno', 'received_invoice', 'received_credit_note', 'delivery_note'];
     if (journalTypes.includes(form.type)) {
       const { error: jeErr } = await sb.rpc('post_invoice_journal', { p_invoice_id: inv.id, p_event: 'issue' });
@@ -404,13 +404,15 @@ export default function NewInvoicePage() {
                 <option value="invoice">Faktúra (FA)</option>
                 <option value="received_invoice">Prijatá FA (PFA)</option>
                 <option value="proforma">Zálohová (ZF)</option>
+                <option value="advance_invoice">Preddavková FA (daňový doklad)</option>
+                <option value="received_proforma">Prijatá zálohová (od dodávateľa)</option>
                 <option value="credit_note">Dobropis (DOB)</option>
+                <option value="received_credit_note">Prijatý dobropis (PDOB)</option>
                 <option value="debit_note">Ťarchopis (TCH)</option>
                 <option value="storno">Storno (STO)</option>
                 <option value="delivery_note">Dodací list (DL)</option>
                 <option value="cash_receipt">Príjmový PPD</option>
                 <option value="cash_payout">Výdavkový VPD</option>
-                <option value="received_credit_note">Prijatý dobropis (PDOB)</option>
                 <option value="quote">Cenová ponuka (CP)</option>
               </Select>
             </Field>
