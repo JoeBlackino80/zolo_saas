@@ -76,14 +76,19 @@ export async function GET(req: NextRequest) {
     total: Number(invoice.total || 0),
     variable_symbol: invoice.variable_symbol,
     notes: invoice.notes,
-    qr_data_url: co?.iban ? await generatePayBySquareQR({
-      iban: co.iban,
-      amount: Number(invoice.total || 0),
-      currency: invoice.currency || 'EUR',
-      beneficiaryName: co.name || 'Príjemca',
-      variableSymbol: invoice.variable_symbol || invoice.number.replace(/\D/g, ''),
-      message: invoice.number,
-    }) : null,
+    // QR platba PAY by square — LEN pre typy kde klient reálne bude platiť.
+    // Nezobrazovať pri credit_note/storno (mínusová suma, klient nemá čo platiť)
+    // ani pri delivery_note (nie je fakturačný doklad) alebo quote (len ponuka).
+    qr_data_url: co?.iban && ['invoice', 'proforma', 'cash_receipt'].includes(invoice.type) && Number(invoice.total || 0) > 0
+      ? await generatePayBySquareQR({
+          iban: co.iban,
+          amount: Number(invoice.total || 0),
+          currency: invoice.currency || 'EUR',
+          beneficiaryName: co.name || 'Príjemca',
+          variableSymbol: invoice.variable_symbol || invoice.number.replace(/\D/g, ''),
+          message: invoice.number,
+        })
+      : null,
     customer_name: invoice.customer_name,
     customer_ico: invoice.customer_ico,
     customer_dic: invoice.customer_dic,

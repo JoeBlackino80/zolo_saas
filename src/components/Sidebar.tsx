@@ -105,6 +105,7 @@ const SECTIONS: NavSection[] = [
           { label: 'Cenové ponuky',         href: '/dashboard/invoices?type=quote' },
           { label: 'Príjmový PPD',          href: '/dashboard/invoices?type=cash_receipt' },
           { label: 'Výdavkový VPD',          href: '/dashboard/invoices?type=cash_payout' },
+          { label: 'Prijaté dobropisy',     href: '/dashboard/invoices?type=received_credit_note' },
         ],
       },
       { icon: ReceiptText, label: 'Ponuky', href: '/dashboard/quotes', segments: ['quotes'] },

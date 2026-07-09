@@ -355,10 +355,9 @@ export default function NewInvoicePage() {
     }
 
     // Auto-post journal entry + stock movement
-    // invoice / received_invoice / credit_note / storno → journal entry
-    // invoice / received_invoice / credit_note / storno / delivery_note → stock movement (DL no journal)
-    const journalTypes = ['invoice', 'credit_note', 'storno', 'received_invoice', 'debit_note'];
-    const stockTypes = [...journalTypes, 'delivery_note'];
+    // Extended in batch 56 — PPD/VPD + PDOB tiež zaúčtovaní
+    const journalTypes = ['invoice', 'credit_note', 'storno', 'received_invoice', 'received_credit_note', 'debit_note', 'cash_receipt', 'cash_payout'];
+    const stockTypes = ['invoice', 'credit_note', 'storno', 'received_invoice', 'received_credit_note', 'delivery_note'];
     if (journalTypes.includes(form.type)) {
       const { error: jeErr } = await sb.rpc('post_invoice_journal', { p_invoice_id: inv.id, p_event: 'issue' });
       if (jeErr) console.warn('Journal posting skipped:', jeErr.message);
@@ -410,6 +409,7 @@ export default function NewInvoicePage() {
                 <option value="delivery_note">Dodací list (DL)</option>
                 <option value="cash_receipt">Príjmový PPD</option>
                 <option value="cash_payout">Výdavkový VPD</option>
+                <option value="received_credit_note">Prijatý dobropis (PDOB)</option>
                 <option value="quote">Cenová ponuka (CP)</option>
               </Select>
             </Field>
