@@ -52,6 +52,7 @@ import { useRouter, useSelectedLayoutSegment, usePathname } from 'next/navigatio
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import NotificationBell from './NotificationBell';
+import { SECTION_MODULES, hasModule, type Module } from '@/lib/modules';
 
 type Company = {
   id: string;
@@ -60,6 +61,8 @@ type Company = {
   dic: string | null;
   ic_dph: string | null;
   is_vat_payer: boolean | null;
+  plan?: string | null;
+  enabled_modules?: string[] | null;
 };
 
 type NavItemDef = {
@@ -294,6 +297,7 @@ const SECTIONS: NavSection[] = [
           { label: 'Notifikácie',     href: '/dashboard/settings/notifications' },
           { label: 'Monitorovanie',   href: '/dashboard/settings/monitoring' },
           { label: 'Predplatné',      href: '/dashboard/settings/subscription' },
+          { label: 'Aktivované moduly', href: '/dashboard/settings/modules' },
           { label: 'Preferencie',     href: '/dashboard/settings/preferences' },
         ],
       },
@@ -499,19 +503,28 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
 
         {SECTIONS.map((section) => {
           const isCollapsed = collapsed[section.label];
+          // Module gating: skryť sekciu ak firma nemá aktivovaný modul
+          const requiredModule = SECTION_MODULES[section.label];
+          const activeCompany = companies.find((c) => c.id === currentFirmId) || companies[0];
+          const isLocked = requiredModule && activeCompany?.enabled_modules && !hasModule(activeCompany.enabled_modules, requiredModule as Module);
           return (
             <div key={section.label} className="mb-1">
               <button
                 onClick={() => toggleSection(section.label)}
-                className="w-full px-2.5 pt-3 pb-1.5 flex items-center justify-between text-[10px] uppercase font-semibold text-zinc-500 hover:text-zinc-300 tracking-[0.1em] transition-colors"
+                className={`w-full px-2.5 pt-3 pb-1.5 flex items-center justify-between text-[10px] uppercase font-semibold tracking-[0.1em] transition-colors ${
+                  isLocked ? 'text-zinc-700' : 'text-zinc-500 hover:text-zinc-300'
+                }`}
               >
-                <span>{section.label}</span>
+                <span className="flex items-center gap-1.5">
+                  {section.label}
+                  {isLocked && <span className="text-[9px] text-zinc-600 normal-case tracking-normal">🔒</span>}
+                </span>
                 <ChevronDown
                   size={10}
                   className={`transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`}
                 />
               </button>
-              {!isCollapsed && (
+              {!isCollapsed && !isLocked && (
                 <div className="space-y-px">
                   {section.items.map((item) => (
                     <NavLink
@@ -527,6 +540,14 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
                     />
                   ))}
                 </div>
+              )}
+              {!isCollapsed && isLocked && (
+                <button
+                  onClick={() => router.push('/dashboard/settings/subscription')}
+                  className="w-full text-left px-2.5 py-2 mx-1 rounded-md text-[11px] text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
+                >
+                  Upgradovať pre prístup →
+                </button>
               )}
             </div>
           );

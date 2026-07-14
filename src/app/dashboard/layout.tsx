@@ -11,10 +11,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { data: { user } } = await sb.auth.getUser();
   if (!user) redirect('/login');
 
-  // Load companies user has access to (RLS-scoped)
+  // Load companies user has access to (RLS-scoped) + module flags
   const { data: companies } = await sb
     .from('companies')
-    .select('id, name, ico, dic, ic_dph, is_vat_payer')
+    .select('id, name, ico, dic, ic_dph, is_vat_payer, plan, enabled_modules')
     .is('deleted_at', null)
     .order('name');
 
