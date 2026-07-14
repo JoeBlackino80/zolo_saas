@@ -45,6 +45,7 @@ export type InvoiceForPdf = {
   number: string;
   type: string;
   language?: string;
+  watermark?: string | null;  // ak Free plán alebo expired subscription → "UKÁŽKA"
   issue_date: string;
   delivery_date: string | null;
   due_date: string;
@@ -259,6 +260,14 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
 
         {invoice.notes && (<Text style={styles.notes}>{invoice.notes}</Text>)}
         {b.footer_text && (<Text style={{ ...styles.notes, fontStyle: 'normal', marginTop: 8 }}>{b.footer_text}</Text>)}
+
+        {invoice.watermark && (
+          <View style={{ position: 'absolute', top: '40%', left: 0, right: 0, alignItems: 'center', opacity: 0.12, transform: 'rotate(-30deg)' }} fixed>
+            <Text style={{ fontSize: 120, fontWeight: 700, color: '#dc2626', letterSpacing: 8 }}>
+              {invoice.watermark}
+            </Text>
+          </View>
+        )}
 
         <View style={styles.footer} fixed>
           <Text render={({ pageNumber, totalPages }) => `${co.name} · ${t.pageOf} ${pageNumber} / ${totalPages}`} />

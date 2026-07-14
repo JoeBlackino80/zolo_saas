@@ -65,10 +65,26 @@ export async function GET(req: NextRequest) {
   }
 
   const langParam = req.nextUrl.searchParams.get('lang');
+
+  // Watermark logika:
+  // - Free plán → "UKÁŽKA" watermark na PDF
+  // - Expired subscription → "NEPLATNÉ" watermark
+  // - Business/Pro s aktívnym plánom → žiadny watermark
+  const compFullId = (co as RpcCompany & { id?: string })?.id;
+  let watermark: string | null = null;
+  if (compFullId) {
+    const { data: planData } = await sb.from('companies').select('plan, subscription_status').eq('id', compFullId).maybeSingle();
+    if (planData?.plan === 'free') watermark = 'UKÁŽKA';
+    else if (planData?.subscription_status && !['active', 'trialing', 'free'].includes(planData.subscription_status)) {
+      watermark = 'NEPLATNÉ';
+    }
+  }
+
   const doc: InvoiceForPdf = {
     number: invoice.number,
     type: invoice.type,
     language: langParam || (invoice as unknown as { language?: string }).language || 'sk',
+    watermark,
     issue_date: invoice.issue_date,
     delivery_date: invoice.delivery_date,
     due_date: invoice.due_date,

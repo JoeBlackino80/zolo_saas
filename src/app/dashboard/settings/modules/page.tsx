@@ -122,8 +122,17 @@ export default function ModulesPage() {
               </div>
               <div className="text-[13px] font-semibold text-zinc-700">{p.price}</div>
               <div className="text-[11px] text-zinc-500 mt-2 leading-relaxed">{p.description}</div>
-              <div className="mt-3 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
-                {p.modules.length} modulov
+              <div className="mt-3 flex flex-wrap gap-1 text-[10px]">
+                <span className="bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-600">{p.modules.length} modulov</span>
+                <span className="bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-600">
+                  {p.limits.maxCompanies < 0 ? '∞ firiem' : `${p.limits.maxCompanies} firma`}
+                </span>
+                <span className="bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-600">
+                  {p.limits.maxInvoicesTotal < 0 ? '∞ dokladov' : `${p.limits.maxInvoicesTotal} dokladov`}
+                </span>
+                <span className="bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-600">
+                  {p.limits.maxContacts < 0 ? '∞ kontaktov' : `${p.limits.maxContacts} kontaktov`}
+                </span>
               </div>
             </button>
           ))}

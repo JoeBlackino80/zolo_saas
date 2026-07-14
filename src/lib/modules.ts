@@ -24,33 +24,54 @@ export const SECTION_MODULES: Record<string, Module | undefined> = {
   'Nastavenia': undefined,
 };
 
-// Named plans → default module sets
-export const PLANS: Record<string, { label: string; modules: Module[]; price: string; description: string }> = {
+// Named plans → default module sets + resource limits
+export type PlanLimits = {
+  maxCompanies: number;      // koľko firiem pod účtom (-1 = neobmedzene)
+  maxInvoicesTotal: number;  // koľko FA celkovo (-1 = neobmedzene) — Free tvrdý limit
+  maxContacts: number;       // koľko partnerov/kontaktov (-1 = neobmedzene)
+  maxAiExtractsPerMonth: number; // PFA AI extraction (-1 = neobmedzene, 0 = zakázané)
+  maxTeamMembers: number;    // tím veľkosť (-1 = neobmedzene)
+};
+
+export const PLANS: Record<string, { label: string; modules: Module[]; price: string; description: string; limits: PlanLimits }> = {
   free: {
     label: 'Free',
     price: 'zdarma',
-    description: 'Základ pre živnostníkov — fakturácia + reporty',
+    description: '1 firma, 10 dokladov celkovo, 5 kontaktov — na vyskúšanie',
     modules: ['invoicing', 'reports'],
+    limits: { maxCompanies: 1, maxInvoicesTotal: 10, maxContacts: 5, maxAiExtractsPerMonth: 0, maxTeamMembers: 1 },
   },
   pro: {
     label: 'Pro',
     price: '€15 / mes',
-    description: 'Pre malé firmy — pridáva bankový modul, dane, AI',
+    description: '3 firmy, neobmedzene dokladov, banka, dane, AI 100/mes',
     modules: ['invoicing', 'finance', 'taxes', 'reports', 'ai'],
+    limits: { maxCompanies: 3, maxInvoicesTotal: -1, maxContacts: -1, maxAiExtractsPerMonth: 100, maxTeamMembers: 5 },
   },
   business: {
     label: 'Business',
     price: '€49 / mes',
-    description: 'Kompletné účtovníctvo, mzdy, sklad, API',
+    description: 'Kompletné účtovníctvo, mzdy, sklad, API — neobmedzene',
     modules: ['invoicing', 'finance', 'accounting', 'taxes', 'reports', 'payroll', 'warehouse', 'ai', 'api', 'multi_company'],
+    limits: { maxCompanies: -1, maxInvoicesTotal: -1, maxContacts: -1, maxAiExtractsPerMonth: -1, maxTeamMembers: 50 },
   },
   enterprise: {
     label: 'Enterprise',
     price: 'na vyžiadanie',
     description: 'Vlastné integrácie, SLA, prioritná podpora',
     modules: ['invoicing', 'finance', 'accounting', 'taxes', 'reports', 'payroll', 'warehouse', 'ai', 'api', 'multi_company'],
+    limits: { maxCompanies: -1, maxInvoicesTotal: -1, maxContacts: -1, maxAiExtractsPerMonth: -1, maxTeamMembers: -1 },
   },
 };
+
+// Subscription status stavy
+export type SubscriptionStatus = 'active' | 'trialing' | 'past_due' | 'expired' | 'canceled' | 'free';
+
+// Kontrola: má firma aktívne (platené alebo trial) predplatné?
+export function isSubscriptionActive(status: SubscriptionStatus | string | null | undefined, plan: string | null | undefined): boolean {
+  if (plan === 'free') return true; // Free plán vždy aktívny (v rámci limitov)
+  return status === 'active' || status === 'trialing';
+}
 
 export function hasModule(enabledModules: string[] | null | undefined, module: Module): boolean {
   if (!enabledModules || enabledModules.length === 0) return true; // fallback: assume all if unset
