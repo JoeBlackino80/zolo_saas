@@ -65,8 +65,13 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
     if (!form.name) { toast('Názov je povinný', 'error'); return; }
     setLoading(true);
     const sb = createClient();
-    const { data: { user } } = await sb.auth.getUser();
-    if (!user) { setLoading(false); return; }
+    const { data: { user }, error: userErr } = await sb.auth.getUser();
+    if (userErr || !user) {
+      toast('Session vypršala, prihlás sa znovu', 'error');
+      setLoading(false);
+      setTimeout(() => router.push('/login'), 1200);
+      return;
+    }
     const { data, error } = await sb.from('companies').insert([{ ...form, created_by: user.id }]).select().single();
     if (error) { toast(error.message, 'error'); setLoading(false); return; }
     if (data?.id) {
