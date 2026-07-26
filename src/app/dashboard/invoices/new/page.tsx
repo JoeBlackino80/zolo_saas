@@ -69,6 +69,7 @@ export default function NewInvoicePage() {
   const [showContactDropdown, setShowContactDropdown] = useState(false);
   const [showAddContactModal, setShowAddContactModal] = useState(false);
   const [productPickerRow, setProductPickerRow] = useState<number | null>(null);
+  const [linkableInvoices, setLinkableInvoices] = useState<{ id: string; number: string; customer_name: string | null; total: number }[]>([]);
 
   // Fetch contacts when company changes
   useEffect(() => {
@@ -193,6 +194,22 @@ export default function NewInvoicePage() {
     if (form.company_id) peekNumber(form.company_id, form.type);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.company_id, form.type]);
+
+  // Pre DL — načítaj zoznam FA ku ktorým sa dá naviazať
+  useEffect(() => {
+    if (form.type !== 'delivery_note' || !form.company_id) { setLinkableInvoices([]); return; }
+    (async () => {
+      const sb = createClient();
+      const { data } = await sb.from('invoices')
+        .select('id, number, customer_name, total')
+        .eq('company_id', form.company_id)
+        .eq('type', 'invoice')
+        .is('deleted_at', null)
+        .order('issue_date', { ascending: false })
+        .limit(50);
+      setLinkableInvoices((data as typeof linkableInvoices) || []);
+    })();
+  }, [form.type, form.company_id]);
 
   // Auto-save draft — safety net proti strate rozpracovanej FA
   useEffect(() => {
@@ -490,6 +507,25 @@ export default function NewInvoicePage() {
                 <option value="de">🇩🇪 Deutsch</option>
               </Select>
             </Field>
+            {form.type === 'delivery_note' && (
+              <Field label="Ku faktúre (voliteľné)">
+                <Select value={form.parent_invoice_id || ''} onChange={(e) => {
+                  const pid = e.target.value || null;
+                  setForm({ ...form, parent_invoice_id: pid });
+                  if (pid) {
+                    const p = linkableInvoices.find((x) => x.id === pid);
+                    if (p) {
+                      setForm((f) => ({ ...f, parent_invoice_id: pid, customer_name: p.customer_name || f.customer_name, notes: `Dodací list k FA ${p.number}` }));
+                    }
+                  }
+                }}>
+                  <option value="">— Samostatný DL (bez väzby) —</option>
+                  {linkableInvoices.map((p) => (
+                    <option key={p.id} value={p.id}>{p.number} · {p.customer_name || '—'} · {Number(p.total).toFixed(2)} €</option>
+                  ))}
+                </Select>
+              </Field>
+            )}
           </div>
         </Card>
 
