@@ -2,12 +2,15 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui';
-import { Check, Mail, FileText, Eye, Loader2, X, Send } from 'lucide-react';
+import { Check, Mail, FileText, Eye, Loader2, X, Send, Wallet, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/Toast';
 import { useRouter } from 'next/navigation';
 
-export default function InvoiceActions({ invoice }: { invoice: { id: string; total: number; paid_amount: number | null; customer_name?: string | null; number: string } }) {
+export default function InvoiceActions({ invoice }: { invoice: { id: string; type?: string; total: number; paid_amount: number | null; customer_name?: string | null; number: string } }) {
+  const isUnpaid = Number(invoice.paid_amount || 0) < Number(invoice.total);
+  const type = invoice.type || 'invoice';
   const toast = useToast();
   const router = useRouter();
   const [showSend, setShowSend] = useState(false);
@@ -68,8 +71,42 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; tot
 
   return (
     <>
-      {Number(invoice.paid_amount || 0) < Number(invoice.total) && (
+      {isUnpaid && (
         <Button variant="secondary" onClick={markPaid}><Check size={14} /> Zaplatené</Button>
+      )}
+
+      {/* Doc-chain tlačidlá — kontext-závislé podľa typu */}
+      {isUnpaid && ['invoice', 'advance_invoice', 'debit_note'].includes(type) && (
+        <Link href={`/dashboard/cash-book/quick?type=cash_receipt&parent=${invoice.id}`}>
+          <Button variant="secondary"><Wallet size={14} /> PPD ku FA</Button>
+        </Link>
+      )}
+      {isUnpaid && ['received_invoice', 'received_credit_note'].includes(type) && (
+        <Link href={`/dashboard/cash-book/quick?type=cash_payout&parent=${invoice.id}`}>
+          <Button variant="secondary"><Wallet size={14} /> VPD ku PFA</Button>
+        </Link>
+      )}
+      {type === 'proforma' && (
+        <>
+          <Link href={`/dashboard/invoices/new?parent=${invoice.id}&type=invoice`}>
+            <Button variant="secondary"><ArrowRight size={14} /> Vystaviť ostrú FA</Button>
+          </Link>
+          {Number(invoice.paid_amount || 0) > 0 && (
+            <Link href={`/dashboard/invoices/new?parent=${invoice.id}&type=advance_invoice`}>
+              <Button variant="secondary"><ArrowRight size={14} /> Preddavková FA</Button>
+            </Link>
+          )}
+          {isUnpaid && (
+            <Link href={`/dashboard/cash-book/quick?type=cash_receipt&parent=${invoice.id}`}>
+              <Button variant="secondary"><Wallet size={14} /> Prijať zálohu (PPD)</Button>
+            </Link>
+          )}
+        </>
+      )}
+      {type === 'received_proforma' && isUnpaid && (
+        <Link href={`/dashboard/cash-book/quick?type=cash_payout&parent=${invoice.id}`}>
+          <Button variant="secondary"><Wallet size={14} /> Zaplatiť zálohu (VPD)</Button>
+        </Link>
       )}
       <a href={`/api/invoice-pdf?id=${invoice.id}&inline=1`} target="_blank" rel="noopener noreferrer">
         <Button variant="secondary"><Eye size={14} /> Náhľad PDF</Button>
