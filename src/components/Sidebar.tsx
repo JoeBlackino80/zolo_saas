@@ -473,21 +473,25 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
           <span className="text-[10px] bg-white/[0.06] px-1.5 py-0.5 rounded font-mono text-zinc-400">⌘K</span>
         </button>
 
-        <div className="relative">
-          <select
-            value={currentFirmId}
-            onChange={(e) => selectFirm(e.target.value)}
-            className="w-full appearance-none bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.06] rounded-lg pl-2.5 pr-7 py-2 text-[13px] text-zinc-200 font-medium cursor-pointer outline-none transition-colors"
-          >
-            <option value="" className="bg-zinc-900">Všetky firmy ({companies.length})</option>
-            {companies.map((c) => (
-              <option key={c.id} value={c.id} className="bg-zinc-900">
-                {c.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
-        </div>
+        {companies.length > 0 && (
+          <div className="relative">
+            <select
+              value={currentFirmId || companies[0]?.id || ''}
+              onChange={(e) => selectFirm(e.target.value)}
+              disabled={companies.length === 1}
+              className="w-full appearance-none bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.06] rounded-lg pl-2.5 pr-7 py-2 text-[13px] text-zinc-200 font-medium cursor-pointer outline-none transition-colors disabled:cursor-default disabled:hover:bg-white/[0.05]"
+            >
+              {companies.map((c) => (
+                <option key={c.id} value={c.id} className="bg-zinc-900">
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            {companies.length > 1 && (
+              <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
+            )}
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
