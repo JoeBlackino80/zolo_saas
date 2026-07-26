@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ToastProvider } from '@/components/Toast';
 import CookieBanner from '@/components/CookieBanner';
+import AuthResilience from '@/components/AuthResilience';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="sk" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-zinc-50">
+        <AuthResilience />
         <ToastProvider>{children}</ToastProvider>
         <CookieBanner />
       </body>

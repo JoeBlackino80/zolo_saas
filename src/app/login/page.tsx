@@ -24,6 +24,8 @@ export default function LoginPage() {
     const reason = new URLSearchParams(window.location.search).get('reason');
     if (reason === 'idle') {
       setStatus({ msg: 'Odhlásili sme ťa kvôli neaktivite. Prihlás sa znova.', kind: 'muted' });
+    } else if (reason === 'stale_session' || reason === 'refresh_expired' || reason === 'refresh_failed') {
+      setStatus({ msg: 'Session vypršala — automaticky sme vyčistili starú prihlásenú reláciu. Prihlás sa znova.', kind: 'muted' });
     }
   }, []);
 
