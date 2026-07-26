@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
+function getAppOrigin(): string {
+  if (typeof window === 'undefined') return '';
+  const host = window.location.host;
+  if (host === 'zolo.sk' || host === 'www.zolo.sk') return 'https://app.zolo.sk';
+  return window.location.origin;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -29,7 +36,7 @@ export default function LoginPage() {
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        redirectTo: `${getAppOrigin()}/auth/callback?next=/dashboard`,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
@@ -97,7 +104,7 @@ export default function LoginPage() {
     setStatus({ msg: 'Posielam email na obnovu hesla…', kind: 'muted' });
     const sb = createClient();
     const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/auth/reset`,
+      redirectTo: `${getAppOrigin()}/auth/callback?next=/auth/reset`,
     });
     setLoading(false);
     if (error) { setStatus({ msg: 'Chyba: ' + error.message, kind: 'error' }); return; }
@@ -116,7 +123,7 @@ export default function LoginPage() {
     const { data, error } = await sb.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding` },
+      options: { emailRedirectTo: `${getAppOrigin()}/auth/callback?next=/onboarding` },
     });
     if (error) {
       setStatus({ msg: 'Chyba: ' + error.message, kind: 'error' });
