@@ -72,6 +72,15 @@ function QuickCashDocInner() {
     setParentId('');
   }, [firmId, type]);
 
+  // ?parent=<id> v URL → predvybrať v dropdowne po načítaní zoznamu
+  useEffect(() => {
+    const urlParent = search.get('parent');
+    if (urlParent && parentInvoices.some((p) => p.id === urlParent)) {
+      setParentId(urlParent);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parentInvoices]);
+
   // Ak vyberie parent → auto-fill partner + suma (unpaid rest)
   useEffect(() => {
     if (!parentId) return;
