@@ -1,6 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+const COLOR_PRESETS = [
+  { label: 'Čierno-biela', desc: 'Klasika, neutrálne', primary: '#18181b', accent: '#71717a' },
+  { label: 'Modrá firemná', desc: 'IT / poradenstvo', primary: '#1e40af', accent: '#3b82f6' },
+  { label: 'Zelená eco', desc: 'Bio / prírodné', primary: '#166534', accent: '#22c55e' },
+  { label: 'Vínová luxus', desc: 'Prémiové značky', primary: '#7f1d1d', accent: '#dc2626' },
+  { label: 'Fialová kreatíva', desc: 'Marketing / dizajn', primary: '#5b21b6', accent: '#8b5cf6' },
+  { label: 'Oranžová energia', desc: 'Šport / gastro', primary: '#c2410c', accent: '#f97316' },
+  { label: 'Tyrkysová moderná', desc: 'Startup / tech', primary: '#0e7490', accent: '#06b6d4' },
+  { label: 'Sivá minimalistická', desc: 'Právnici / audit', primary: '#3f3f46', accent: '#a1a1aa' },
+];
 import { createClient } from '@/lib/supabase/client';
 import { PageHeader, Card, CardHeader, Button, Input, Field, Select } from '@/components/ui';
 import { ArrowLeft, Upload } from 'lucide-react';
@@ -138,14 +149,36 @@ export default function BrandingPage() {
               </label>
               <div className="text-[11px] text-zinc-500 mt-1">Voliteľné. Od 1.4.2019 nemusí byť na FA (§71 zákona o DPH), ale klienti si to často pýtajú.</div>
             </Field>
+            <Field label="Farebná paleta (rýchla voľba)">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {COLOR_PRESETS.map((p) => {
+                  const active = form.primary_color.toLowerCase() === p.primary.toLowerCase() && form.accent_color.toLowerCase() === p.accent.toLowerCase();
+                  return (
+                    <button
+                      key={p.label}
+                      type="button"
+                      onClick={() => setForm({ ...form, primary_color: p.primary, accent_color: p.accent })}
+                      className={`text-left p-2.5 rounded-xl border-2 transition-colors ${active ? 'border-zinc-900 bg-zinc-50' : 'border-zinc-200 hover:border-zinc-300'}`}
+                    >
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <div className="w-5 h-5 rounded" style={{ backgroundColor: p.primary }} />
+                        <div className="w-3 h-3 rounded" style={{ backgroundColor: p.accent }} />
+                      </div>
+                      <div className="text-[12px] font-semibold text-zinc-900">{p.label}</div>
+                      <div className="text-[10px] text-zinc-500">{p.desc}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field label="Hlavná farba">
+              <Field label="Hlavná farba (vlastná)">
                 <div className="flex gap-2">
                   <input type="color" value={form.primary_color} onChange={(e) => setForm({ ...form, primary_color: e.target.value })} className="w-12 h-10 rounded border border-zinc-200" />
                   <Input value={form.primary_color} onChange={(e) => setForm({ ...form, primary_color: e.target.value })} className="font-mono" />
                 </div>
               </Field>
-              <Field label="Akcentová farba">
+              <Field label="Akcentová farba (vlastná)">
                 <div className="flex gap-2">
                   <input type="color" value={form.accent_color} onChange={(e) => setForm({ ...form, accent_color: e.target.value })} className="w-12 h-10 rounded border border-zinc-200" />
                   <Input value={form.accent_color} onChange={(e) => setForm({ ...form, accent_color: e.target.value })} className="font-mono" />

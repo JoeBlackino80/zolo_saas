@@ -158,10 +158,17 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
   const t = getT(lang);
   const docType = (t as unknown as Record<string, string>)[invoice.type] || invoice.type;
 
-  const headerStyle = { ...styles.header, borderBottom: `1 solid #e4e4e7` };
-  const docTypeStyle = { ...styles.docType, color: '#71717a' };
-  const grandTotalRowStyle = { ...styles.grandTotalRow, borderTop: `2 solid #18181b` };
-  const grandTotalValueStyle = { ...styles.grandTotalValue, color: '#18181b' };
+  const primary = b.primary_color || '#18181b';
+  const accent = b.accent_color || '#71717a';
+  const headerStyle = { ...styles.header, borderBottom: `2 solid ${primary}` };
+  const brandTitleStyle = { ...styles.brandTitle, color: primary };
+  const docTypeStyle = { ...styles.docType, color: accent };
+  const docNoStyle = { ...styles.docNo, color: primary };
+  const partyNameStyle = { ...styles.partyName, color: primary };
+  const metaValueStyle = { ...styles.metaValue, color: primary };
+  const grandTotalRowStyle = { ...styles.grandTotalRow, borderTop: `2 solid ${primary}` };
+  const grandTotalLabelStyle = { ...styles.grandTotalLabel, color: primary };
+  const grandTotalValueStyle = { ...styles.grandTotalValue, color: primary };
   const numLocale = lang === 'de' ? 'de-DE' : lang === 'en' ? 'en-US' : 'sk-SK';
 
   return (
@@ -173,20 +180,20 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
               // eslint-disable-next-line jsx-a11y/alt-text
               <Image src={b.logo_url} style={{ width: 100, height: 40, objectFit: 'contain', marginBottom: 8 }} />
             ) : null}
-            <Text style={styles.brandTitle}>{co.name}</Text>
+            <Text style={brandTitleStyle}>{co.name}</Text>
             <Text style={styles.brandSubtitle}>{co.street ? `${co.street}, ` : ''}{co.zip} {co.city}</Text>
             <Text style={styles.brandSubtitle}>{t.ico} {co.ico || '—'} · {t.dic} {co.dic || '—'}{co.ic_dph ? ` · ${t.icDph} ${co.ic_dph}` : ''}</Text>
           </View>
           <View style={styles.docNumber}>
             <Text style={docTypeStyle}>{docType}</Text>
-            <Text style={styles.docNo}>{invoice.number}</Text>
+            <Text style={docNoStyle}>{invoice.number}</Text>
           </View>
         </View>
 
         <View style={styles.parties}>
           <View style={styles.partyBox}>
             <Text style={styles.partyLabel}>{t.supplier}</Text>
-            <Text style={styles.partyName}>{co.name}</Text>
+            <Text style={partyNameStyle}>{co.name}</Text>
             {co.street && <Text style={styles.partyLine}>{co.street}</Text>}
             {(co.zip || co.city) && <Text style={styles.partyLine}>{co.zip || ''} {co.city || ''}</Text>}
             <Text style={styles.partyLine}><Text style={styles.partyKey}>{t.ico}: </Text>{co.ico || '—'}</Text>
@@ -195,7 +202,7 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
           </View>
           <View style={styles.partyBox}>
             <Text style={styles.partyLabel}>{t.customer}</Text>
-            <Text style={styles.partyName}>{invoice.customer_name || '—'}</Text>
+            <Text style={partyNameStyle}>{invoice.customer_name || '—'}</Text>
             {invoice.customer_street && <Text style={styles.partyLine}>{invoice.customer_street}</Text>}
             {(invoice.customer_zip || invoice.customer_city) && <Text style={styles.partyLine}>{invoice.customer_zip || ''} {invoice.customer_city || ''}</Text>}
             <Text style={styles.partyLine}><Text style={styles.partyKey}>{t.ico}: </Text>{invoice.customer_ico || '—'}</Text>
@@ -205,10 +212,10 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
         </View>
 
         <View style={styles.meta}>
-          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.issueDate}</Text><Text style={styles.metaValue}>{fmtDate(invoice.issue_date)}</Text></View>
-          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.deliveryDate}</Text><Text style={styles.metaValue}>{fmtDate(invoice.delivery_date || invoice.issue_date)}</Text></View>
-          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.dueDate}</Text><Text style={styles.metaValue}>{fmtDate(invoice.due_date)}</Text></View>
-          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.variableSymbolShort}</Text><Text style={styles.metaValue}>{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</Text></View>
+          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.issueDate}</Text><Text style={metaValueStyle}>{fmtDate(invoice.issue_date)}</Text></View>
+          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.deliveryDate}</Text><Text style={metaValueStyle}>{fmtDate(invoice.delivery_date || invoice.issue_date)}</Text></View>
+          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.dueDate}</Text><Text style={metaValueStyle}>{fmtDate(invoice.due_date)}</Text></View>
+          <View style={styles.metaCell}><Text style={styles.metaLabel}>{t.variableSymbolShort}</Text><Text style={metaValueStyle}>{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</Text></View>
         </View>
 
         <View style={styles.table}>
@@ -237,7 +244,7 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
         <View style={styles.totalsBox}>
           <View style={styles.totalsRow}><Text style={styles.totalsLabel}>{t.subtotal}</Text><Text style={styles.totalsValue}>{fmtMoney(Number(invoice.subtotal), invoice.currency)}</Text></View>
           <View style={styles.totalsRow}><Text style={styles.totalsLabel}>{t.vat}</Text><Text style={styles.totalsValue}>{fmtMoney(Number(invoice.vat_amount), invoice.currency)}</Text></View>
-          <View style={grandTotalRowStyle}><Text style={styles.grandTotalLabel}>{t.amountDue}</Text><Text style={grandTotalValueStyle}>{fmtMoney(Number(invoice.total), invoice.currency)}</Text></View>
+          <View style={grandTotalRowStyle}><Text style={grandTotalLabelStyle}>{t.amountDue}</Text><Text style={grandTotalValueStyle}>{fmtMoney(Number(invoice.total), invoice.currency)}</Text></View>
         </View>
 
         {(co.iban || co.bank_name) && (
