@@ -65,9 +65,19 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
     if (!form.name) { toast('Názov je povinný', 'error'); return; }
     setLoading(true);
     const sb = createClient();
-    // created_by fills automatically via set_company_created_by trigger (auth.uid())
     const { data, error } = await sb.from('companies').insert([{ ...form }]).select().single();
     if (error) {
+      // Stale JWT — user was wiped in DB but browser still has the old session
+      if (error.message.includes('companies_created_by_fkey') || error.message.includes('foreign key')) {
+        toast('Tvoja session odkazuje na vymazaného usera. Prihlás sa znova.', 'error');
+        setLoading(false);
+        setTimeout(async () => {
+          await sb.auth.signOut();
+          if (typeof window !== 'undefined') localStorage.clear();
+          router.push('/login');
+        }, 1500);
+        return;
+      }
       toast(`Chyba: ${error.message}`, 'error');
       setLoading(false);
       return;
