@@ -45,17 +45,24 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
           city = parts[1].replace(/\d{3}\s?\d{2}/, '').replace(/-\s.*/, '').trim();
         } else { street = String(data.address); }
       }
+      // Platca DPH: IČ DPH = SK + DIČ. Ak ORSR vrátil icDph ale nie dic,
+      // odvodíme DIČ zo SK-prefixnutého IČ DPH.
+      const derivedDic = data.dic || (data.icDph ? String(data.icDph).replace(/^SK/i, '') : '');
       setForm({
         ...form,
         name: data.name || form.name,
-        dic: data.dic || form.dic,
+        dic: derivedDic || form.dic,
         ic_dph: data.icDph || form.ic_dph,
         street: street || form.street,
         city: city || form.city,
         zip: zip || form.zip,
         is_vat_payer: !!data.icDph,
       });
-      toast('Údaje z ORSR: ' + data.name, 'success');
+      if (!derivedDic && !data.icDph) {
+        toast('ORSR nevrátil DIČ — doplň ručne v ďalšom kroku', 'info');
+      } else {
+        toast('Údaje z ORSR: ' + data.name, 'success');
+      }
       setStep(2);
     } catch (e) { toast('Lookup zlyhal: ' + (e as Error).message, 'error'); }
     finally { setLoading(false); }

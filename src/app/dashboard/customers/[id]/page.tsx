@@ -5,6 +5,7 @@ import { ArrowLeft, Mail, Phone, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { fmtEur, fmtDate } from '@/lib/utils';
 import ContactActivities from './activities';
+import EditContactButton from './edit-button';
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -31,7 +32,10 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
       <Link href="/dashboard/customers" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 mb-3">
         <ArrowLeft size={14} /> Späť na zákazníkov
       </Link>
-      <PageHeader title={contact.name} subtitle={`IČO ${contact.ico || '—'} · ${contact.city || ''}`} />
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <PageHeader title={contact.name} subtitle={`IČO ${contact.ico || '—'} · ${contact.city || ''}`} />
+        <EditContactButton contact={contact} />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <Card><div className="p-5">

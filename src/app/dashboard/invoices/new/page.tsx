@@ -391,6 +391,15 @@ export default function NewInvoicePage() {
       )}
 
       <form onSubmit={save} className="space-y-4">
+        {form.company_id && companies.find((c) => c.id === form.company_id) && (
+          <div className="flex items-center gap-3 px-5 py-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+            <div className="text-[13px] text-emerald-900">
+              <span className="font-semibold">Vystavuje:</span>{' '}
+              <span className="font-bold">{companies.find((c) => c.id === form.company_id)?.name}</span>
+            </div>
+          </div>
+        )}
         <Card>
           <CardHeader title="Doklad" />
           <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

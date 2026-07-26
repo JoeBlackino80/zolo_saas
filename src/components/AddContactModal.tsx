@@ -23,25 +23,28 @@ export default function AddContactModal({
   onClose,
   onCreated,
   initialType = 'customer',
+  editContact,
 }: {
   companyId: string;
   onClose: () => void;
   onCreated: (contact: NewContact) => void;
   initialType?: 'customer' | 'supplier' | 'both';
+  editContact?: { id: string; type?: string; name?: string; ico?: string | null; dic?: string | null; ic_dph?: string | null; street?: string | null; city?: string | null; zip?: string | null; email?: string | null; phone?: string | null };
 }) {
   const toast = useToast();
+  const isEdit = !!editContact;
   const [form, setForm] = useState({
-    type: initialType,
-    name: '',
-    ico: '',
-    dic: '',
-    ic_dph: '',
-    street: '',
-    city: '',
-    zip: '',
+    type: (editContact?.type as 'customer' | 'supplier' | 'both') || initialType,
+    name: editContact?.name || '',
+    ico: editContact?.ico || '',
+    dic: editContact?.dic || '',
+    ic_dph: editContact?.ic_dph || '',
+    street: editContact?.street || '',
+    city: editContact?.city || '',
+    zip: editContact?.zip || '',
     country: 'Slovensko',
-    email: '',
-    phone: '',
+    email: editContact?.email || '',
+    phone: editContact?.phone || '',
   });
   const [saving, setSaving] = useState(false);
   const [lookingUp, setLookingUp] = useState(false);
@@ -65,16 +68,23 @@ export default function AddContactModal({
           city = parts[1].replace(/\d{3}\s?\d{2}/, '').replace(/-\s.*/, '').trim();
         } else street = String(data.address);
       }
+      // Platca DPH: IČ DPH = SK + DIČ. Ak ORSR vrátil icDph ale nie dic,
+      // odvodíme DIČ zo SK-prefixnutého IČ DPH.
+      const derivedDic = data.dic || (data.icDph ? String(data.icDph).replace(/^SK/i, '') : '');
       setForm((f) => ({
         ...f,
         name: data.name || f.name,
-        dic: data.dic || f.dic,
+        dic: derivedDic || f.dic,
         ic_dph: data.icDph || f.ic_dph,
         street: street || f.street,
         city: city || f.city,
         zip: zip || f.zip,
       }));
-      toast('Údaje z ORSR: ' + data.name, 'success');
+      if (!derivedDic && !data.icDph) {
+        toast('ORSR nevrátil DIČ — doplň ručne ak je klient platca DPH', 'info');
+      } else {
+        toast('Údaje z ORSR: ' + data.name, 'success');
+      }
     } catch (e) { toast((e as Error).message, 'error'); }
     finally { setLookingUp(false); }
   }
@@ -83,13 +93,14 @@ export default function AddContactModal({
     if (!form.name.trim()) { toast('Názov je povinný', 'error'); return; }
     setSaving(true);
     const sb = createClient();
-    const { data: { user } } = await sb.auth.getUser();
-    if (!user) { toast('Nie si prihlásený', 'error'); setSaving(false); return; }
-    const { data, error } = await sb.from('contacts').insert([{
-      ...form, company_id: companyId, created_by: user.id,
-    }]).select('id, name, ico, dic, ic_dph, street, city, zip, email').single();
+    let data, error;
+    if (isEdit && editContact) {
+      ({ data, error } = await sb.from('contacts').update({ ...form }).eq('id', editContact.id).select('id, name, ico, dic, ic_dph, street, city, zip, email').single());
+    } else {
+      ({ data, error } = await sb.from('contacts').insert([{ ...form, company_id: companyId }]).select('id, name, ico, dic, ic_dph, street, city, zip, email').single());
+    }
     if (error || !data) { toast(error?.message || 'Chyba', 'error'); setSaving(false); return; }
-    toast('Zákazník pridaný', 'success');
+    toast(isEdit ? 'Zákazník upravený' : 'Zákazník pridaný', 'success');
     setSaving(false);
     onCreated(data as NewContact);
   }
@@ -106,9 +117,9 @@ export default function AddContactModal({
         <div className="sticky top-0 bg-white border-b border-zinc-100 px-6 py-4 flex items-start justify-between gap-3">
           <div>
             <h2 className="text-[18px] font-bold text-zinc-900 tracking-tight flex items-center gap-2">
-              <UserPlus size={18} /> Nový zákazník
+              <UserPlus size={18} /> {isEdit ? 'Upraviť zákazníka' : 'Nový zákazník'}
             </h2>
-            <p className="text-[12px] text-zinc-500 mt-0.5">Zadaj IČO — zvyšok sa doplní z ORSR</p>
+            <p className="text-[12px] text-zinc-500 mt-0.5">{isEdit ? 'Uprav údaje a klikni Uložiť' : 'Zadaj IČO — zvyšok sa doplní z ORSR'}</p>
           </div>
           <button onClick={onClose} className="text-zinc-400 hover:text-zinc-700 p-1"><X size={18} /></button>
         </div>
@@ -144,7 +155,7 @@ export default function AddContactModal({
         <div className="sticky bottom-0 bg-white border-t border-zinc-100 px-6 py-4 flex justify-end gap-2">
           <Button variant="ghost" onClick={onClose}>Zrušiť</Button>
           <Button variant="primary" onClick={save} disabled={saving}>
-            {saving ? 'Ukladám…' : 'Pridať a použiť'}
+            {saving ? 'Ukladám…' : (isEdit ? 'Uložiť zmeny' : 'Pridať a použiť')}
           </Button>
         </div>
       </div>
