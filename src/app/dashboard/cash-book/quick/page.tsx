@@ -16,6 +16,8 @@ function QuickCashDocInner() {
   const [companies, setCompanies] = useState<{ id: string; name: string }[]>([]);
   const [firmId, setFirmId] = useState('');
   const [type, setType] = useState<'cash_receipt' | 'cash_payout'>(initialType);
+  const [parentInvoices, setParentInvoices] = useState<{ id: string; number: string; type: string; total: number; paid_amount: number; customer_name: string | null; supplier_name: string | null }[]>([]);
+  const [parentId, setParentId] = useState('');
   const [form, setForm] = useState({
     partner: '',
     partnerIco: '',
@@ -45,6 +47,45 @@ function QuickCashDocInner() {
       if (typeof data === 'string') setPeekedNumber(data);
     })();
   }, [firmId, type]);
+
+  // Fetch unpaid FA/PFA/ZF pre parent picker (podľa typu PPD/VPD)
+  useEffect(() => {
+    if (!firmId) return;
+    (async () => {
+      const sb = createClient();
+      // PPD (prijímame) → FA vystavené alebo ZF vystavené (klient nám platí)
+      // VPD (vydávame) → PFA prijaté alebo prijatá ZF (my platíme dodávateľovi)
+      const types = type === 'cash_receipt'
+        ? ['invoice', 'proforma', 'advance_invoice', 'debit_note']
+        : ['received_invoice', 'received_proforma', 'received_credit_note'];
+      const { data } = await sb
+        .from('invoices')
+        .select('id, number, type, total, paid_amount, customer_name, supplier_name')
+        .eq('company_id', firmId)
+        .in('type', types)
+        .in('status', ['issued', 'sent', 'partially_paid', 'overdue'])
+        .is('deleted_at', null)
+        .order('issue_date', { ascending: false })
+        .limit(50);
+      setParentInvoices((data as typeof parentInvoices) || []);
+    })();
+    setParentId('');
+  }, [firmId, type]);
+
+  // Ak vyberie parent → auto-fill partner + suma (unpaid rest)
+  useEffect(() => {
+    if (!parentId) return;
+    const p = parentInvoices.find((x) => x.id === parentId);
+    if (!p) return;
+    const unpaid = +(Number(p.total) - Number(p.paid_amount || 0)).toFixed(2);
+    setForm((f) => ({
+      ...f,
+      partner: (type === 'cash_receipt' ? p.customer_name : p.supplier_name) || f.partner,
+      amount: unpaid > 0 ? unpaid : f.amount,
+      purpose: `Úhrada ${p.type === 'proforma' ? 'ZF' : p.type === 'received_invoice' ? 'PFA' : 'FA'} ${p.number}`,
+      vatRate: 0, // úhrada — DPH už je v parent doklade, nedáva sa 2x
+    }));
+  }, [parentId, parentInvoices, type]);
 
   async function save() {
     if (!form.partner) { toast(type === 'cash_receipt' ? 'Zadaj od koho' : 'Zadaj komu', 'error'); return; }
@@ -78,6 +119,7 @@ function QuickCashDocInner() {
       exchange_rate: 1,
       notes: form.purpose,
       created_by: user.id,
+      parent_invoice_id: parentId || null,
     } : {
       company_id: firmId,
       type,
@@ -94,6 +136,7 @@ function QuickCashDocInner() {
       exchange_rate: 1,
       notes: form.purpose,
       created_by: user.id,
+      parent_invoice_id: parentId || null,
     };
 
     const { data: inv, error } = await sb.from('invoices').insert(invoice as Record<string, unknown>).select('id').single();
@@ -138,6 +181,23 @@ function QuickCashDocInner() {
               <Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
             </Field>
           </div>
+
+          <Field label={`Ku dokladu (voliteľné) — ${type === 'cash_receipt' ? 'FA/ZF ktorú klient hradí' : 'PFA ktorú platíme'}`}>
+            <Select value={parentId} onChange={(e) => setParentId(e.target.value)}>
+              <option value="">— Samostatný doklad (bez väzby) —</option>
+              {parentInvoices.map((p) => {
+                const partner = type === 'cash_receipt' ? p.customer_name : p.supplier_name;
+                const rest = +(Number(p.total) - Number(p.paid_amount || 0)).toFixed(2);
+                const label = `${p.number} · ${partner || '—'} · zostáva ${rest.toFixed(2)} €`;
+                return <option key={p.id} value={p.id}>{label}</option>;
+              })}
+            </Select>
+          </Field>
+          {parentId && (
+            <div className="text-[12px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+              ✓ Naviaže sa na doklad. Účtovanie: MD 211 / D {type === 'cash_receipt' ? '311 (úhrada pohľadávky)' : '321 (úhrada záväzku)'}. Sumu a DPH nemeň — už sú v parent doklade.
+            </div>
+          )}
 
           <Field label={type === 'cash_receipt' ? 'Od koho (názov/meno)' : 'Komu (názov/meno)'}>
             <Input value={form.partner} onChange={(e) => setForm({ ...form, partner: e.target.value })} placeholder="napr. Ján Novák" />
@@ -185,8 +245,9 @@ function QuickCashDocInner() {
         </div>
       </Card>
 
-      <div className="mt-4 text-[12px] text-zinc-500 leading-relaxed">
-        Zjednodušený formulár — 4 polia. Doklad sa automaticky zaúčtuje: <strong>PPD:</strong> MD 211 / D 602 (+34302 DPH) · <strong>VPD:</strong> MD 518 (+34301 DPH) / D 211. Ak potrebuješ položkovú faktúru (viac produktov), použi rozšírený formulár.
+      <div className="mt-4 text-[12px] text-zinc-500 leading-relaxed space-y-1.5">
+        <div><strong>Samostatný doklad</strong> (drobné hotovostné tržby §74):<br/>PPD → MD 211 / D 602 + 34302 DPH · VPD → MD 518 + 34301 DPH / D 211</div>
+        <div><strong>Naviazaný na FA/PFA</strong> (klient/dodávateľ platí hotovosťou):<br/>PPD ku FA → MD 211 / D 311 · PPD ku ZF → MD 211 / D 324 · VPD ku PFA → MD 321 / D 211 · VPD ku prijatej ZF → MD 314 / D 211<br/>Parent doklad sa auto-označí ako zaplatený (partially/paid).</div>
       </div>
     </div>
   );
