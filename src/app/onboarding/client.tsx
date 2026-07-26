@@ -65,21 +65,38 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
     if (!form.name) { toast('Názov je povinný', 'error'); return; }
     setLoading(true);
     const sb = createClient();
-    const { data: { user }, error: userErr } = await sb.auth.getUser();
+    let { data: { user }, error: userErr } = await sb.auth.getUser();
     if (userErr || !user) {
-      toast('Session vypršala, prihlás sa znovu', 'error');
+      // Try to refresh session before giving up
+      const { data: refreshed } = await sb.auth.refreshSession();
+      user = refreshed?.user ?? null;
+    }
+    if (!user) {
+      toast('Session vypršala. Odhlás sa a prihlás znova.', 'error');
       setLoading(false);
-      setTimeout(() => router.push('/login'), 1200);
+      setTimeout(async () => { await sb.auth.signOut(); router.push('/login'); }, 1500);
       return;
     }
     const { data, error } = await sb.from('companies').insert([{ ...form, created_by: user.id }]).select().single();
-    if (error) { toast(error.message, 'error'); setLoading(false); return; }
+    if (error) { toast(`DB chyba: ${error.message}`, 'error'); setLoading(false); return; }
     if (data?.id) {
       setCreatedCompanyId(data.id);
       if (typeof window !== 'undefined') localStorage.setItem('zolo_firm', data.id);
     }
     setLoading(false);
     setStep(3);
+  }
+
+  async function forceLogout() {
+    const sb = createClient();
+    await sb.auth.signOut();
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      document.cookie.split(';').forEach((c) => {
+        document.cookie = c.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+      });
+    }
+    router.push('/login');
   }
 
   async function saveBrandingAndInvites() {
@@ -106,7 +123,13 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-6 relative">
+      <button
+        onClick={forceLogout}
+        className="absolute top-4 right-4 text-[12px] text-zinc-500 hover:text-zinc-900 underline underline-offset-4 tracking-tight"
+      >
+        Odhlásiť sa
+      </button>
       <div className="w-full max-w-2xl">
         {/* Progress rail — Apple-pro dot connector */}
         <div className="flex items-center gap-2 mb-10 px-1">
