@@ -13,6 +13,8 @@ export default function BrandingPage() {
   const [firmId, setFirmId] = useState('');
   const [form, setForm] = useState({
     logo_url: '',
+    stamp_url: '',
+    signature_url: '',
     primary_color: '#18181b',
     accent_color: '#71717a',
     footer_text: '',
@@ -34,9 +36,11 @@ export default function BrandingPage() {
     if (!firmId) return;
     (async () => {
       const sb = createClient();
-      const { data } = await sb.from('company_settings').select('logo_url, primary_color, accent_color, footer_text, pdf_template').eq('company_id', firmId).maybeSingle();
+      const { data } = await sb.from('company_settings').select('logo_url, stamp_url, signature_url, primary_color, accent_color, footer_text, pdf_template').eq('company_id', firmId).maybeSingle();
       if (data) setForm({
         logo_url: data.logo_url || '',
+        stamp_url: data.stamp_url || '',
+        signature_url: data.signature_url || '',
         primary_color: data.primary_color || '#18181b',
         accent_color: data.accent_color || '#71717a',
         footer_text: data.footer_text || '',
@@ -45,11 +49,11 @@ export default function BrandingPage() {
     })();
   }, [firmId]);
 
-  async function uploadLogo(file: File) {
-    if (file.size > 200 * 1024) { toast('Logo max 200KB', 'error'); return; }
+  async function uploadImage(file: File, field: 'logo_url' | 'stamp_url' | 'signature_url', label: string) {
+    if (file.size > 200 * 1024) { toast(`${label} max 200KB`, 'error'); return; }
     const reader = new FileReader();
     reader.onload = () => {
-      setForm({ ...form, logo_url: reader.result as string });
+      setForm((f) => ({ ...f, [field]: reader.result as string }));
     };
     reader.readAsDataURL(file);
   }
@@ -88,13 +92,51 @@ export default function BrandingPage() {
             <Field label="Logo (PNG/JPG, max 200KB)">
               <label className="flex items-center gap-3 cursor-pointer">
                 {form.logo_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={form.logo_url} alt="logo" className="h-16 border border-zinc-200 rounded p-1 bg-white" />
                 ) : (
                   <div className="h-16 w-32 border-2 border-dashed border-zinc-300 rounded flex items-center justify-center text-zinc-400 text-xs">Bez loga</div>
                 )}
-                <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadLogo(e.target.files[0])} className="hidden" />
-                <Button type="button" variant="secondary"><Upload size={14} /> Nahrať</Button>
+                <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0], 'logo_url', 'Logo')} className="hidden" />
+                <Button type="button" variant="secondary"><Upload size={14} /> Nahrať logo</Button>
+                {form.logo_url && (
+                  <button type="button" onClick={() => setForm({ ...form, logo_url: '' })} className="text-[12px] text-zinc-500 hover:text-red-600 underline">Odstrániť</button>
+                )}
               </label>
+            </Field>
+
+            <Field label="Pečiatka (PNG s priehľadným pozadím, max 200KB)">
+              <label className="flex items-center gap-3 cursor-pointer">
+                {form.stamp_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={form.stamp_url} alt="pečiatka" className="h-20 border border-zinc-200 rounded p-1 bg-white" />
+                ) : (
+                  <div className="h-20 w-20 border-2 border-dashed border-zinc-300 rounded-full flex items-center justify-center text-zinc-400 text-[10px]">Bez pečiatky</div>
+                )}
+                <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0], 'stamp_url', 'Pečiatka')} className="hidden" />
+                <Button type="button" variant="secondary"><Upload size={14} /> Nahrať pečiatku</Button>
+                {form.stamp_url && (
+                  <button type="button" onClick={() => setForm({ ...form, stamp_url: '' })} className="text-[12px] text-zinc-500 hover:text-red-600 underline">Odstrániť</button>
+                )}
+              </label>
+              <div className="text-[11px] text-zinc-500 mt-1">Zobrazí sa vpravo dole nad podpisom. Najlepšie PNG s priehľadným pozadím.</div>
+            </Field>
+
+            <Field label="Podpis (PNG s priehľadným pozadím, max 200KB)">
+              <label className="flex items-center gap-3 cursor-pointer">
+                {form.signature_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={form.signature_url} alt="podpis" className="h-14 border border-zinc-200 rounded p-1 bg-white" />
+                ) : (
+                  <div className="h-14 w-32 border-2 border-dashed border-zinc-300 rounded flex items-center justify-center text-zinc-400 text-[10px]">Bez podpisu</div>
+                )}
+                <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0], 'signature_url', 'Podpis')} className="hidden" />
+                <Button type="button" variant="secondary"><Upload size={14} /> Nahrať podpis</Button>
+                {form.signature_url && (
+                  <button type="button" onClick={() => setForm({ ...form, signature_url: '' })} className="text-[12px] text-zinc-500 hover:text-red-600 underline">Odstrániť</button>
+                )}
+              </label>
+              <div className="text-[11px] text-zinc-500 mt-1">Voliteľné. Od 1.4.2019 nemusí byť na FA (§71 zákona o DPH), ale klienti si to často pýtajú.</div>
             </Field>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Hlavná farba">

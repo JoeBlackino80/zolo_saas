@@ -77,6 +77,8 @@ export type InvoiceForPdf = {
   };
   branding?: {
     logo_url?: string | null;
+    stamp_url?: string | null;
+    signature_url?: string | null;
     primary_color?: string | null;
     accent_color?: string | null;
     footer_text?: string | null;
@@ -260,6 +262,25 @@ export function InvoicePdfDoc({ invoice }: { invoice: InvoiceForPdf }) {
 
         {invoice.notes && (<Text style={styles.notes}>{invoice.notes}</Text>)}
         {b.footer_text && (<Text style={{ ...styles.notes, fontStyle: 'normal', marginTop: 8 }}>{b.footer_text}</Text>)}
+
+        {(b.stamp_url || b.signature_url) && (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 24, marginTop: 20, alignItems: 'flex-end' }}>
+            {b.signature_url && (
+              <View style={{ alignItems: 'center', width: 140 }}>
+                <Image src={b.signature_url} style={{ maxHeight: 40, maxWidth: 140, objectFit: 'contain' }} />
+                <View style={{ borderTop: '1 solid #71717a', width: '100%', marginTop: 2, paddingTop: 3 }}>
+                  <Text style={{ fontSize: 8, color: '#71717a', textAlign: 'center' }}>Podpis</Text>
+                </View>
+              </View>
+            )}
+            {b.stamp_url && (
+              <View style={{ alignItems: 'center', width: 90 }}>
+                <Image src={b.stamp_url} style={{ maxHeight: 70, maxWidth: 90, objectFit: 'contain' }} />
+                <Text style={{ fontSize: 8, color: '#71717a', textAlign: 'center', marginTop: 2 }}>Pečiatka</Text>
+              </View>
+            )}
+          </View>
+        )}
 
         {invoice.watermark && (
           <View style={{ position: 'absolute', top: '40%', left: 0, right: 0, alignItems: 'center', opacity: 0.12, transform: 'rotate(-30deg)' }} fixed>

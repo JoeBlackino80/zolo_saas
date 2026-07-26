@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   type RpcCompany = { name: string; ico: string | null; dic: string | null; ic_dph: string | null; street: string | null; city: string | null; zip: string | null; iban: string | null; bic: string | null; bank_name: string | null };
   let invoice: RpcInvoice; let items: RpcItem[]; let co: RpcCompany;
 
-  let brandingFromRpc: { logo_url?: string | null; primary_color?: string | null; accent_color?: string | null; footer_text?: string | null } | undefined = undefined;
+  let brandingFromRpc: { logo_url?: string | null; stamp_url?: string | null; signature_url?: string | null; primary_color?: string | null; accent_color?: string | null; footer_text?: string | null } | undefined = undefined;
   if (!id && token) {
     // Public access via portal token (SECURITY DEFINER RPC bypasses RLS)
     const { data: result } = await sb.rpc('get_invoice_by_portal_token', { p_token: token });
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
   if (!branding) {
     const compId = (co as RpcCompany & { id?: string })?.id;
     if (compId) {
-      const { data: brand } = await sb.from('company_settings').select('logo_url, primary_color, accent_color, footer_text').eq('company_id', compId).maybeSingle();
+      const { data: brand } = await sb.from('company_settings').select('logo_url, stamp_url, signature_url, primary_color, accent_color, footer_text').eq('company_id', compId).maybeSingle();
       if (brand) branding = brand;
     }
   }
