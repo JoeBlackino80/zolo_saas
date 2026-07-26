@@ -1,12 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { rateLimit, getClientIp } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 // Public endpoint — anyone (incl. external cron) can trigger ECB daily-rate sync.
 // Uses ECB Eurofxref daily XML. Rates are EUR-based (1 EUR = X CCY).
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit(`exchange-sync:${ip}`, 5, 3600_000);
+  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Rate limit exceeded' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
+
   try {
     const r = await fetch('https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml', {
       cache: 'no-store',

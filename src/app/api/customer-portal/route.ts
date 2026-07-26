@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { rateLimit } from '@/lib/ratelimit';
 import Stripe from 'stripe';
 
 export const runtime = 'nodejs';
@@ -10,6 +11,9 @@ export async function POST(request: Request) {
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+
+  const rl = await rateLimit(`customer-portal:${user.id}`, 20, 3600_000);
+  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Too many attempts' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
 
   const { data: sub } = await sb.from('account_subscriptions').select('stripe_customer_id').eq('user_id', user.id).maybeSingle();
   if (!sub?.stripe_customer_id) return NextResponse.json({ ok: false, error: 'Žiadne predplatné' }, { status: 400 });

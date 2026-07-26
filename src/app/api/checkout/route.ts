@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { rateLimit, getClientIp } from '@/lib/ratelimit';
 import Stripe from 'stripe';
 
 export const runtime = 'nodejs';
@@ -8,10 +9,14 @@ export const dynamic = 'force-dynamic';
 // POST /api/checkout
 // Body: { plan: 'pro' | 'business' }
 // Returns: { ok, url } where url is Stripe Checkout session
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+
+  const rl = await rateLimit(`checkout:${user.id}`, 10, 3600_000);
+  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Too many attempts' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
+  void getClientIp;
 
   const { plan } = await request.json();
   if (!['pro', 'business'].includes(plan)) {

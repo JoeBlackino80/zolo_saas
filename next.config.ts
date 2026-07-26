@@ -19,7 +19,9 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
+              // TODO(CSP hardening): migrate to nonce-based CSP via middleware to drop 'unsafe-inline'.
+              // 'unsafe-eval' removed — Next.js 15+ + React 19 don't require it.
+              "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://js.stripe.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https:",

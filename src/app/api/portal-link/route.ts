@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { rateLimit } from '@/lib/ratelimit';
 
 // POST /api/portal-link
 // Body: { invoiceId: string, expiresDays?: number }
@@ -8,6 +9,9 @@ export async function POST(request: Request) {
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+
+  const rl = await rateLimit(`portal-link:${user.id}`, 60, 3600_000);
+  if (!rl.allowed) return NextResponse.json({ ok: false, error: 'Too many tokens generated' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } });
 
   const { invoiceId, expiresDays } = await request.json();
   if (!invoiceId) return NextResponse.json({ ok: false, error: 'Missing invoiceId' }, { status: 400 });

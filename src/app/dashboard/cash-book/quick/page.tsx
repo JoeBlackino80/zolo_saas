@@ -230,12 +230,15 @@ function QuickCashDocInner() {
               />
             </Field>
             <Field label="DPH sadzba">
-              <Select value={form.vatRate} onChange={(e) => setForm({ ...form, vatRate: +e.target.value })}>
+              <Select value={form.vatRate} onChange={(e) => setForm({ ...form, vatRate: +e.target.value })} disabled={!!parentId}>
                 <option value={23}>23%</option>
                 <option value={19}>19%</option>
                 <option value={10}>10%</option>
-                <option value={0}>0% (bez DPH)</option>
+                <option value={0}>0% (bez DPH / úhrada)</option>
               </Select>
+              {parentId && (
+                <div className="text-[11px] text-zinc-500 mt-1">Uzamknuté — pri väzbe na doklad je to iba úhrada, DPH je v parent doklade.</div>
+              )}
             </Field>
           </div>
 

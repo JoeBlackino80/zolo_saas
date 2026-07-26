@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { fmtEur } from '@/lib/utils';
 import AddContactModal, { type NewContact } from '@/components/AddContactModal';
 import ProductPickerModal, { type PickedProduct } from '@/components/ProductPickerModal';
+import { useToast } from '@/components/Toast';
 
 type Item = {
   product_id?: string | null;
@@ -35,6 +36,7 @@ const DRAFT_KEY = 'zolo_draft_invoice_v1';
 
 export default function NewInvoicePage() {
   const router = useRouter();
+  const toast = useToast();
   const search = useSearchParams();
   const cloneFromId = search.get('from');
   const presetType = search.get('type');
@@ -128,7 +130,7 @@ export default function NewInvoicePage() {
       if (cid) {
         // Optionally clone from existing invoice
         if (cloneFromId) {
-          const { data: parent } = await sb.from('invoices').select('*, invoice_items(*)').eq('id', cloneFromId).single();
+          const { data: parent } = await sb.from('invoices').select('*, invoice_items(*, products(sku))').eq('id', cloneFromId).single();
           if (parent) {
             const signFlip = presetType === 'credit_note' || presetType === 'storno' ? -1 : 1;
             setForm((f) => ({
@@ -150,12 +152,14 @@ export default function NewInvoicePage() {
               parent_invoice_id: search.get('parent') ? parent.id : null,
             }));
             if (Array.isArray(parent.invoice_items) && parent.invoice_items.length) {
-              const clonedItems: Item[] = parent.invoice_items.map((it: { description: string; quantity: number; unit: string; unit_price: number; vat_rate: number }) => ({
+              const clonedItems: Item[] = parent.invoice_items.map((it: { description: string; quantity: number; unit: string; unit_price: number; vat_rate: number; product_id?: string | null; products?: { sku?: string | null } | null }) => ({
                 description: it.description,
                 quantity: it.quantity * signFlip,
                 unit: it.unit,
                 unit_price: it.unit_price,
                 vat_rate: it.vat_rate,
+                product_id: it.product_id ?? null,
+                product_sku: it.products?.sku ?? null,
               }));
 
               // ZF → FA: pridaj "Odpočet zálohy" ako mínusový riadok ak
@@ -230,7 +234,12 @@ export default function NewInvoicePage() {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw);
-      if (Date.now() - (parsed.savedAt || 0) > 86_400_000) { localStorage.removeItem(DRAFT_KEY); return; }
+      const ageMs = Date.now() - (parsed.savedAt || 0);
+      if (ageMs > 86_400_000) {
+        localStorage.removeItem(DRAFT_KEY);
+        toast('Rozpracovaná FA staršia ako 24h bola automaticky vymazaná.', 'info');
+        return;
+      }
       setDraftAvailable({ form: parsed.form, items: parsed.items });
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -297,10 +306,13 @@ export default function NewInvoicePage() {
 
     // Determine final number: either RPC-assigned (auto) or user override (validated/bumped)
     let finalNumber = form.number.trim();
+    let assignedSeqNumber: number | null = null; // for rollback
     if (autoNumber || !finalNumber || finalNumber === peekedNumber) {
       const { data: assigned, error: rpcErr } = await sb.rpc('assign_document_number', { p_company_id: form.company_id, p_type: form.type });
       if (rpcErr || typeof assigned !== 'string') { setError(rpcErr?.message || 'Nepodarilo sa získať číslo dokladu'); setSaving(false); return; }
       finalNumber = assigned;
+      const seqMatch = assigned.match(/(\d+)\s*$/);
+      if (seqMatch) assignedSeqNumber = parseInt(seqMatch[1], 10);
     } else {
       // User typed their own — bump sequence if it's a numeric format like "PREFIX-YYYY-NNNN"
       const m = finalNumber.match(/(\d+)\s*$/);
@@ -335,7 +347,13 @@ export default function NewInvoicePage() {
     };
 
     const { data: inv, error: invErr } = await sb.from('invoices').insert([invoice]).select().single();
-    if (invErr) { setError(invErr.message); setSaving(false); return; }
+    if (invErr) {
+      // Rollback sekvencie ak sme si nechali auto-assigned number ale INSERT zlyhal
+      if (assignedSeqNumber !== null) {
+        await sb.rpc('rollback_document_number', { p_company_id: form.company_id, p_type: form.type, p_used_number: assignedSeqNumber });
+      }
+      setError(invErr.message); setSaving(false); return;
+    }
 
     // ZF → FA konverzia: prenieß paid_amount zo zálohy do novej FA
     // aby FA hneď ukazovala čiastočnú platbu, a označ ZF ako converted.
@@ -365,9 +383,13 @@ export default function NewInvoicePage() {
     }));
     const { error: itemsErr } = await sb.from('invoice_items').insert(itemRows);
     if (itemsErr) {
-      // Rollback: delete orphaned invoice header so sekvencia čísla sa vráti späť
+      // Rollback: delete orphan invoice AND vráť sekvenciu, aby ďalší doklad
+      // dostal to isté číslo (inak by "zjedol" jednu poziciu bez dokladu)
       await sb.from('invoices').delete().eq('id', inv.id);
-      setError(`Položky uložené nepodarilo — doklad zrušený: ${itemsErr.message}`);
+      if (assignedSeqNumber !== null) {
+        await sb.rpc('rollback_document_number', { p_company_id: form.company_id, p_type: form.type, p_used_number: assignedSeqNumber });
+      }
+      setError(`Položky sa nepodarilo uložiť — doklad zrušený: ${itemsErr.message}`);
       setSaving(false);
       return;
     }
