@@ -467,9 +467,9 @@ export default function NewInvoicePage() {
             <Field label="Číslo dokladu *">
               <div className="flex gap-1">
                 <Input
-                  value={form.number}
+                  value={form.number || peekedNumber || ''}
                   onChange={(e) => { setForm({ ...form, number: e.target.value }); setAutoNumber(false); }}
-                  placeholder={peekedNumber || 'FA-2026-0001'}
+                  placeholder="FA-2026-0001"
                   required
                 />
                 {!autoNumber && peekedNumber && (
@@ -484,7 +484,9 @@ export default function NewInvoicePage() {
                 )}
               </div>
               <div className="text-[11px] text-zinc-500 mt-1">
-                {autoNumber ? `Auto: ${peekedNumber || '…'} — pridelí sa pri uložení` : 'Manuálne — sekvencia sa upraví podľa tvojho čísla'}
+                {autoNumber
+                  ? <>Automaticky navrhnuté — <button type="button" onClick={() => { setForm({ ...form, number: peekedNumber || form.number }); setAutoNumber(false); (document.querySelector<HTMLInputElement>('input[required]'))?.focus(); }} className="underline hover:text-zinc-900">môžeš prepísať</button></>
+                  : 'Vlastné číslo — sekvencia sa upraví podľa neho'}
               </div>
             </Field>
             <Field label="Dátum vystavenia">

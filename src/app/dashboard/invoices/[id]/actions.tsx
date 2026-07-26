@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui';
-import { Check, Mail, FileText, Eye, Loader2, X, Send, Wallet, ArrowRight } from 'lucide-react';
+import { Check, Mail, FileText, Eye, Loader2, X, Send, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/Toast';
@@ -14,6 +14,7 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; typ
   const toast = useToast();
   const router = useRouter();
   const [showSend, setShowSend] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const [emailTo, setEmailTo] = useState('');
   const [emailSubject, setEmailSubject] = useState(`Faktúra ${invoice.number}`);
   const [emailBody, setEmailBody] = useState(`Dobrý deň,\n\nv prílohe Vám posielam faktúru ${invoice.number}.\n\nĎakujem,`);
@@ -69,60 +70,122 @@ export default function InvoiceActions({ invoice }: { invoice: { id: string; typ
     }
   }
 
+  // Vytvor kategorizovaný zoznam sekundárnych akcií (v dropdown menu).
+  type MenuItem = { label: string; href?: string; onClick?: () => void; external?: boolean };
+  type MenuSection = { title: string; items: MenuItem[] };
+  const sections: MenuSection[] = [];
+
+  // 1) Konverzia dokladu (type-špecifické)
+  const convert: MenuItem[] = [];
+  if (type === 'proforma') {
+    convert.push({ label: '→ Vystaviť ostrú FA', href: `/dashboard/invoices/new?parent=${invoice.id}&type=invoice` });
+    if (Number(invoice.paid_amount || 0) > 0) {
+      convert.push({ label: '→ Preddavková FA (daňový doklad)', href: `/dashboard/invoices/new?parent=${invoice.id}&type=advance_invoice` });
+    }
+  }
+  if (type === 'invoice') {
+    convert.push(
+      { label: 'Vystaviť dobropis', href: `/dashboard/invoices/new?from=${invoice.id}&type=credit_note&parent=${invoice.id}` },
+      { label: 'Vystaviť storno', href: `/dashboard/invoices/new?from=${invoice.id}&type=storno&parent=${invoice.id}` },
+      { label: 'Vystaviť ťarchopis', href: `/dashboard/invoices/new?from=${invoice.id}&type=debit_note&parent=${invoice.id}` },
+      { label: 'Vystaviť dodací list', href: `/dashboard/invoices/new?from=${invoice.id}&type=delivery_note&parent=${invoice.id}` },
+    );
+  }
+  if (convert.length) sections.push({ title: 'Konvertovať', items: convert });
+
+  // 2) Úhrada
+  const payment: MenuItem[] = [];
+  if (isUnpaid && ['invoice', 'advance_invoice', 'debit_note'].includes(type)) {
+    payment.push({ label: '💵 PPD ku FA (hotovostná úhrada)', href: `/dashboard/cash-book/quick?type=cash_receipt&parent=${invoice.id}` });
+  }
+  if (isUnpaid && ['received_invoice', 'received_credit_note'].includes(type)) {
+    payment.push({ label: '💵 VPD ku PFA (hotovostná úhrada)', href: `/dashboard/cash-book/quick?type=cash_payout&parent=${invoice.id}` });
+  }
+  if (type === 'proforma' && isUnpaid) {
+    payment.push({ label: '💵 Prijať zálohu v hotovosti (PPD)', href: `/dashboard/cash-book/quick?type=cash_receipt&parent=${invoice.id}` });
+  }
+  if (type === 'received_proforma' && isUnpaid) {
+    payment.push({ label: '💵 Zaplatiť zálohu v hotovosti (VPD)', href: `/dashboard/cash-book/quick?type=cash_payout&parent=${invoice.id}` });
+  }
+  if (payment.length) sections.push({ title: 'Úhrada', items: payment });
+
+  // 3) Stiahnuť / export
+  sections.push({
+    title: 'Stiahnuť',
+    items: [
+      { label: '📄 PDF (Slovenčina)', href: `/api/invoice-pdf?id=${invoice.id}`, external: true },
+      { label: '📄 PDF (English)', href: `/api/invoice-pdf?id=${invoice.id}&lang=en`, external: true },
+      { label: '📄 PDF (Deutsch)', href: `/api/invoice-pdf?id=${invoice.id}&lang=de`, external: true },
+      { label: '📎 ISDOC (XML)', href: `/api/invoice-isdoc?id=${invoice.id}`, external: true },
+    ],
+  });
+
+  const hasMore = sections.some((s) => s.items.length > 0);
+
   return (
     <>
+      {/* PRIMARY — vždy visible */}
       {isUnpaid && (
         <Button variant="secondary" onClick={markPaid}><Check size={14} /> Zaplatené</Button>
-      )}
-
-      {/* Doc-chain tlačidlá — kontext-závislé podľa typu */}
-      {isUnpaid && ['invoice', 'advance_invoice', 'debit_note'].includes(type) && (
-        <Link href={`/dashboard/cash-book/quick?type=cash_receipt&parent=${invoice.id}`}>
-          <Button variant="secondary"><Wallet size={14} /> PPD ku FA</Button>
-        </Link>
-      )}
-      {isUnpaid && ['received_invoice', 'received_credit_note'].includes(type) && (
-        <Link href={`/dashboard/cash-book/quick?type=cash_payout&parent=${invoice.id}`}>
-          <Button variant="secondary"><Wallet size={14} /> VPD ku PFA</Button>
-        </Link>
-      )}
-      {type === 'proforma' && (
-        <>
-          <Link href={`/dashboard/invoices/new?parent=${invoice.id}&type=invoice`}>
-            <Button variant="secondary"><ArrowRight size={14} /> Vystaviť ostrú FA</Button>
-          </Link>
-          {Number(invoice.paid_amount || 0) > 0 && (
-            <Link href={`/dashboard/invoices/new?parent=${invoice.id}&type=advance_invoice`}>
-              <Button variant="secondary"><ArrowRight size={14} /> Preddavková FA</Button>
-            </Link>
-          )}
-          {isUnpaid && (
-            <Link href={`/dashboard/cash-book/quick?type=cash_receipt&parent=${invoice.id}`}>
-              <Button variant="secondary"><Wallet size={14} /> Prijať zálohu (PPD)</Button>
-            </Link>
-          )}
-        </>
-      )}
-      {type === 'received_proforma' && isUnpaid && (
-        <Link href={`/dashboard/cash-book/quick?type=cash_payout&parent=${invoice.id}`}>
-          <Button variant="secondary"><Wallet size={14} /> Zaplatiť zálohu (VPD)</Button>
-        </Link>
       )}
       <a href={`/api/invoice-pdf?id=${invoice.id}&inline=1`} target="_blank" rel="noopener noreferrer">
         <Button variant="secondary"><Eye size={14} /> Náhľad PDF</Button>
       </a>
-      <div className="relative group">
-        <Button variant="secondary"><FileText size={14} /> PDF ▾</Button>
-        <div className="absolute right-0 top-full mt-1 hidden group-hover:block bg-white border border-zinc-200 rounded-lg shadow-lg z-10 min-w-[180px]">
-          <a href={`/api/invoice-pdf?id=${invoice.id}`} className="block px-4 py-2 text-[13px] hover:bg-zinc-50">🇸🇰 Slovenčina</a>
-          <a href={`/api/invoice-pdf?id=${invoice.id}&lang=en`} className="block px-4 py-2 text-[13px] hover:bg-zinc-50">🇬🇧 English</a>
-          <a href={`/api/invoice-pdf?id=${invoice.id}&lang=de`} className="block px-4 py-2 text-[13px] hover:bg-zinc-50">🇩🇪 Deutsch</a>
-        </div>
-      </div>
-      <a href={`/api/invoice-isdoc?id=${invoice.id}`}>
-        <Button variant="secondary"><FileText size={14} /> ISDOC</Button>
-      </a>
       <Button variant="primary" onClick={() => setShowSend(true)}><Mail size={14} /> Poslať mailom</Button>
+
+      {/* SECONDARY — v dropdown menu "Ďalšie akcie" */}
+      {hasMore && (
+        <div className="relative">
+          <Button variant="secondary" onClick={() => setShowMore((v) => !v)}>
+            <MoreHorizontal size={14} /> Ďalšie akcie
+          </Button>
+          {showMore && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setShowMore(false)} />
+              <div className="absolute right-0 top-full mt-1 bg-white border border-zinc-200 rounded-xl shadow-xl z-50 min-w-[260px] overflow-hidden">
+                {sections.map((section, si) => (
+                  <div key={section.title}>
+                    {si > 0 && <div className="border-t border-zinc-100" />}
+                    <div className="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">{section.title}</div>
+                    {section.items.map((item, ii) => (
+                      item.href ? (
+                        item.external ? (
+                          <a
+                            key={ii}
+                            href={item.href}
+                            className="block px-4 py-2 text-[13px] text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
+                            onClick={() => setShowMore(false)}
+                          >
+                            {item.label}
+                          </a>
+                        ) : (
+                          <Link
+                            key={ii}
+                            href={item.href}
+                            className="block px-4 py-2 text-[13px] text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
+                            onClick={() => setShowMore(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        )
+                      ) : (
+                        <button
+                          key={ii}
+                          onClick={() => { item.onClick?.(); setShowMore(false); }}
+                          className="block w-full text-left px-4 py-2 text-[13px] text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
+                        >
+                          {item.label}
+                        </button>
+                      )
+                    ))}
+                  </div>
+                ))}
+                <div className="border-t border-zinc-100 h-1" />
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {showSend && (
         <div className="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowSend(false)}>

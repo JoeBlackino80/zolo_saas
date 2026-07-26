@@ -44,7 +44,6 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
     sb.from('invoices').select('id, number, delivery_date').eq('parent_invoice_id', invoice.id).eq('type', 'delivery_note').is('deleted_at', null).order('delivery_date', { ascending: false }),
   ]);
   const hasLinks = !!parent || (children?.length ?? 0) > 0 || (linkedDeliveryNotes?.length ?? 0) > 0;
-  const canIssueCredit = invoice.type === 'invoice' && !(children?.some((c) => c.type === 'storno'));
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl">
@@ -57,29 +56,15 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         actions={
           <div className="flex flex-wrap gap-2">
             <InvoiceActions invoice={invoice} />
-            {invoice.type === 'invoice' && canIssueCredit && (
-              <>
-                <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=credit_note&parent=${invoice.id}`}>
-                  <Button variant="secondary">Vystaviť dobropis</Button>
-                </Link>
-                <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=storno&parent=${invoice.id}`}>
-                  <Button variant="secondary">Storno</Button>
-                </Link>
-                <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=debit_note&parent=${invoice.id}`}>
-                  <Button variant="secondary">Ťarchopis</Button>
-                </Link>
-                <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=delivery_note&parent=${invoice.id}`}>
-                  <Button variant="secondary">Dodací list</Button>
-                </Link>
-              </>
-            )}
-            {(invoice.type === 'proforma' || invoice.type === 'quote' || invoice.type === 'delivery_note') && (
+            {/* Dobropis/Storno/Ťarchopis/DL sú konsolidované v InvoiceActions dropdowne */}
+            {invoice.type === 'quote' && (
               <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=invoice&parent=${invoice.id}`}>
-                <Button variant="primary" title={invoice.type === 'proforma' && Number(invoice.paid_amount || 0) > 0 ? `Auto odpočet zálohy ${Number(invoice.paid_amount).toFixed(2)} €` : undefined}>
-                  {invoice.type === 'proforma' && Number(invoice.paid_amount || 0) > 0
-                    ? `Vystaviť FA (−${Number(invoice.paid_amount).toFixed(2)} €)`
-                    : 'Vystaviť FA'}
-                </Button>
+                <Button variant="primary">Vystaviť FA z ponuky</Button>
+              </Link>
+            )}
+            {invoice.type === 'delivery_note' && (
+              <Link href={`/dashboard/invoices/new?from=${invoice.id}&type=invoice&parent=${invoice.id}`}>
+                <Button variant="primary">Vystaviť FA z dodacieho listu</Button>
               </Link>
             )}
             <Link href={`/dashboard/invoices/${invoice.id}/edit`}>
