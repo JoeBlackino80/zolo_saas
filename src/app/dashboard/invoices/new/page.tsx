@@ -673,7 +673,9 @@ export default function NewInvoicePage() {
                     value={it.quantity === 0 ? '' : String(it.quantity)}
                     onChange={(e) => {
                       const raw = e.target.value.replace(',', '.').replace(/[^\d.]/g, '');
-                      setItem(i, 'quantity', raw === '' ? 0 : parseFloat(raw) || 0);
+                      const n = raw === '' ? 0 : parseFloat(raw) || 0;
+                      // Sanity cap: 1M kusov na položku
+                      setItem(i, 'quantity', Math.min(n, 1_000_000));
                     }}
                     placeholder="1"
                   />
@@ -693,7 +695,9 @@ export default function NewInvoicePage() {
                     value={it.unit_price === 0 ? '' : String(it.unit_price)}
                     onChange={(e) => {
                       const raw = e.target.value.replace(',', '.').replace(/[^\d.]/g, '');
-                      setItem(i, 'unit_price', raw === '' ? 0 : parseFloat(raw) || 0);
+                      const n = raw === '' ? 0 : parseFloat(raw) || 0;
+                      // Sanity cap: 999 999 999.99 € — bezpečná horná hranica pre 1 položku
+                      setItem(i, 'unit_price', Math.min(n, 999_999_999.99));
                     }}
                     placeholder="0.00"
                   />

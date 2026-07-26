@@ -224,7 +224,9 @@ function QuickCashDocInner() {
                 value={form.amount === 0 ? '' : String(form.amount)}
                 onChange={(e) => {
                   const raw = e.target.value.replace(',', '.').replace(/[^\d.]/g, '');
-                  setForm({ ...form, amount: raw === '' ? 0 : parseFloat(raw) || 0 });
+                  const n = raw === '' ? 0 : parseFloat(raw) || 0;
+                  // Sanity cap: 999 999 999.99 €
+                  setForm({ ...form, amount: Math.min(n, 999_999_999.99) });
                 }}
                 placeholder="0.00"
               />
