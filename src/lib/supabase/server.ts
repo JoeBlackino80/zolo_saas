@@ -14,7 +14,10 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, {
+                ...options,
+                domain: process.env.NODE_ENV === 'production' ? '.zolo.sk' : options?.domain,
+              })
             );
           } catch {
             // Server Component — can't set cookies

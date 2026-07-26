@@ -6,8 +6,6 @@ import { useRouter } from 'next/navigation';
 
 function getAppOrigin(): string {
   if (typeof window === 'undefined') return '';
-  const host = window.location.host;
-  if (host === 'zolo.sk' || host === 'www.zolo.sk') return 'https://app.zolo.sk';
   return window.location.origin;
 }
 
