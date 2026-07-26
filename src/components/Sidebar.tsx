@@ -361,6 +361,17 @@ export default function Sidebar({ companies, userEmail }: { companies: Company[]
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>(DEFAULT_COLLAPSED);
   const [recent, setRecent] = useState<{ href: string; label: string }[]>([]);
 
+  // Auto-select prvej firmy ak user má aspoň 1 firmu a nič nie je vybrané
+  // (napr. po Google OAuth signup + onboarding kde localStorage nemusí byť set)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!currentFirmId && companies.length > 0) {
+      const firstId = companies[0].id;
+      setCurrentFirmId(firstId);
+      localStorage.setItem('zolo_firm', firstId);
+    }
+  }, [companies, currentFirmId]);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
