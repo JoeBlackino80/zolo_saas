@@ -65,20 +65,13 @@ export default function OnboardingClient({ userEmail }: { userEmail: string }) {
     if (!form.name) { toast('Názov je povinný', 'error'); return; }
     setLoading(true);
     const sb = createClient();
-    let { data: { user }, error: userErr } = await sb.auth.getUser();
-    if (userErr || !user) {
-      // Try to refresh session before giving up
-      const { data: refreshed } = await sb.auth.refreshSession();
-      user = refreshed?.user ?? null;
-    }
-    if (!user) {
-      toast('Session vypršala. Odhlás sa a prihlás znova.', 'error');
+    // created_by fills automatically via set_company_created_by trigger (auth.uid())
+    const { data, error } = await sb.from('companies').insert([{ ...form }]).select().single();
+    if (error) {
+      toast(`Chyba: ${error.message}`, 'error');
       setLoading(false);
-      setTimeout(async () => { await sb.auth.signOut(); router.push('/login'); }, 1500);
       return;
     }
-    const { data, error } = await sb.from('companies').insert([{ ...form, created_by: user.id }]).select().single();
-    if (error) { toast(`DB chyba: ${error.message}`, 'error'); setLoading(false); return; }
     if (data?.id) {
       setCreatedCompanyId(data.id);
       if (typeof window !== 'undefined') localStorage.setItem('zolo_firm', data.id);
