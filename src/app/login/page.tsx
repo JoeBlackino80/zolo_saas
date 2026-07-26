@@ -39,7 +39,8 @@ export default function LoginPage() {
         redirectTo: `${getAppOrigin()}/auth/callback?next=/dashboard`,
         queryParams: {
           access_type: 'offline',
-          prompt: 'consent',
+          // no prompt override → Google skips consent when user already
+          // authorized zolo.sk (returning users go straight to callback)
         },
       },
     });
