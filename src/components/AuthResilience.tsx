@@ -55,17 +55,26 @@ export default function AuthResilience() {
     })();
 
     // 2) Global fetch wrapper — catch any Supabase auth call returning
-    //    "Refresh Token Not Found" mid-session and clean up.
+    //    stale-session signals mid-session and clean up.
     const originalFetch = window.fetch;
     window.fetch = async (...args) => {
       const res = await originalFetch(...args);
       try {
         const url = typeof args[0] === 'string' ? args[0] : (args[0] as Request).url;
-        if (res.status === 400 && url && /\/auth\/v1\/token/.test(url)) {
-          const clone = res.clone();
-          const text = await clone.text();
+        if (!url || !/\/auth\/v1\//.test(url)) return res;
+        // 400 on /token = refresh token gone
+        if (res.status === 400 && /\/auth\/v1\/token/.test(url)) {
+          const text = await res.clone().text();
           if (/refresh.*token.*not.*found|invalid.*refresh/i.test(text)) {
             await forceReauth('refresh_expired');
+          }
+        }
+        // 403 on /user = access token references a session that no longer exists
+        // (typical after signOut then a stale in-memory client keeps polling).
+        if (res.status === 403 && /\/auth\/v1\/user/.test(url)) {
+          const text = await res.clone().text();
+          if (/session.*doesn.*t?.*exist|session.*not.*found/i.test(text)) {
+            await forceReauth('session_gone');
           }
         }
       } catch {

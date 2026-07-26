@@ -24,7 +24,7 @@ export default function LoginPage() {
     const reason = new URLSearchParams(window.location.search).get('reason');
     if (reason === 'idle') {
       setStatus({ msg: 'Odhlásili sme ťa kvôli neaktivite. Prihlás sa znova.', kind: 'muted' });
-    } else if (reason === 'stale_session' || reason === 'refresh_expired' || reason === 'refresh_failed') {
+    } else if (reason === 'stale_session' || reason === 'refresh_expired' || reason === 'refresh_failed' || reason === 'session_gone') {
       setStatus({ msg: 'Session vypršala — automaticky sme vyčistili starú prihlásenú reláciu. Prihlás sa znova.', kind: 'muted' });
     }
   }, []);
@@ -39,8 +39,10 @@ export default function LoginPage() {
         redirectTo: `${getAppOrigin()}/auth/callback?next=/dashboard`,
         queryParams: {
           access_type: 'offline',
-          // no prompt override → Google skips consent when user already
-          // authorized zolo.sk (returning users go straight to callback)
+          // 'select_account' = show account picker (no full consent screen).
+          // Prevents auto-login into a random account without user confirmation,
+          // while still skipping the intrusive consent flow for returning users.
+          prompt: 'select_account',
         },
       },
     });
