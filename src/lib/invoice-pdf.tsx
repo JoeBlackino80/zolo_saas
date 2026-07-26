@@ -6,11 +6,11 @@ import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/
 // Helvetica (default v @react-pdf/renderer) diakritiku nemá → "DODÁVATEĽ"
 // sa renderuje ako "DODÁVATE=" a "Č" úplne mizne.
 //
-// Pinned na konkrétny commit hash (nie @main branch) aby sa Roboto Flex
-// migrácia alebo repo rename neprejavili silent break every PDF.
-// Commit: googlefonts/roboto@0e5a76a (Roboto v2.138, stable 2024-11).
-const ROBOTO_CDN = 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@0e5a76a/src/hinted';
-const ROBOTO_MONO_CDN = 'https://cdn.jsdelivr.net/gh/googlefonts/RobotoMono@fe3c974/fonts/ttf';
+// Pinned na semver tag, nie commit hash — commit hashes na jsdelivr môžu
+// prestať byť dostupné po force-push alebo repo restructure (pôvodný
+// @0e5a76a začal vracať 404). Semver tagy sú stabilnejšie.
+const ROBOTO_CDN = 'https://cdn.jsdelivr.net/gh/googlefonts/roboto@v2.138/src/hinted';
+const ROBOTO_MONO_CDN = 'https://cdn.jsdelivr.net/gh/googlefonts/RobotoMono@v3.001/fonts/ttf';
 
 Font.register({
   family: 'Roboto',
