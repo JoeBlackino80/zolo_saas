@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="sk" data-theme="blue">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZOLO — Tone Toggle</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+  /* ========================================
+     THEME VARIABLES — 2 palety, prepnutie cez [data-theme]
+     ======================================== */
+  :root, [data-theme="blue"] {
+    --bg-base:      #eff6ff;   /* blue-50 */
+    --bg-tint:      #dbeafe;   /* blue-100 */
+    --surface:      #ffffff;
+    --border:       #dbeafe;   /* blue-100 */
+    --border-mid:   #bfdbfe;   /* blue-200 */
+    --border-strong:#93c5fd;   /* blue-300 */
+    --text-primary: #172554;   /* blue-950 */
+    --text-strong:  #1e3a8a;   /* blue-900 */
+    --text-body:    #1e40af;   /* blue-800 */
+    --text-muted:   #3b82f6;   /* blue-500 */
+    --text-soft:    #60a5fa;   /* blue-400 */
+    --accent:       #172554;   /* blue-950 — hero/buttons */
+    --accent-hover: #1e3a8a;
+    --accent-mid:   #1e40af;   /* blue-800 */
+    --tint-hover:   #dbeafe;
+    --tint-mid:     #bfdbfe;
+    --icon:         #1e40af;
+    --icon-soft:    #3b82f6;
+    --chart-line:   #1e40af;
+    --chart-fill:   rgba(30, 64, 175, 0.12);
+    --shadow:       rgba(30, 58, 138, 0.08);
+    --shadow-lg:    rgba(23, 37, 84, 0.4);
+    --focus-ring:   rgba(30, 64, 175, 0.15);
+  }
+
+  [data-theme="orange"] {
+    /* DECENTNÁ oranžová — text zostáva neutrálny slate, oranžová LEN akcent */
+    --bg-base:      #fefaf6;   /* veľmi jemný cream (5% orange tint) */
+    --bg-tint:      #fff2e5;   /* soft peach — pre chip, sidebar hover */
+    --surface:      #ffffff;
+    --border:       #f4e8dc;   /* jemný warm border */
+    --border-mid:   #e8d4bd;   /* warm neutral border */
+    --border-strong:#fdba74;   /* orange-300 — pre focused prvky */
+    /* TEXT — neutrálny warm slate, nie oranžový */
+    --text-primary: #1c1917;   /* stone-900 tmavý */
+    --text-strong:  #292524;   /* stone-800 */
+    --text-body:    #57534e;   /* stone-600 */
+    --text-muted:   #78716c;   /* stone-500 */
+    --text-soft:    #a8a29e;   /* stone-400 */
+    /* AKCENT — oranžová iba na aktívne prvky */
+    --accent:       #ea580c;   /* orange-600 pre buttons */
+    --accent-hover: #c2410c;
+    --accent-mid:   #f97316;   /* orange-500 */
+    --tint-hover:   #fff2e5;   /* soft peach hover */
+    --tint-mid:     #fed7aa;
+    --icon:         #ea580c;   /* orange icons */
+    --icon-soft:    #fb923c;
+    --chart-line:   #ea580c;
+    --chart-fill:   rgba(234, 88, 12, 0.12);
+    --shadow:       rgba(28, 25, 23, 0.06);
+    --shadow-lg:    rgba(28, 25, 23, 0.20);
+    --focus-ring:   rgba(234, 88, 12, 0.15);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    letter-spacing: -0.011em;
+    transition: background-color .25s, color .25s;
+  }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  h1, .display { letter-spacing: -0.036em; font-weight: 800; color: var(--text-primary); }
+  h2 { letter-spacing: -0.02em; font-weight: 700; color: var(--text-strong); }
+
+  /* ========================================
+     UI TOKENS
+     ======================================== */
+  .surface { background: var(--surface); }
+  .bg-tinted { background: var(--bg-tint); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px var(--shadow), 0 1px 2px var(--shadow);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .card:hover { border-color: var(--border-strong); box-shadow: 0 4px 12px var(--shadow); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background .15s;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+
+  .btn-outline {
+    background: var(--surface);
+    color: var(--text-strong);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid var(--border-mid);
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: border-color .15s;
+  }
+  .btn-outline:hover { border-color: var(--border-strong); }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 8px; font-size: 11px; font-weight: 600;
+    letter-spacing: -0.005em; border-radius: 4px;
+    border: 1px solid;
+  }
+  .chip-mute    { background: var(--bg-tint); color: var(--text-body); border-color: var(--border-mid); }
+  .chip-strong  { background: var(--accent); color: white; border-color: var(--accent); }
+  .chip-outline { background: var(--surface); color: var(--text-body); border-color: var(--border-strong); }
+  .chip-ok      { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+  .chip-warn    { background: #fef9c3; color: #713f12; border-color: #fde68a; }
+  .chip-alert   { background: #fee2e2; color: #7f1d1d; border-color: #fecaca; }
+
+  .icon-box {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: var(--bg-tint);
+    border: 1px solid var(--border-mid);
+    color: var(--icon);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+
+  .tab-btn.active { color: var(--text-primary); background: var(--surface); }
+  .tab-btn.active::after {
+    content: ''; position: absolute; left: 12px; right: 12px; bottom: 0;
+    height: 2px; background: var(--text-primary); border-radius: 2px 2px 0 0;
+  }
+  .tab-btn {
+    position: relative; color: var(--text-muted); padding: 16px 20px;
+    font-weight: 600; font-size: 14px; transition: color .15s;
+  }
+  .tab-btn:hover { color: var(--text-primary); }
+
+  .icon { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.75; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  .sec-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-body);
+    padding: 6px 12px;
+    background: var(--bg-tint);
+    border: 1px solid var(--border-mid);
+    border-radius: 6px;
+  }
+  .sec-label .icon { width: 12px; height: 12px; color: var(--text-body); }
+
+  .section-wrap { padding: 28px 40px; border-bottom: 1px solid var(--border-mid); background: var(--surface); }
+  .section-wrap.tinted { background: var(--bg-base); }
+
+  .table-th {
+    text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px;
+    font-weight: 700; color: var(--text-body); padding: 12px 20px; text-align: left;
+    background: var(--bg-base); border-bottom: 1px solid var(--border-mid);
+  }
+  .table-td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-primary); }
+  tbody tr:hover { background: var(--bg-base); }
+
+  .kbd {
+    padding: 1px 5px; background: var(--bg-tint); border: 1px solid var(--border-strong);
+    border-bottom-width: 2px; border-radius: 3px;
+    font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-body);
+  }
+
+  .big-num { font-weight: 800; letter-spacing: -0.04em; color: var(--text-primary); }
+
+  .side-hdr {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 12px; margin-bottom: 4px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-size: 10px; font-weight: 700; color: var(--text-body);
+  }
+  .side-hdr::before {
+    content: ''; display: inline-block; width: 4px; height: 4px;
+    background: var(--icon-soft); border-radius: 1px;
+  }
+  .side-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 12px; margin: 1px 0;
+    font-size: 13px; font-weight: 500; color: var(--text-body);
+    border-radius: 6px; transition: all .1s;
+  }
+  .side-item:hover { background: var(--tint-hover); color: var(--text-primary); }
+  .side-item .icon { color: var(--icon-soft); width: 15px; height: 15px; }
+  .side-active { background: var(--accent); color: white !important; font-weight: 600; }
+  .side-active:hover { background: var(--accent-hover); }
+  .side-active .icon { color: var(--border-strong); }
+
+  /* Theme toggle switch */
+  .theme-toggle {
+    display: inline-flex; padding: 3px;
+    background: var(--bg-tint);
+    border: 1px solid var(--border-mid);
+    border-radius: 999px;
+    gap: 2px;
+  }
+  .theme-toggle button {
+    padding: 5px 10px; font-size: 11px; font-weight: 700;
+    border-radius: 999px; letter-spacing: 0.03em;
+    color: var(--text-body); transition: all .15s;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .theme-toggle button.active {
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- HEADER -->
+<header class="border-b sticky top-0 z-30 surface" style="border-color: var(--border-mid)">
+  <div class="max-w-[1440px] mx-auto flex items-center">
+    <div class="px-6 py-3 flex items-center gap-3 border-r" style="border-color: var(--border)">
+      <div class="w-8 h-8 rounded-md flex items-center justify-center" style="background: var(--accent)">
+        <span class="text-white font-black text-lg">Z</span>
+      </div>
+      <div class="font-bold text-lg tracking-tight" style="color: var(--text-primary)">zolo</div>
+    </div>
+    <nav class="flex">
+      <button class="tab-btn active" onclick="showTab('dashboard')">Prehľad</button>
+      <button class="tab-btn" onclick="showTab('invoice-new')">Nová faktúra</button>
+      <button class="tab-btn" onclick="showTab('invoice-detail')">Detail dokladu</button>
+    </nav>
+    <div class="ml-auto px-6 flex items-center gap-3">
+      <!-- THEME TOGGLE -->
+      <div class="theme-toggle">
+        <button class="active" onclick="setTheme('blue')" id="btn-blue">
+          <span style="width:8px;height:8px;border-radius:2px;background:#1e40af"></span>
+          Modrá
+        </button>
+        <button onclick="setTheme('orange')" id="btn-orange">
+          <span style="width:8px;height:8px;border-radius:2px;background:#c2410c"></span>
+          Oranžová
+        </button>
+      </div>
+      <button class="flex items-center gap-2 px-3 py-1.5 text-sm rounded-md hover:border-strong" style="color: var(--text-muted); background: var(--surface); border: 1px solid var(--border-mid)">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Hľadať</span>
+        <span class="kbd">⌘K</span>
+      </button>
+      <div class="flex items-center gap-2 px-3 py-1.5 border rounded-md" style="border-color: var(--border-mid); background: var(--surface)">
+        <div class="w-1.5 h-1.5 rounded-full" style="background: var(--accent)"></div>
+        <span class="text-xs font-semibold" style="color: var(--text-strong)">SORB XT s.r.o.</span>
+      </div>
+      <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs" style="background: var(--accent)">JN</div>
+    </div>
+  </div>
+</header>
+
+<div class="flex max-w-[1440px] mx-auto">
+
+<!-- SIDEBAR -->
+<aside class="w-56 py-5 border-r min-h-[calc(100vh-57px)] surface" style="border-color: var(--border-mid)">
+  <div class="px-3 mb-5">
+    <a class="side-item side-active">
+      <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      Dashboard
+    </a>
+  </div>
+
+  <div class="px-3 mb-5">
+    <div class="side-hdr">Predaj</div>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Fakturácia</a>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Zákazníci</a>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10Z"/></svg>Cenník</a>
+  </div>
+
+  <div class="px-3 mb-5">
+    <div class="side-hdr">Financie</div>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>Banka</a>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/></svg>Pokladnica</a>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Cashflow</a>
+  </div>
+
+  <div class="px-3 mb-5">
+    <div class="side-hdr">Účtovníctvo</div>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Denník</a>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Účtovná osnova</a>
+  </div>
+
+  <div class="px-3 mb-5">
+    <div class="side-hdr">Dane</div>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>DPH priznanie</a>
+    <a class="side-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>eDane / eKasa</a>
+  </div>
+</aside>
+
+<main class="flex-1">
+
+<!-- ============ DASHBOARD ============ -->
+<section id="tab-dashboard" class="tab-panel">
+
+  <div class="section-wrap">
+    <div class="max-w-6xl mx-auto flex items-baseline justify-between">
+      <div>
+        <div class="text-xs uppercase tracking-widest font-bold" style="color: var(--text-muted)">Q3 2026 · SORB XT s.r.o.</div>
+        <h1 class="display text-4xl mt-2">Prehľad výkonnosti</h1>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-outline">Export</button>
+        <button class="btn-primary">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nová faktúra
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap tinted">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <span class="sec-label">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Predaj
+          </span>
+          <h2 class="text-2xl">Faktúry a obrat</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-5">
+        <div class="card p-6">
+          <div class="flex items-center justify-between">
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <span class="chip chip-ok">▲ +34 %</span>
+          </div>
+          <div class="text-[11px] uppercase tracking-widest font-bold mt-4" style="color: var(--text-body)">Netto obrat · júl</div>
+          <div class="big-num text-4xl mt-1 tabular">4 130,00 €</div>
+          <svg class="mt-3" width="100%" height="40" viewBox="0 0 200 40" preserveAspectRatio="none">
+            <path d="M0,32 L20,28 L40,30 L60,22 L80,16 L100,14 L120,10 L140,12 L160,6 L180,4 L200,3 L200,40 L0,40 Z" fill="var(--chart-fill)"/>
+            <path d="M0,32 L20,28 L40,30 L60,22 L80,16 L100,14 L120,10 L140,12 L160,6 L180,4 L200,3" stroke="var(--chart-line)" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between">
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="chip chip-mute">14 platieb</span>
+          </div>
+          <div class="text-[11px] uppercase tracking-widest font-bold mt-4" style="color: var(--text-body)">Prijaté platby</div>
+          <div class="big-num text-4xl mt-1 tabular">2 890,00 €</div>
+          <div class="mt-4">
+            <div class="flex justify-between text-[11px] mb-1" style="color: var(--text-body)">
+              <span>Zaplatené</span>
+              <span class="mono font-semibold" style="color: var(--text-primary)">70 %</span>
+            </div>
+            <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--bg-tint)">
+              <div class="h-full rounded-full" style="width:70%;background:var(--accent-mid)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between">
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+            </div>
+            <span class="chip chip-alert">3 doklady</span>
+          </div>
+          <div class="text-[11px] uppercase tracking-widest font-bold mt-4" style="color: var(--text-body)">Po splatnosti</div>
+          <div class="big-num text-4xl mt-1 tabular">420,00 €</div>
+          <button class="mt-4 w-full btn-primary" style="padding: 8px 12px; font-size: 12px; justify-content: center;">
+            <svg class="icon" style="width:12px;height:12px" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+            Poslať upomienky
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINANCIE -->
+  <div class="section-wrap">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <span class="sec-label">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+            Financie
+          </span>
+          <h2 class="text-2xl">Cashflow a rezervy</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-5">
+        <div class="col-span-2 card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <div class="text-[11px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Cashflow za 90 dní</div>
+              <div class="big-num text-xl mt-1 tabular">+18 340 € netto</div>
+            </div>
+            <div class="flex gap-1 text-xs">
+              <button class="chip chip-outline">30d</button>
+              <button class="chip chip-strong">90d</button>
+              <button class="chip chip-outline">1r</button>
+            </div>
+          </div>
+          <svg width="100%" height="140" viewBox="0 0 600 140" preserveAspectRatio="none">
+            <g fill="var(--chart-line)">
+              <rect x="0" y="80" width="40" height="60" rx="2"/>
+              <rect x="50" y="65" width="40" height="75" rx="2"/>
+              <rect x="100" y="70" width="40" height="70" rx="2"/>
+              <rect x="150" y="50" width="40" height="90" rx="2"/>
+              <rect x="200" y="55" width="40" height="85" rx="2"/>
+              <rect x="250" y="40" width="40" height="100" rx="2"/>
+              <rect x="300" y="45" width="40" height="95" rx="2"/>
+              <rect x="350" y="35" width="40" height="105" rx="2"/>
+              <rect x="400" y="30" width="40" height="110" rx="2"/>
+              <rect x="450" y="28" width="40" height="112" rx="2"/>
+              <rect x="500" y="25" width="40" height="115" rx="2"/>
+              <rect x="550" y="32" width="40" height="108" rx="2"/>
+            </g>
+          </svg>
+          <div class="flex justify-between text-[11px] mt-2" style="color: var(--text-muted)">
+            <span>máj</span><span>jún</span><span>júl</span>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="card p-5">
+            <div class="text-[11px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Runway</div>
+            <div class="big-num text-3xl mt-1 tabular">92 <span class="text-lg font-normal" style="color: var(--text-muted)">dní</span></div>
+            <div class="mt-3 h-1.5 rounded-full overflow-hidden" style="background: var(--bg-tint)">
+              <div class="h-full rounded-full" style="width:75%;background:var(--accent-mid)"></div>
+            </div>
+            <div class="text-[11px] mt-2" style="color: var(--text-muted)">Bezpečné · min. 60 dní</div>
+          </div>
+          <div class="card p-5">
+            <div class="text-[11px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Stav pokladne</div>
+            <div class="big-num text-3xl mt-1 tabular">56 720 €</div>
+            <div class="text-[11px] mt-2" style="color: var(--text-muted)">Banka + hotovosť</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DANE -->
+  <div class="section-wrap tinted">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <span class="sec-label">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Dane
+          </span>
+          <h2 class="text-2xl">Povinnosti a deadliny</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-4">
+        <div class="card p-5">
+          <div class="text-[11px] uppercase tracking-widest font-bold" style="color: var(--text-body)">DPH k odvodu</div>
+          <div class="big-num text-3xl mt-2 tabular">532 €</div>
+          <div class="mt-3 chip chip-alert">Splatné 25.08 · 27 dní</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-[11px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Soc. odvody</div>
+          <div class="big-num text-3xl mt-2 tabular">890 €</div>
+          <div class="mt-3 chip chip-warn">08.08 · 10 dní</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-[11px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Preddavok dane</div>
+          <div class="big-num text-3xl mt-2 tabular">1 240 €</div>
+          <div class="mt-3 chip chip-mute">15.09 · 48 dní</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-[11px] uppercase tracking-widest font-bold" style="color: var(--text-body)">KV DPH</div>
+          <div class="big-num text-2xl mt-2">Pripravené</div>
+          <div class="mt-3 chip chip-ok">Na podanie</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AKTIVITA -->
+  <div class="section-wrap">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl">Nedávne faktúry</h2>
+          <p class="text-sm mt-1" style="color: var(--text-muted)">4 zo 42 dokladov · sortované podľa dátumu</p>
+        </div>
+      </div>
+      <div class="card overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th class="table-th">Číslo</th>
+              <th class="table-th">Klient</th>
+              <th class="table-th">Vystavená</th>
+              <th class="table-th text-right">Suma</th>
+              <th class="table-th text-center">Stav</th>
+              <th class="table-th w-8"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="table-td mono font-semibold" style="color: var(--text-body)">FA-2026-0042</td>
+              <td class="table-td font-medium">Alza.sk s.r.o.</td>
+              <td class="table-td tabular" style="color: var(--text-muted)">28. 07. 2026</td>
+              <td class="table-td text-right font-bold tabular">1 476,00 €</td>
+              <td class="table-td text-center"><span class="chip chip-warn">Vystavená</span></td>
+              <td class="table-td"><svg class="icon" style="color: var(--text-soft)" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></td>
+            </tr>
+            <tr>
+              <td class="table-td mono font-semibold" style="color: var(--text-body)">FA-2026-0041</td>
+              <td class="table-td font-medium">Slovnaft a.s.</td>
+              <td class="table-td tabular" style="color: var(--text-muted)">26. 07. 2026</td>
+              <td class="table-td text-right font-bold tabular">890,50 €</td>
+              <td class="table-td text-center"><span class="chip chip-ok">Zaplatená</span></td>
+              <td class="table-td"><svg class="icon" style="color: var(--text-soft)" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></td>
+            </tr>
+            <tr>
+              <td class="table-td mono font-semibold" style="color: var(--text-body)">FA-2026-0040</td>
+              <td class="table-td font-medium">DPD SK s.r.o.</td>
+              <td class="table-td tabular" style="color: var(--text-muted)">14. 06. 2026</td>
+              <td class="table-td text-right font-bold tabular">420,00 €</td>
+              <td class="table-td text-center"><span class="chip chip-alert">Po splatnosti · 15d</span></td>
+              <td class="table-td"><svg class="icon" style="color: var(--text-soft)" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></td>
+            </tr>
+            <tr>
+              <td class="table-td mono font-semibold" style="color: var(--text-body)">ZF-2026-0007</td>
+              <td class="table-td font-medium">TESCO Stores SR a.s.</td>
+              <td class="table-td tabular" style="color: var(--text-muted)">10. 06. 2026</td>
+              <td class="table-td text-right font-bold tabular">2 000,00 €</td>
+              <td class="table-td text-center"><span class="chip chip-ok">Zaplatená</span></td>
+              <td class="table-td"><svg class="icon" style="color: var(--text-soft)" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============ NOVÁ FAKTÚRA ============ -->
+<section id="tab-invoice-new" class="tab-panel hidden">
+
+  <div class="section-wrap">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center gap-3">
+        <span class="sec-label">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+          Predaj
+        </span>
+        <h1 class="display text-3xl">Nová faktúra</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-10 py-8 space-y-6">
+
+    <div class="card p-4 flex items-center gap-4">
+      <div class="w-10 h-10 rounded-md flex items-center justify-center text-white font-bold" style="background: var(--accent)">S</div>
+      <div class="flex-1">
+        <div class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Vystavovateľ</div>
+        <div class="font-bold" style="color: var(--text-primary)">SORB XT s.r.o.</div>
+      </div>
+      <div class="text-right text-xs mono" style="color: var(--text-muted)">
+        <div>IČO 47518309</div>
+        <div>IČ DPH SK2120886867</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="px-6 py-4 border-b flex items-center gap-3" style="border-color: var(--border)">
+        <div class="w-7 h-7 rounded-md text-white text-xs font-bold flex items-center justify-center mono" style="background: var(--accent)">1</div>
+        <h2 class="text-base">Doklad</h2>
+      </div>
+      <div class="p-6 grid grid-cols-3 gap-5">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Typ dokladu</label>
+          <select class="mt-2 w-full rounded-md px-3 py-2.5 text-sm font-medium" style="border: 1px solid var(--border-mid); color: var(--text-primary); background: white">
+            <option>Faktúra</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Číslo dokladu</label>
+          <input value="FA-2026-0043" class="mt-2 w-full rounded-md px-3 py-2.5 text-sm mono font-bold" style="border: 2px solid var(--accent-mid); background: var(--bg-tint); color: var(--text-primary)" />
+          <div class="text-[11px] mt-1.5" style="color: var(--text-body)">Auto navrhnuté · <button class="underline font-semibold" style="color: var(--text-primary)">prepísať</button></div>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Dátum vystavenia</label>
+          <input type="date" value="2026-07-29" class="mt-2 w-full rounded-md px-3 py-2.5 text-sm mono" style="border: 1px solid var(--border-mid); color: var(--text-primary); background: white" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="px-6 py-4 border-b flex items-center justify-between" style="border-color: var(--border)">
+        <div class="flex items-center gap-3">
+          <div class="w-7 h-7 rounded-md text-white text-xs font-bold flex items-center justify-center mono" style="background: var(--accent)">2</div>
+          <h2 class="text-base">Odberateľ</h2>
+        </div>
+        <button class="text-xs font-semibold hover:underline flex items-center gap-1" style="color: var(--text-body)">
+          <svg class="icon" style="width:12px;height:12px" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nový zákazník
+        </button>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-3 gap-4 mt-2">
+          <div class="p-4 rounded-md" style="background: var(--bg-base); border: 1px solid var(--border-mid)">
+            <div class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">IČO</div>
+            <div class="mono font-bold mt-1" style="color: var(--text-primary)">27082440</div>
+          </div>
+          <div class="p-4 rounded-md" style="background: var(--bg-base); border: 1px solid var(--border-mid)">
+            <div class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">DIČ</div>
+            <div class="mono font-bold mt-1" style="color: var(--text-primary)">2120704783</div>
+          </div>
+          <div class="p-4 rounded-md" style="background: var(--bg-base); border: 1px solid var(--border-mid)">
+            <div class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">IČ DPH</div>
+            <div class="mono font-bold mt-1" style="color: var(--text-primary)">SK2120704783</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="px-6 py-4 border-b flex items-center gap-3" style="border-color: var(--border)">
+        <div class="w-7 h-7 rounded-md text-white text-xs font-bold flex items-center justify-center mono" style="background: var(--accent)">3</div>
+        <h2 class="text-base">Položky</h2>
+      </div>
+      <div class="border-t-2 px-6 py-5" style="border-color: var(--accent); background: var(--bg-base)">
+        <div class="flex justify-end">
+          <div class="text-right space-y-1.5 min-w-[300px]">
+            <div class="flex justify-between text-sm">
+              <span style="color: var(--text-body)">Základ dane</span>
+              <span class="mono font-semibold">1 200,00 €</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span style="color: var(--text-body)">DPH 23 %</span>
+              <span class="mono font-semibold">276,00 €</span>
+            </div>
+            <div class="flex justify-between pt-3 mt-2 border-t items-baseline" style="border-color: var(--border-strong)">
+              <span class="font-bold" style="color: var(--text-primary)">Spolu k úhrade</span>
+              <span class="display text-4xl mono">1 476,00 €</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <button class="btn-outline">Uložiť koncept</button>
+      <button class="btn-primary">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Vystaviť a odoslať
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ DETAIL FAKTÚRY ============ -->
+<section id="tab-invoice-detail" class="tab-panel hidden">
+
+  <div class="section-wrap">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="sec-label">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+              Predaj
+            </span>
+            <span class="chip chip-warn">Čaká na úhradu · splatná o 12 dní</span>
+          </div>
+          <h1 class="display text-4xl mono">FA-2026-0042</h1>
+          <p class="text-sm mt-2" style="color: var(--text-muted)">Alza.sk s.r.o. · vystavená 28. 07. 2026 · splatná 11. 08. 2026</p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <button class="btn-outline"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Zaplatené</button>
+          <button class="btn-outline"><svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Náhľad</button>
+          <button class="btn-primary"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>Poslať mailom</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-10 py-8">
+
+    <!-- HERO -->
+    <div class="mb-8 rounded-lg overflow-hidden text-white p-8 flex items-end justify-between" style="background: var(--accent); box-shadow: 0 10px 30px -10px var(--shadow-lg)">
+      <div>
+        <div class="text-[11px] uppercase tracking-widest font-bold" style="color: var(--border-strong); opacity:0.8">K úhrade</div>
+        <div class="display text-6xl mono mt-2 text-white">1 476,00 €</div>
+        <div class="text-sm mt-2" style="color: var(--border-strong); opacity:0.9">Splatné 11. 08. 2026 · o 12 dní</div>
+      </div>
+      <div class="text-right text-xs space-y-0.5" style="color: var(--border-strong); opacity:0.9">
+        <div class="uppercase tracking-widest font-bold mb-2" style="opacity:0.7">Platobné údaje</div>
+        <div class="mono text-white text-sm">SK89 1100 0000 0026 2200 1234</div>
+        <div class="mono">VS <span class="text-white font-bold">20260042</span></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+      <div class="col-span-2 space-y-6">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Strany</span>
+            <div class="flex-1 h-px" style="background: var(--border-mid)"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="card p-6">
+              <div class="text-[10px] uppercase tracking-widest font-bold mb-3" style="color: var(--text-body)">Dodávateľ</div>
+              <div class="font-bold text-lg">SORB XT s.r.o.</div>
+              <div class="text-sm mt-2 leading-relaxed" style="color: var(--text-body)">Karpatské námestie 10A<br>831 06 Bratislava</div>
+              <div class="mt-3 space-y-1 text-xs mono" style="color: var(--text-muted)">
+                <div>IČO 47518309</div>
+                <div>SK2120886867</div>
+              </div>
+            </div>
+            <div class="card p-6">
+              <div class="text-[10px] uppercase tracking-widest font-bold mb-3" style="color: var(--text-body)">Odberateľ</div>
+              <div class="font-bold text-lg">Alza.sk s.r.o.</div>
+              <div class="text-sm mt-2 leading-relaxed" style="color: var(--text-body)">Bottova 2A<br>811 09 Bratislava</div>
+              <div class="mt-3 space-y-1 text-xs mono" style="color: var(--text-muted)">
+                <div>IČO 27082440</div>
+                <div>SK2120704783</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Položky</span>
+            <div class="flex-1 h-px" style="background: var(--border-mid)"></div>
+          </div>
+          <div class="card overflow-hidden">
+            <table class="w-full">
+              <thead>
+                <tr>
+                  <th class="table-th w-8">#</th>
+                  <th class="table-th">Popis</th>
+                  <th class="table-th text-right">Množ.</th>
+                  <th class="table-th text-right">Cena</th>
+                  <th class="table-th text-right">DPH</th>
+                  <th class="table-th text-right">Spolu</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="table-td mono" style="color: var(--text-soft)">1</td>
+                  <td class="table-td">Konzultačné služby — vývoj (Júl 2026)</td>
+                  <td class="table-td text-right mono">20 h</td>
+                  <td class="table-td text-right mono">60,00 €</td>
+                  <td class="table-td text-right mono">23 %</td>
+                  <td class="table-td text-right font-bold mono">1 476,00 €</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-body)">Časová os</span>
+            <div class="flex-1 h-px" style="background: var(--border-mid)"></div>
+          </div>
+          <div class="card p-6">
+            <div class="relative pl-6">
+              <div class="absolute left-[7px] top-2 bottom-2 w-px" style="background: var(--border-strong)"></div>
+              <div class="relative mb-4">
+                <div class="absolute -left-[19px] top-1 w-4 h-4 rounded-full flex items-center justify-center" style="background: var(--accent)">
+                  <svg class="icon text-white" style="width:8px;height:8px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="text-sm font-semibold">Vystavená</div>
+                <div class="text-xs mono" style="color: var(--text-muted)">28. 07. 2026 · 14:32</div>
+              </div>
+              <div class="relative mb-4">
+                <div class="absolute -left-[19px] top-1 w-4 h-4 rounded-full flex items-center justify-center" style="background: var(--accent)">
+                  <svg class="icon text-white" style="width:8px;height:8px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="text-sm font-semibold">Odoslaná e-mailom</div>
+                <div class="text-xs mono" style="color: var(--text-muted)">28. 07. 2026 · 14:33</div>
+              </div>
+              <div class="relative">
+                <div class="absolute -left-[19px] top-1 w-4 h-4 rounded-full border-2 bg-white" style="border-color: var(--border-strong)"></div>
+                <div class="text-sm" style="color: var(--text-muted)">Čaká na úhradu</div>
+                <div class="text-xs" style="color: var(--text-soft)">Splatná o 12 dní</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="sec-label">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              Účtovníctvo
+            </span>
+            <div class="flex-1 h-px" style="background: var(--border-mid)"></div>
+          </div>
+          <div class="card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-semibold">Automatické účtovanie</div>
+              <span class="chip chip-ok">Zaúčtované</span>
+            </div>
+            <div class="space-y-1.5 mono text-xs">
+              <div class="flex justify-between p-2 rounded" style="background: var(--bg-base); border: 1px solid var(--border-mid)">
+                <span><span class="font-bold">MD 311</span> <span style="color: var(--text-muted)">Odberatelia</span></span>
+                <span class="font-bold">1 476,00</span>
+              </div>
+              <div class="flex justify-between p-2 rounded" style="background: var(--bg-base); border: 1px solid var(--border-mid)">
+                <span><span class="font-bold">D 602</span> <span style="color: var(--text-muted)">Tržby</span></span>
+                <span class="font-bold">1 200,00</span>
+              </div>
+              <div class="flex justify-between p-2 rounded" style="background: var(--bg-base); border: 1px solid var(--border-mid)">
+                <span><span class="font-bold">D 343.02</span> <span style="color: var(--text-muted)">DPH výstup</span></span>
+                <span class="font-bold">276,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function showTab(t) {
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
+  document.getElementById('tab-' + t).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('btn-blue').classList.toggle('active', t === 'blue');
+  document.getElementById('btn-orange').classList.toggle('active', t === 'orange');
+  localStorage.setItem('zolo-mockup-theme', t);
+}
+// Restore last theme
+const saved = localStorage.getItem('zolo-mockup-theme');
+if (saved) setTheme(saved);
+</script>
+</body>
+</html>

@@ -640,12 +640,12 @@ function NavLink({
         onClick={navigateOrToggle}
         className={`w-full group relative flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
           active
-            ? 'bg-white/[0.08] text-white font-medium'
+            ? 'bg-teal-500/15 text-white font-semibold'
             : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-100 font-normal'
         }`}
       >
         {active && (
-          <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-0.5 bg-white rounded-r-full" />
+          <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] bg-teal-400 rounded-r-full" />
         )}
         <Icon
           size={14}

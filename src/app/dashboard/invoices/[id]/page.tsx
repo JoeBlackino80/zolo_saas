@@ -77,6 +77,37 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         }
       />
 
+      {/* Signature hero — sum k úhrade + IBAN pre invoice/proforma/advance ktoré čakajú platbu */}
+      {['invoice', 'proforma', 'advance_invoice', 'debit_note'].includes(invoice.type)
+        && Number(invoice.paid_amount || 0) < Number(invoice.total) && (
+        <div
+          className="mb-6 rounded-2xl p-7 flex flex-wrap items-end justify-between gap-6 text-white relative overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #134e4a 0%, #0f766e 100%)', boxShadow: '0 20px 40px -20px rgba(19,78,74,0.4), 0 8px 20px -10px rgba(19,78,74,0.2)' }}
+        >
+          <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+          <div className="relative">
+            <div className="text-[10px] uppercase tracking-widest font-bold text-teal-100/80">K úhrade</div>
+            <div className="text-[52px] sm:text-[64px] font-extrabold tracking-[-0.04em] tabular-nums leading-none mt-1">
+              {fmtEur(Number(invoice.total) - Number(invoice.paid_amount || 0))}
+            </div>
+            <div className="text-sm text-teal-50/90 mt-2">
+              Splatné {fmtDate(invoice.due_date)}
+              {Number(invoice.paid_amount || 0) > 0 && <> · zaplatené {fmtEur(Number(invoice.paid_amount))}</>}
+            </div>
+          </div>
+          {((invoice.companies as { iban?: string | null })?.iban || invoice.variable_symbol) && (
+            <div className="relative text-right text-xs text-teal-50/90 space-y-0.5 min-w-0">
+              <div className="uppercase tracking-widest font-bold mb-2 text-teal-100/70">Platobné údaje</div>
+              {(invoice.companies as { iban?: string | null })?.iban && (
+                <div className="font-mono text-white text-sm">{(invoice.companies as { iban: string }).iban}</div>
+              )}
+              <div className="font-mono">VS <span className="text-white font-bold">{invoice.variable_symbol || invoice.number.replace(/\D/g, '')}</span></div>
+              <div className="font-mono">Suma <span className="text-white font-bold">{fmtEur(Number(invoice.total) - Number(invoice.paid_amount || 0)).replace(' €', '')} EUR</span></div>
+            </div>
+          )}
+        </div>
+      )}
+
       {invoice.type === 'invoice' && Number(invoice.paid_amount || 0) < Number(invoice.total) && (
         <InstallmentsSection invoiceId={invoice.id} companyId={invoice.company_id} total={Number(invoice.total)} />
       )}

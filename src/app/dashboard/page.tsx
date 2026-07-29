@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { Card, CardHeader } from '@/components/ui';
+import { Card, CardHeader, InsightBanner, Sparkline, Button } from '@/components/ui';
 import { fmtEur, fmtDate } from '@/lib/utils';
 import Link from 'next/link';
 import { TrendingUp, TrendingDown, FileText, Building2, Clock, Calendar, Plus, ArrowUpRight, Percent } from 'lucide-react';
@@ -64,37 +64,73 @@ export default async function DashboardPage() {
   const showFirstInvoiceCoach = totalCompanies > 0 && totalInvoices === 0;
 
   const monthName = new Date().toLocaleDateString('sk-SK', { month: 'long', year: 'numeric' });
+  const todayLabel = today.toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const hour = today.getHours();
+  const greeting = hour < 12 ? 'Dobré ráno' : hour < 18 ? 'Dobrý deň' : 'Dobrý večer';
+  const userName = (user?.email?.split('@')[0] || '').replace(/[._-]/g, ' ');
+  const isBestMonth = revenueDelta > 15;
+
+  // Sparkline data — obraty per deň za posledných 30 dní
+  const days30: number[] = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const dstr = d.toISOString().slice(0, 10);
+    const sum = allInv.filter((x) => x.type === 'invoice' && x.issue_date === dstr).reduce((s, x) => s + Number(x.total || 0), 0);
+    days30.push(sum);
+  }
+  const hasSparkline = days30.some((v) => v > 0);
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl">
-      {/* Hero — Apple Health style: prominent primary metric */}
+      {/* Hero — signature greeting + big display metric + sparkline */}
       <div className="mb-8">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500 mb-3">
-          Prehľad · {monthName}
+        <div className="text-[13px] text-zinc-500 tracking-tight">
+          {greeting}, <span className="text-zinc-900 font-semibold capitalize">{userName}</span> · {todayLabel}
         </div>
-        <div className="flex items-end justify-between gap-6 flex-wrap">
+        <div className="flex items-end justify-between gap-6 flex-wrap mt-3">
           <div>
-            <h1 className="text-[44px] sm:text-[56px] font-bold text-zinc-900 tracking-[-0.03em] leading-[1] tabular-nums">
-              {fmtEur(thisMonthRevenue)}
+            <h1 className="text-[36px] sm:text-[44px] font-extrabold text-zinc-900 tracking-[-0.036em] leading-[1.05]">
+              {isBestMonth
+                ? <>Toto je tvoj <span className="text-teal-800">najlepší</span> mesiac.</>
+                : totalInvoices === 0
+                ? <>Vitaj v ZOLO.</>
+                : <>Prehľad výkonnosti.</>
+              }
             </h1>
-            <div className="flex items-center gap-3 mt-3">
-              <span className="text-[13px] text-zinc-500 tracking-tight">tržby tento mesiac</span>
-              {revenueDelta !== 0 && (
-                <span className={`inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-0.5 rounded-full tabular-nums ${
-                  revenueDelta > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
-                }`}>
-                  {revenueDelta > 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                  {revenueDelta > 0 ? '+' : ''}{revenueDelta.toFixed(1)}%
-                </span>
+            <p className="text-[14px] text-zinc-600 mt-2 leading-relaxed">
+              {totalInvoices > 0 ? (
+                <>Fakturoval si <span className="font-bold text-zinc-900 tabular-nums">{fmtEur(thisMonthRevenue)}</span> {monthName}
+                {revenueDelta !== 0 && <> · <span className={revenueDelta > 0 ? 'text-emerald-700 font-semibold' : 'text-red-700 font-semibold'}>{revenueDelta > 0 ? '+' : ''}{revenueDelta.toFixed(1)}%</span> vs minulý mesiac</>}
+                </>
+              ) : (
+                <>Za 30 sekúnd vystaviš prvú faktúru. Zvyšok necháme na ORSR + AI.</>
               )}
+            </p>
+          </div>
+          {hasSparkline && (
+            <div className="hidden lg:block w-56">
+              <Sparkline points={days30} height={48} />
+              <div className="text-[10px] text-zinc-400 text-right mt-1 uppercase tracking-widest font-semibold">Posledných 30 dní</div>
             </div>
-          </div>
-          <div className="text-right hidden sm:block">
-            <div className="text-[11px] text-zinc-400 uppercase tracking-[0.1em]">Vitaj späť</div>
-            <div className="text-[14px] text-zinc-700 font-medium mt-1 tracking-tight">{user?.email?.split('@')[0]}</div>
-          </div>
+          )}
         </div>
       </div>
+
+      {/* Zolo Intelligence — kontextové oznámenie ak niečo vyžaduje akciu */}
+      {overdueCount > 0 && (
+        <div className="mb-8">
+          <InsightBanner
+            title={`${overdueCount} ${overdueCount === 1 ? 'faktúra je' : overdueCount < 5 ? 'faktúry sú' : 'faktúr je'} po splatnosti · celkom ${fmtEur(overdueRows.reduce((s, r) => s + Number(r.total), 0))}`}
+            description="Pošli automatické upomienky všetkým naraz — trvá to 5 sekúnd."
+            action={
+              <Link href="/dashboard/receivables">
+                <Button variant="secondary" className="!bg-white !text-teal-900 !border-white hover:!bg-teal-50">Poslať upomienky</Button>
+              </Link>
+            }
+          />
+        </div>
+      )}
 
       {showFirstInvoiceCoach && (
         <div className="mb-8 bg-zinc-950 text-white rounded-2xl p-7">

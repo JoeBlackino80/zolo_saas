@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZOLO — Pastel SaaS mockup</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: #fafaf9; color: #292524; letter-spacing: -0.01em; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  /* pastel palette */
+  .bg-blue-soft { background: #dbeafe; }
+  .bg-mint-soft { background: #d1fae5; }
+  .bg-peach-soft { background: #fed7aa; }
+  .bg-lavender-soft { background: #e9d5ff; }
+  .bg-rose-soft { background: #ffe4e6; }
+  .bg-butter-soft { background: #fef3c7; }
+  .text-blue-deep { color: #1e40af; }
+  .text-mint-deep { color: #047857; }
+  .text-peach-deep { color: #c2410c; }
+  .text-lavender-deep { color: #6b21a8; }
+  .text-rose-deep { color: #be123c; }
+
+  .tab-btn.active { background: white; color: #292524; border-radius: 12px 12px 0 0; box-shadow: 0 -2px 8px rgba(0,0,0,0.04); }
+  .tab-btn { color: #78716c; padding: 14px 24px; font-weight: 600; }
+
+  .card-soft { border-radius: 20px; border: 1px solid #f5f5f4; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all .15s; }
+  .card-soft:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: translateY(-1px); }
+
+  .pill { padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+  .pill-blue { background: #dbeafe; color: #1e40af; }
+  .pill-mint { background: #d1fae5; color: #047857; }
+  .pill-peach { background: #fed7aa; color: #c2410c; }
+  .pill-butter { background: #fef3c7; color: #a16207; }
+  .pill-rose { background: #ffe4e6; color: #be123c; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- TOP NAV -->
+<div class="bg-white border-b border-stone-100 sticky top-0 z-30">
+  <div class="max-w-[1400px] mx-auto flex items-center">
+    <div class="px-6 py-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+        <span class="text-white font-extrabold text-xl">Z</span>
+      </div>
+      <div>
+        <div class="font-extrabold text-lg text-stone-800 leading-none">ZOLO</div>
+        <div class="text-[11px] text-stone-500 mt-0.5">Účtovníctvo, ktoré chutí ☕</div>
+      </div>
+    </div>
+    <div class="flex ml-8">
+      <button class="tab-btn active" onclick="showTab('dashboard')">🏠 Prehľad</button>
+      <button class="tab-btn" onclick="showTab('invoice-new')">📝 Nová faktúra</button>
+      <button class="tab-btn" onclick="showTab('invoice-detail')">📄 Detail faktúry</button>
+    </div>
+    <div class="ml-auto px-6 flex items-center gap-3">
+      <div class="bg-mint-soft px-3 py-1.5 rounded-full flex items-center gap-2">
+        <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+        <span class="text-xs font-semibold text-mint-deep">SORB XT s.r.o.</span>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-300 to-orange-300 flex items-center justify-center font-bold text-white">JN</div>
+    </div>
+  </div>
+</div>
+
+<div class="flex max-w-[1400px] mx-auto">
+
+<!-- SIDEBAR -->
+<aside class="w-56 py-6 px-3">
+  <div class="text-[10px] uppercase tracking-widest text-stone-400 font-bold px-3 mb-2">Prehľad</div>
+  <a class="flex items-center gap-3 px-3 py-2.5 bg-blue-soft text-blue-deep rounded-xl font-semibold text-sm">
+    🏠 Dashboard
+  </a>
+  <div class="text-[10px] uppercase tracking-widest text-stone-400 font-bold px-3 mb-2 mt-6">Predaj</div>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">📝 Fakturácia</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">💡 Ponuky</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">📦 Objednávky</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">🧑 Zákazníci</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">🏷 Cenník</a>
+  <div class="text-[10px] uppercase tracking-widest text-stone-400 font-bold px-3 mb-2 mt-6">Financie</div>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">🏦 Banka</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">💵 Pokladnica</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">⏳ Pohľadávky</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">💳 Záväzky</a>
+  <div class="text-[10px] uppercase tracking-widest text-stone-400 font-bold px-3 mb-2 mt-6">Účtovníctvo</div>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">📓 Denník</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">📚 Účtovná osnova</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">🏛 Majetok</a>
+  <div class="text-[10px] uppercase tracking-widest text-stone-400 font-bold px-3 mb-2 mt-6">Dane</div>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">📊 DPH priznanie</a>
+  <a class="flex items-center gap-2 px-3 py-2.5 hover:bg-stone-100 rounded-xl text-sm text-stone-700">🧾 eDane / eKasa</a>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 p-8">
+
+<!-- ============ TAB: DASHBOARD ============ -->
+<section id="tab-dashboard" class="tab-panel">
+  <div class="mb-8">
+    <div class="flex items-baseline justify-between">
+      <div>
+        <h1 class="text-3xl font-extrabold text-stone-800">Vitaj späť, Joe 👋</h1>
+        <p class="text-stone-500 mt-1">Toto sa deje v tvojej firme dnes.</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="px-4 py-2.5 bg-white border border-stone-200 rounded-xl text-sm font-medium hover:bg-stone-50">↓ Export</button>
+        <button class="px-5 py-2.5 bg-stone-900 text-white rounded-xl text-sm font-bold hover:bg-stone-800 shadow-sm">＋ Nová faktúra</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 METRIC CARDS s pastelovým fillom -->
+  <div class="grid grid-cols-3 gap-5 mb-6">
+    <div class="card-soft p-6">
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 bg-blue-soft rounded-2xl flex items-center justify-center text-2xl">💰</div>
+        <span class="pill pill-blue">▲ +12 %</span>
+      </div>
+      <div class="text-[11px] uppercase tracking-widest text-stone-500 font-bold mt-4">Pohľadávky</div>
+      <div class="text-4xl font-extrabold text-stone-900 mt-1 tabular">1 240,00 €</div>
+      <div class="text-xs text-stone-500 mt-2">8 neuhradených faktúr</div>
+    </div>
+    <div class="card-soft p-6">
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 bg-mint-soft rounded-2xl flex items-center justify-center text-2xl">✅</div>
+        <span class="pill pill-mint">▲ +34 %</span>
+      </div>
+      <div class="text-[11px] uppercase tracking-widest text-stone-500 font-bold mt-4">Zaplatené (mesiac)</div>
+      <div class="text-4xl font-extrabold text-stone-900 mt-1 tabular">2 890,00 €</div>
+      <div class="text-xs text-stone-500 mt-2">14 platieb prijatých</div>
+    </div>
+    <div class="card-soft p-6">
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 bg-rose-soft rounded-2xl flex items-center justify-center text-2xl">⚠️</div>
+        <span class="pill pill-rose">3 doklady</span>
+      </div>
+      <div class="text-[11px] uppercase tracking-widest text-stone-500 font-bold mt-4">Po splatnosti</div>
+      <div class="text-4xl font-extrabold text-stone-900 mt-1 tabular">420,00 €</div>
+      <div class="text-xs text-rose-deep mt-2">→ Poslať upomienky</div>
+    </div>
+  </div>
+
+  <!-- DPH + DEADLINE STRIP -->
+  <div class="grid grid-cols-2 gap-5 mb-6">
+    <div class="card-soft p-6 bg-butter-soft/40">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">DPH k odvodu · Júl 2026</div>
+        <span class="pill pill-butter">Do 25.08.</span>
+      </div>
+      <div class="text-3xl font-extrabold text-stone-900 tabular">532,17 €</div>
+      <div class="text-xs text-stone-600 mt-2">Výstup 890,05 − Vstup 357,88</div>
+      <button class="mt-4 text-sm font-semibold text-stone-900 underline">Otvoriť KV DPH →</button>
+    </div>
+    <div class="card-soft p-6 bg-lavender-soft/40">
+      <div class="text-[11px] uppercase tracking-widest text-stone-500 font-bold mb-3">Najbližšie deadliny 📅</div>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between items-center py-1.5 border-b border-white/60">
+          <span>Podanie DPH priznania</span>
+          <span class="font-bold tabular pill pill-butter">25.08</span>
+        </div>
+        <div class="flex justify-between items-center py-1.5 border-b border-white/60">
+          <span>Sociálne odvody</span>
+          <span class="font-bold tabular pill pill-butter">08.08</span>
+        </div>
+        <div class="flex justify-between items-center py-1.5">
+          <span>Preddavok dane z príjmu</span>
+          <span class="font-bold tabular pill pill-blue">15.09</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT INVOICES -->
+  <div class="card-soft overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-5">
+      <h2 class="text-xl font-extrabold text-stone-900">Nedávne faktúry</h2>
+      <a class="text-sm text-blue-deep font-semibold hover:underline">Zobraziť všetky →</a>
+    </div>
+    <table class="w-full">
+      <thead>
+        <tr class="text-[10px] uppercase tracking-widest text-stone-500 font-bold border-t border-stone-100">
+          <th class="text-left px-6 py-3">Číslo</th>
+          <th class="text-left px-3 py-3">Odberateľ</th>
+          <th class="text-left px-3 py-3">Dátum</th>
+          <th class="text-right px-3 py-3">Suma</th>
+          <th class="text-center px-6 py-3">Stav</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hover:bg-stone-50 cursor-pointer border-t border-stone-100">
+          <td class="px-6 py-4 text-sm font-bold text-blue-deep">FA-2026-0042</td>
+          <td class="px-3 py-4 text-sm">Alza.sk s.r.o.</td>
+          <td class="px-3 py-4 text-sm tabular text-stone-500">28.07.2026</td>
+          <td class="px-3 py-4 text-sm text-right font-bold tabular text-stone-900">1 476,00 €</td>
+          <td class="px-6 py-4 text-center"><span class="pill pill-butter">Vystavená</span></td>
+        </tr>
+        <tr class="hover:bg-stone-50 cursor-pointer border-t border-stone-100">
+          <td class="px-6 py-4 text-sm font-bold text-blue-deep">FA-2026-0041</td>
+          <td class="px-3 py-4 text-sm">Slovnaft a.s.</td>
+          <td class="px-3 py-4 text-sm tabular text-stone-500">26.07.2026</td>
+          <td class="px-3 py-4 text-sm text-right font-bold tabular text-stone-900">890,50 €</td>
+          <td class="px-6 py-4 text-center"><span class="pill pill-mint">✓ Zaplatená</span></td>
+        </tr>
+        <tr class="hover:bg-stone-50 cursor-pointer border-t border-stone-100">
+          <td class="px-6 py-4 text-sm font-bold text-blue-deep">FA-2026-0040</td>
+          <td class="px-3 py-4 text-sm">DPD SK s.r.o.</td>
+          <td class="px-3 py-4 text-sm tabular text-stone-500">14.06.2026</td>
+          <td class="px-3 py-4 text-sm text-right font-bold tabular text-stone-900">420,00 €</td>
+          <td class="px-6 py-4 text-center"><span class="pill pill-rose">⚠ Po splatnosti</span></td>
+        </tr>
+        <tr class="hover:bg-stone-50 cursor-pointer border-t border-stone-100">
+          <td class="px-6 py-4 text-sm font-bold text-blue-deep">ZF-2026-0007</td>
+          <td class="px-3 py-4 text-sm">TESCO Stores SR a.s.</td>
+          <td class="px-3 py-4 text-sm tabular text-stone-500">10.06.2026</td>
+          <td class="px-3 py-4 text-sm text-right font-bold tabular text-stone-900">2 000,00 €</td>
+          <td class="px-6 py-4 text-center"><span class="pill pill-mint">✓ Zaplatená</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-8 text-center text-xs text-stone-400">
+    💜 eDane XML · eKasa · KROS/Pohoda · ISDOC · GDPR · Supabase EU · SOC 2
+  </div>
+</section>
+
+<!-- ============ TAB: NOVÁ FAKTÚRA ============ -->
+<section id="tab-invoice-new" class="tab-panel hidden">
+  <div class="mb-6">
+    <a class="text-sm text-stone-500 hover:text-stone-900">← Späť</a>
+    <h1 class="text-3xl font-extrabold text-stone-900 mt-2">Nová faktúra ✨</h1>
+    <p class="text-stone-500 mt-1">Krok za krokom — vyplň, čo je zvýraznené farbou</p>
+  </div>
+
+  <!-- VYSTAVUJE BANNER pastel -->
+  <div class="bg-mint-soft rounded-2xl p-5 mb-6 flex items-center gap-4">
+    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl">🏢</div>
+    <div>
+      <div class="text-[11px] uppercase tracking-widest text-mint-deep font-bold">Vystavuje</div>
+      <div class="font-extrabold text-stone-900 text-lg">SORB XT s.r.o.</div>
+      <div class="text-xs text-stone-600">IČO 47518309 · IČ DPH SK2120886867</div>
+    </div>
+  </div>
+
+  <!-- DOCUMENT SECTION -->
+  <div class="card-soft mb-5">
+    <div class="px-6 py-4 border-b border-stone-100 flex items-center gap-3">
+      <span class="text-xl">📋</span>
+      <h2 class="text-lg font-extrabold text-stone-900">Doklad</h2>
+    </div>
+    <div class="p-6 grid grid-cols-3 gap-5">
+      <div>
+        <label class="text-[11px] uppercase tracking-wide text-stone-500 font-bold">Typ dokladu</label>
+        <select class="mt-1.5 w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm">
+          <option>Faktúra (FA)</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[11px] uppercase tracking-wide text-stone-500 font-bold">Číslo dokladu</label>
+        <input value="FA-2026-0043" class="mt-1.5 w-full bg-blue-soft border-2 border-blue-300 rounded-xl px-4 py-2.5 text-sm font-bold tabular text-blue-deep" />
+        <div class="text-[11px] text-blue-deep mt-1">✏️ Automaticky navrhnuté — môžeš prepísať</div>
+      </div>
+      <div>
+        <label class="text-[11px] uppercase tracking-wide text-stone-500 font-bold">Dátum vystavenia</label>
+        <input type="date" value="2026-07-29" class="mt-1.5 w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm tabular" />
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER SECTION -->
+  <div class="card-soft mb-5">
+    <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-xl">🧑</span>
+        <h2 class="text-lg font-extrabold text-stone-900">Komu fakturuješ</h2>
+      </div>
+      <button class="text-sm text-blue-deep font-semibold hover:underline">＋ Nový zákazník</button>
+    </div>
+    <div class="p-6">
+      <label class="text-[11px] uppercase tracking-wide text-stone-500 font-bold">Vyber zákazníka</label>
+      <input placeholder="🔍 Napíš názov alebo IČO..." value="Alza.sk s.r.o." class="mt-1.5 w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm" />
+      <div class="grid grid-cols-3 gap-4 mt-4 p-4 bg-lavender-soft/30 rounded-2xl">
+        <div>
+          <div class="text-[11px] uppercase tracking-wide text-stone-500 font-bold">IČO</div>
+          <div class="font-bold text-stone-900 mt-1 tabular">27082440</div>
+        </div>
+        <div>
+          <div class="text-[11px] uppercase tracking-wide text-stone-500 font-bold">DIČ</div>
+          <div class="font-bold text-stone-900 mt-1 tabular">2120704783</div>
+        </div>
+        <div>
+          <div class="text-[11px] uppercase tracking-wide text-stone-500 font-bold">IČ DPH</div>
+          <div class="font-bold text-stone-900 mt-1 tabular">SK2120704783</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEMS -->
+  <div class="card-soft mb-5">
+    <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-xl">📦</span>
+        <h2 class="text-lg font-extrabold text-stone-900">Čo fakturuješ</h2>
+      </div>
+      <button class="text-sm text-blue-deep font-semibold hover:underline">＋ Ďalšia položka</button>
+    </div>
+    <div class="p-6 space-y-3">
+      <div class="bg-stone-50 rounded-2xl p-4">
+        <div class="grid grid-cols-12 gap-3 items-center">
+          <input value="Konzultačné služby — vývoj (Júl 2026)" class="col-span-6 bg-white border border-stone-200 rounded-xl px-3 py-2 text-sm" />
+          <input value="20" class="col-span-1 bg-white border border-stone-200 rounded-xl px-3 py-2 text-sm tabular text-center" />
+          <input value="ks" class="col-span-1 bg-white border border-stone-200 rounded-xl px-3 py-2 text-sm text-center" />
+          <input value="60,00" class="col-span-2 bg-white border border-stone-200 rounded-xl px-3 py-2 text-sm tabular text-right" />
+          <input value="23%" class="col-span-1 bg-white border border-stone-200 rounded-xl px-3 py-2 text-sm tabular text-center" />
+          <div class="col-span-1 text-right font-extrabold text-stone-900 tabular">1 476 €</div>
+        </div>
+      </div>
+    </div>
+    <div class="px-6 py-4 bg-gradient-to-r from-blue-soft to-lavender-soft/50 border-t border-stone-100 flex justify-end">
+      <div class="text-right space-y-1 min-w-[280px]">
+        <div class="flex justify-between text-sm">
+          <span class="text-stone-600">Základ dane</span>
+          <span class="tabular font-semibold">1 200,00 €</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-stone-600">DPH 23 %</span>
+          <span class="tabular font-semibold">276,00 €</span>
+        </div>
+        <div class="flex justify-between pt-3 mt-2 border-t-2 border-stone-300">
+          <span class="font-extrabold text-stone-900">Spolu k úhrade</span>
+          <span class="font-extrabold text-3xl text-stone-900 tabular">1 476,00 €</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3">
+    <button class="px-5 py-3 bg-white border border-stone-200 rounded-xl text-sm font-semibold hover:bg-stone-50">💾 Uložiť koncept</button>
+    <button class="px-6 py-3 bg-stone-900 text-white rounded-xl text-sm font-bold hover:bg-stone-800 shadow-sm">✉ Vystaviť a odoslať</button>
+  </div>
+</section>
+
+<!-- ============ TAB: DETAIL FAKTÚRY ============ -->
+<section id="tab-invoice-detail" class="tab-panel hidden">
+  <div class="mb-6">
+    <a class="text-sm text-stone-500">← Späť na faktúry</a>
+    <div class="flex items-start justify-between mt-2">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <h1 class="text-3xl font-extrabold text-stone-900">FA-2026-0042</h1>
+          <span class="pill pill-butter">⏳ Čaká na úhradu</span>
+        </div>
+        <p class="text-stone-500">Vystavená 28.07.2026 · splatná 11.08.2026 · Alza.sk s.r.o.</p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <button class="px-4 py-2.5 bg-white border border-stone-200 rounded-xl text-sm font-semibold hover:bg-stone-50">✓ Zaplatené</button>
+        <button class="px-4 py-2.5 bg-white border border-stone-200 rounded-xl text-sm font-semibold hover:bg-stone-50">👁 Náhľad</button>
+        <button class="px-5 py-2.5 bg-stone-900 text-white rounded-xl text-sm font-bold">✉ Poslať mailom</button>
+        <button class="px-3 py-2.5 bg-white border border-stone-200 rounded-xl text-sm font-semibold hover:bg-stone-50">⋯</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-5">
+    <div class="col-span-2 space-y-5">
+      <!-- PARTIES -->
+      <div class="grid grid-cols-2 gap-5">
+        <div class="card-soft p-6 bg-mint-soft/30">
+          <div class="text-[10px] uppercase tracking-widest text-mint-deep font-bold mb-3">Dodávateľ (ty)</div>
+          <div class="font-extrabold text-stone-900 text-lg">SORB XT s.r.o.</div>
+          <div class="text-sm text-stone-600 mt-2 leading-relaxed">
+            Karpatské námestie 10A<br>
+            831 06 Bratislava<br>
+            <span class="text-stone-500">IČO:</span> <span class="tabular font-semibold">47518309</span><br>
+            <span class="text-stone-500">IČ DPH:</span> <span class="tabular font-semibold">SK2120886867</span>
+          </div>
+        </div>
+        <div class="card-soft p-6 bg-blue-soft/30">
+          <div class="text-[10px] uppercase tracking-widest text-blue-deep font-bold mb-3">Odberateľ</div>
+          <div class="font-extrabold text-stone-900 text-lg">Alza.sk s.r.o.</div>
+          <div class="text-sm text-stone-600 mt-2 leading-relaxed">
+            Bottova 2A<br>
+            811 09 Bratislava<br>
+            <span class="text-stone-500">IČO:</span> <span class="tabular font-semibold">27082440</span><br>
+            <span class="text-stone-500">IČ DPH:</span> <span class="tabular font-semibold">SK2120704783</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITEMS -->
+      <div class="card-soft overflow-hidden">
+        <div class="px-6 py-5 flex items-center gap-3">
+          <span class="text-xl">📦</span>
+          <h2 class="text-lg font-extrabold text-stone-900">Položky</h2>
+        </div>
+        <table class="w-full">
+          <thead>
+            <tr class="text-[10px] uppercase tracking-widest text-stone-500 font-bold border-t border-stone-100">
+              <th class="text-left px-6 py-3">Popis</th>
+              <th class="text-right px-3 py-3">Množstvo</th>
+              <th class="text-right px-3 py-3">Cena/MJ</th>
+              <th class="text-right px-3 py-3">DPH</th>
+              <th class="text-right px-6 py-3">Spolu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-stone-100">
+              <td class="px-6 py-4 text-sm">Konzultačné služby — vývoj (Júl 2026)</td>
+              <td class="px-3 py-4 text-right text-sm tabular">20 h</td>
+              <td class="px-3 py-4 text-right text-sm tabular">60,00 €</td>
+              <td class="px-3 py-4 text-right text-sm tabular">23 %</td>
+              <td class="px-6 py-4 text-right font-extrabold tabular text-stone-900">1 476,00 €</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="px-6 py-5 bg-gradient-to-r from-blue-soft/40 to-lavender-soft/40 border-t border-stone-100 flex justify-end">
+          <div class="text-right space-y-1 min-w-[280px]">
+            <div class="flex justify-between text-sm"><span class="text-stone-600">Základ</span><span class="tabular">1 200,00 €</span></div>
+            <div class="flex justify-between text-sm"><span class="text-stone-600">DPH 23 %</span><span class="tabular">276,00 €</span></div>
+            <div class="flex justify-between pt-3 mt-2 border-t-2 border-stone-300">
+              <span class="font-extrabold text-stone-900">Spolu k úhrade</span>
+              <span class="font-extrabold text-3xl tabular text-stone-900">1 476,00 €</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYMENT INFO -->
+      <div class="card-soft p-6 bg-peach-soft/30">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-xl">💳</span>
+          <h2 class="text-lg font-extrabold text-stone-900">Platobné údaje</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-5 text-sm">
+          <div>
+            <div class="text-[10px] uppercase tracking-widest text-peach-deep font-bold">IBAN</div>
+            <div class="tabular font-extrabold text-stone-900 mt-1">SK89 1100 0000 0026 2200 1234</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-widest text-peach-deep font-bold">Variabilný symbol</div>
+            <div class="tabular font-extrabold text-stone-900 mt-1">20260042</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-widest text-peach-deep font-bold">Suma</div>
+            <div class="tabular font-extrabold text-stone-900 mt-1">1 476,00 EUR</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-widest text-peach-deep font-bold">Splatné do</div>
+            <div class="tabular font-extrabold text-stone-900 mt-1">11. 08. 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-5">
+      <!-- TIMELINE -->
+      <div class="card-soft p-6">
+        <div class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">Časová os 📅</div>
+        <div class="space-y-3">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-mint-soft flex items-center justify-center text-sm">✅</div>
+            <div>
+              <div class="text-sm font-semibold">Vystavená</div>
+              <div class="text-xs text-stone-500 tabular">28.07.2026 · 14:32</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-blue-soft flex items-center justify-center text-sm">✉</div>
+            <div>
+              <div class="text-sm font-semibold">Odoslaná e-mailom</div>
+              <div class="text-xs text-stone-500 tabular">28.07.2026 · 14:33</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-sm">⏳</div>
+            <div>
+              <div class="text-sm text-stone-500">Čaká na úhradu</div>
+              <div class="text-xs text-stone-400">Splatná o 12 dní</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCOUNTING pastel -->
+      <div class="card-soft p-6 bg-lavender-soft/40">
+        <div class="text-[10px] uppercase tracking-widest text-lavender-deep font-bold mb-3">Auto zaúčtované 🧮</div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between bg-white/60 rounded-lg px-3 py-2">
+            <span class="text-stone-700">MD 311 — Odberatelia</span>
+            <span class="tabular font-bold text-stone-900">1 476,00</span>
+          </div>
+          <div class="flex justify-between bg-white/60 rounded-lg px-3 py-2">
+            <span class="text-stone-700">D 602 — Tržby</span>
+            <span class="tabular font-bold text-stone-900">1 200,00</span>
+          </div>
+          <div class="flex justify-between bg-white/60 rounded-lg px-3 py-2">
+            <span class="text-stone-700">D 343.02 — DPH</span>
+            <span class="tabular font-bold text-stone-900">276,00</span>
+          </div>
+        </div>
+        <button class="mt-4 text-xs text-lavender-deep font-semibold underline">Denníkový zápis →</button>
+      </div>
+
+      <!-- ATTACHMENTS -->
+      <div class="card-soft p-6">
+        <div class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-3">Súbory 📎</div>
+        <div class="space-y-2 text-sm">
+          <div class="flex items-center justify-between py-2.5 px-3 bg-stone-50 rounded-xl">
+            <span>📄 FA-2026-0042.pdf</span>
+            <button class="text-xs text-blue-deep font-bold">↓</button>
+          </div>
+          <div class="flex items-center justify-between py-2.5 px-3 bg-stone-50 rounded-xl">
+            <span>📎 FA-2026-0042.isdoc</span>
+            <button class="text-xs text-blue-deep font-bold">↓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer class="max-w-[1400px] mx-auto px-6 py-8 mt-16 text-center text-xs text-stone-400">
+  Vyrobené s 💜 na Slovensku · <a href="#" class="text-blue-deep">zolo.sk</a>
+</footer>
+
+<script>
+function showTab(t) {
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
+  document.getElementById('tab-' + t).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

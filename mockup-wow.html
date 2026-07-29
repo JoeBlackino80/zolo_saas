@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZOLO — Wow Professional</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #fafafa; color: #09090b; letter-spacing: -0.011em; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  h1, h2, .display { letter-spacing: -0.032em; font-weight: 800; }
+  h3 { letter-spacing: -0.02em; font-weight: 700; }
+
+  /* Signature gradient — hlavný predajný prvok */
+  .gradient-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .gradient-border {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1.5px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .glow {
+    box-shadow: 0 0 40px -8px rgba(124, 58, 237, 0.35);
+  }
+
+  /* Cards */
+  .card { background: white; border: 1px solid #f4f4f5; border-radius: 16px; }
+  .card-hover { transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); }
+  .card-hover:hover { border-color: #e4e4e7; transform: translateY(-1px); box-shadow: 0 8px 24px -12px rgba(0,0,0,0.08); }
+
+  /* Chip pills — thin, no emoji */
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; letter-spacing: -0.005em; }
+  .chip-neutral { background: #f4f4f5; color: #52525b; }
+  .chip-success { background: #dcfce7; color: #166534; }
+  .chip-warning { background: #fef3c7; color: #854d0e; }
+  .chip-danger { background: #fee2e2; color: #991b1b; }
+  .chip-accent { background: #ede9fe; color: #6d28d9; }
+
+  /* Sparkline mini charts */
+  .sparkline { stroke: #7c3aed; stroke-width: 2; fill: none; }
+  .sparkline-fill { fill: url(#sparkGrad); opacity: 0.15; }
+
+  /* Tab nav */
+  .tab-btn.active { color: #09090b; }
+  .tab-btn.active::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: linear-gradient(90deg, #4f46e5, #7c3aed); border-radius: 2px; }
+  .tab-btn { position: relative; color: #71717a; padding: 20px 12px; font-weight: 600; font-size: 14px; letter-spacing: -0.01em; transition: color .15s; }
+  .tab-btn:hover { color: #09090b; }
+
+  /* Table */
+  .table-th { text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; font-weight: 700; color: #a1a1aa; padding: 12px 20px; text-align: left; }
+  .table-td { padding: 16px 20px; border-top: 1px solid #f4f4f5; font-size: 14px; }
+  .table-row:hover { background: #fafafa; }
+
+  /* Line icons — inline SVG placeholders */
+  .icon { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .icon-lg { width: 20px; height: 20px; }
+
+  /* Kbd */
+  .kbd { display: inline-flex; align-items: center; padding: 2px 6px; background: #f4f4f5; border: 1px solid #e4e4e7; border-bottom-width: 2px; border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: #52525b; }
+
+  /* Ambient background */
+  .ambient-bg::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    right: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.08), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .ambient-bg::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    left: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.05), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  main, aside, header { position: relative; z-index: 1; }
+
+  /* Progress ring */
+  .ring-bg { stroke: #f4f4f5; }
+  .ring-fill { stroke: url(#ringGrad); stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset .5s; }
+</style>
+</head>
+<body class="min-h-screen ambient-bg">
+
+<!-- SVG DEFS for gradients -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- TOP HEADER -->
+<header class="bg-white/70 backdrop-blur-xl border-b border-zinc-100 sticky top-0 z-30">
+  <div class="max-w-[1440px] mx-auto flex items-center">
+    <div class="px-6 py-4 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center glow">
+        <span class="text-white font-black text-xl">Z</span>
+      </div>
+      <div class="font-bold text-lg tracking-tight">zolo</div>
+    </div>
+    <nav class="flex ml-6">
+      <button class="tab-btn active" onclick="showTab('dashboard')">Prehľad</button>
+      <button class="tab-btn" onclick="showTab('invoice-new')">Nová faktúra</button>
+      <button class="tab-btn" onclick="showTab('invoice-detail')">Detail dokladu</button>
+    </nav>
+    <div class="ml-auto px-6 flex items-center gap-3">
+      <button class="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-500 hover:text-zinc-900 border border-zinc-200 rounded-lg hover:border-zinc-300">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Hľadať</span>
+        <span class="kbd">⌘K</span>
+      </button>
+      <div class="flex items-center gap-2 px-3 py-1.5 bg-zinc-50 border border-zinc-100 rounded-lg">
+        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+        <span class="text-xs font-semibold text-zinc-700">SORB XT s.r.o.</span>
+      </div>
+      <div class="w-9 h-9 rounded-full gradient-primary flex items-center justify-center font-bold text-white text-sm">JN</div>
+    </div>
+  </div>
+</header>
+
+<div class="flex max-w-[1440px] mx-auto">
+
+<!-- SIDEBAR -->
+<aside class="w-56 py-6 px-3 min-h-[calc(100vh-73px)] border-r border-zinc-100 bg-white/40">
+  <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold px-3 mb-2">Prehľad</div>
+  <a class="flex items-center gap-2.5 px-3 py-2 bg-zinc-100 text-zinc-900 rounded-lg font-semibold text-sm">
+    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+    Dashboard
+  </a>
+
+  <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold px-3 mb-2 mt-6">Predaj</div>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Fakturácia
+  </a>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/></svg>
+    Ponuky
+  </a>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    Objednávky
+  </a>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Zákazníci
+  </a>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+    Cenník
+  </a>
+
+  <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold px-3 mb-2 mt-6">Financie</div>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+    Banka
+  </a>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>
+    Pokladnica
+  </a>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Pohľadávky
+  </a>
+
+  <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold px-3 mb-2 mt-6">Účtovníctvo</div>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    Denník
+  </a>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Účtovná osnova
+  </a>
+
+  <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold px-3 mb-2 mt-6">Dane</div>
+  <a class="flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-100 rounded-lg text-sm text-zinc-700">
+    <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    DPH priznanie
+  </a>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 p-10">
+
+<!-- ============ TAB: DASHBOARD ============ -->
+<section id="tab-dashboard" class="tab-panel">
+  <div class="flex items-baseline justify-between mb-8">
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="chip chip-accent">Q3 · Júl 2026</span>
+        <span class="text-xs text-zinc-400">Aktualizované pred 2 min</span>
+      </div>
+      <h1 class="text-4xl display text-zinc-900">Prehľad výkonnosti</h1>
+    </div>
+    <div class="flex gap-2">
+      <button class="flex items-center gap-2 px-4 py-2 border border-zinc-200 rounded-lg text-sm font-semibold hover:border-zinc-300">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+      <button class="flex items-center gap-2 px-5 py-2 gradient-primary text-white rounded-lg text-sm font-bold glow hover:opacity-90">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nová faktúra
+      </button>
+    </div>
+  </div>
+
+  <!-- HERO METRIC + PROGRESS RING -->
+  <div class="grid grid-cols-3 gap-5 mb-5">
+    <div class="col-span-2 card card-hover p-8 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-64 h-64 gradient-primary opacity-5 rounded-full blur-3xl"></div>
+      <div class="relative">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="chip chip-accent">Netto obrat · júl</span>
+          <span class="chip chip-success">
+            <svg class="icon" style="width:10px;height:10px" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            +34 %
+          </span>
+        </div>
+        <div class="display text-7xl gradient-text tabular">4 130,00 €</div>
+        <div class="text-sm text-zinc-500 mt-2">Fakturované za obdobie 01.07 — 29.07.2026</div>
+
+        <div class="mt-6 flex items-end gap-8">
+          <div>
+            <div class="text-[11px] uppercase tracking-widest text-zinc-400 font-semibold">Prijaté</div>
+            <div class="text-2xl font-bold tabular mt-1">2 890,00 €</div>
+          </div>
+          <div>
+            <div class="text-[11px] uppercase tracking-widest text-zinc-400 font-semibold">Otvorené</div>
+            <div class="text-2xl font-bold tabular mt-1">1 240,00 €</div>
+          </div>
+          <div>
+            <div class="text-[11px] uppercase tracking-widest text-zinc-400 font-semibold">Po splatnosti</div>
+            <div class="text-2xl font-bold tabular mt-1 text-red-600">420,00 €</div>
+          </div>
+          <!-- Sparkline -->
+          <div class="ml-auto">
+            <svg width="180" height="60" viewBox="0 0 180 60">
+              <path class="sparkline-fill" d="M0,50 L20,42 L40,45 L60,38 L80,30 L100,25 L120,20 L140,22 L160,15 L180,10 L180,60 L0,60 Z" />
+              <path class="sparkline" d="M0,50 L20,42 L40,45 L60,38 L80,30 L100,25 L120,20 L140,22 L160,15 L180,10" />
+              <circle cx="180" cy="10" r="3" fill="#7c3aed"/>
+            </svg>
+            <div class="text-[10px] text-zinc-400 text-right">30 dní</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS RING — DPH deadline -->
+    <div class="card card-hover p-6 flex flex-col">
+      <div class="text-[11px] uppercase tracking-widest text-zinc-400 font-bold mb-2">DPH k odvodu</div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="relative">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="58" class="ring-bg" stroke-width="10" fill="none"/>
+            <circle cx="70" cy="70" r="58" class="ring-fill" stroke-width="10" fill="none"
+              stroke-dasharray="364.4" stroke-dashoffset="120"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="text-2xl font-black tabular gradient-text">532 €</div>
+            <div class="text-[10px] uppercase tracking-widest text-zinc-400 mt-1">Splatné 25.08</div>
+          </div>
+        </div>
+      </div>
+      <div class="text-xs text-zinc-500 text-center mt-2">Výstup 890 · Vstup 358 €</div>
+    </div>
+  </div>
+
+  <!-- 3 SECONDARY METRICS -->
+  <div class="grid grid-cols-4 gap-5 mb-5">
+    <div class="card card-hover p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="icon text-zinc-400" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span class="text-[11px] uppercase tracking-widest text-zinc-500 font-bold">Neuhradené</span>
+      </div>
+      <div class="text-3xl font-extrabold tabular">8</div>
+      <div class="text-xs text-zinc-500 mt-1">faktúr · 1 240 €</div>
+    </div>
+    <div class="card card-hover p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="icon text-zinc-400" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <span class="text-[11px] uppercase tracking-widest text-zinc-500 font-bold">Klienti aktívni</span>
+      </div>
+      <div class="text-3xl font-extrabold tabular">24</div>
+      <div class="text-xs text-emerald-600 mt-1">+3 nové</div>
+    </div>
+    <div class="card card-hover p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="icon text-zinc-400" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <span class="text-[11px] uppercase tracking-widest text-zinc-500 font-bold">Priem. platba</span>
+      </div>
+      <div class="text-3xl font-extrabold tabular">7,3 <span class="text-lg text-zinc-500">dní</span></div>
+      <div class="text-xs text-emerald-600 mt-1">−1,2 dňa</div>
+    </div>
+    <div class="card card-hover p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="icon text-zinc-400" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span class="text-[11px] uppercase tracking-widest text-zinc-500 font-bold">Cash-flow rez</span>
+      </div>
+      <div class="text-3xl font-extrabold tabular">92 <span class="text-lg text-zinc-500">dní</span></div>
+      <div class="text-xs text-zinc-500 mt-1">runway pri fixed cost</div>
+    </div>
+  </div>
+
+  <!-- RECENT INVOICES -->
+  <div class="card overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-zinc-100">
+      <div>
+        <h2 class="text-xl display">Nedávne faktúry</h2>
+        <p class="text-xs text-zinc-500 mt-1">Zobrazuje sa 4 zo 42 dokladov · sortované podľa dátumu</p>
+      </div>
+      <a class="text-sm text-zinc-700 font-semibold hover:text-zinc-900 flex items-center gap-1">
+        Zobraziť všetky
+        <svg class="icon" style="width:12px;height:12px" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+    <table class="w-full">
+      <thead class="bg-zinc-50/50 border-t border-b border-zinc-100">
+        <tr>
+          <th class="table-th">Číslo</th>
+          <th class="table-th">Klient</th>
+          <th class="table-th">Vystavená</th>
+          <th class="table-th text-right">Suma</th>
+          <th class="table-th text-center">Stav</th>
+          <th class="table-th"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-row cursor-pointer">
+          <td class="table-td mono font-semibold text-zinc-900">FA-2026-0042</td>
+          <td class="table-td font-medium">Alza.sk s.r.o.</td>
+          <td class="table-td tabular text-zinc-500">28. 07. 2026</td>
+          <td class="table-td text-right font-bold tabular">1 476,00 €</td>
+          <td class="table-td text-center"><span class="chip chip-warning">
+            <svg class="icon" style="width:10px;height:10px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Vystavená
+          </span></td>
+          <td class="table-td text-right"><svg class="icon text-zinc-300" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></td>
+        </tr>
+        <tr class="table-row cursor-pointer">
+          <td class="table-td mono font-semibold text-zinc-900">FA-2026-0041</td>
+          <td class="table-td font-medium">Slovnaft a.s.</td>
+          <td class="table-td tabular text-zinc-500">26. 07. 2026</td>
+          <td class="table-td text-right font-bold tabular">890,50 €</td>
+          <td class="table-td text-center"><span class="chip chip-success">
+            <svg class="icon" style="width:10px;height:10px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Zaplatená
+          </span></td>
+          <td class="table-td text-right"><svg class="icon text-zinc-300" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></td>
+        </tr>
+        <tr class="table-row cursor-pointer">
+          <td class="table-td mono font-semibold text-zinc-900">FA-2026-0040</td>
+          <td class="table-td font-medium">DPD SK s.r.o.</td>
+          <td class="table-td tabular text-zinc-500">14. 06. 2026</td>
+          <td class="table-td text-right font-bold tabular">420,00 €</td>
+          <td class="table-td text-center"><span class="chip chip-danger">
+            <svg class="icon" style="width:10px;height:10px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Po splatnosti · 15 dní
+          </span></td>
+          <td class="table-td text-right"><svg class="icon text-zinc-300" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></td>
+        </tr>
+        <tr class="table-row cursor-pointer">
+          <td class="table-td mono font-semibold text-zinc-900">ZF-2026-0007</td>
+          <td class="table-td font-medium">TESCO Stores SR a.s.</td>
+          <td class="table-td tabular text-zinc-500">10. 06. 2026</td>
+          <td class="table-td text-right font-bold tabular">2 000,00 €</td>
+          <td class="table-td text-center"><span class="chip chip-success">
+            <svg class="icon" style="width:10px;height:10px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Zaplatená
+          </span></td>
+          <td class="table-td text-right"><svg class="icon text-zinc-300" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ TAB: NOVÁ FAKTÚRA ============ -->
+<section id="tab-invoice-new" class="tab-panel hidden">
+  <div class="mb-8">
+    <a class="text-xs text-zinc-500 hover:text-zinc-900 flex items-center gap-1">
+      <svg class="icon" style="width:12px;height:12px" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Späť na faktúry
+    </a>
+    <h1 class="display text-4xl text-zinc-900 mt-3">Nová faktúra</h1>
+  </div>
+
+  <!-- VYSTAVUJE BAR — s gradient border -->
+  <div class="gradient-border p-4 mb-6 flex items-center gap-4">
+    <div class="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center text-white font-bold">S</div>
+    <div class="flex-1">
+      <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Vystavovateľ</div>
+      <div class="font-bold text-zinc-900">SORB XT s.r.o.</div>
+    </div>
+    <div class="text-right text-xs">
+      <div class="mono text-zinc-500">IČO 47518309</div>
+      <div class="mono text-zinc-500">SK2120886867</div>
+    </div>
+    <button class="text-xs text-zinc-500 hover:text-zinc-900 underline">Zmeniť</button>
+  </div>
+
+  <div class="card mb-5">
+    <div class="px-6 py-4 border-b border-zinc-100 flex items-center gap-3">
+      <span class="w-6 h-6 rounded-full gradient-primary text-white text-xs font-bold flex items-center justify-center">1</span>
+      <h2 class="font-bold text-zinc-900">Doklad</h2>
+    </div>
+    <div class="p-6 grid grid-cols-3 gap-5">
+      <div>
+        <label class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Typ dokladu</label>
+        <select class="mt-2 w-full border border-zinc-200 rounded-lg px-3 py-2.5 text-sm font-medium">
+          <option>Faktúra</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Číslo dokladu</label>
+        <div class="mt-2 flex gap-2">
+          <input value="FA-2026-0043" class="flex-1 border border-zinc-200 rounded-lg px-3 py-2.5 text-sm mono font-bold text-zinc-900 focus:border-violet-500 focus:ring-2 focus:ring-violet-100" />
+          <button class="px-3 border border-zinc-200 rounded-lg text-zinc-400 hover:text-zinc-900" title="Reset auto-číslo">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 4 3 10 9 10"/></svg>
+          </button>
+        </div>
+        <div class="text-[11px] text-zinc-500 mt-1.5">Auto navrhnuté · <button class="text-violet-600 font-semibold hover:underline">prepísať</button></div>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Dátum vystavenia</label>
+        <input type="date" value="2026-07-29" class="mt-2 w-full border border-zinc-200 rounded-lg px-3 py-2.5 text-sm mono" />
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-5">
+    <div class="px-6 py-4 border-b border-zinc-100 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-6 h-6 rounded-full gradient-primary text-white text-xs font-bold flex items-center justify-center">2</span>
+        <h2 class="font-bold text-zinc-900">Odberateľ</h2>
+      </div>
+      <button class="text-xs text-violet-600 font-semibold hover:underline flex items-center gap-1">
+        <svg class="icon" style="width:12px;height:12px" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Pridať nového
+      </button>
+    </div>
+    <div class="p-6">
+      <label class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Vyhľadaj zákazníka</label>
+      <div class="mt-2 relative">
+        <svg class="icon absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input value="Alza.sk s.r.o." class="w-full border border-zinc-200 rounded-lg pl-10 pr-3 py-2.5 text-sm" />
+      </div>
+      <div class="grid grid-cols-3 gap-4 mt-5">
+        <div class="p-4 border border-zinc-100 rounded-lg">
+          <div class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">IČO</div>
+          <div class="mono font-bold text-zinc-900 mt-1">27082440</div>
+        </div>
+        <div class="p-4 border border-zinc-100 rounded-lg">
+          <div class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">DIČ</div>
+          <div class="mono font-bold text-zinc-900 mt-1">2120704783</div>
+        </div>
+        <div class="p-4 border border-zinc-100 rounded-lg">
+          <div class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">IČ DPH</div>
+          <div class="mono font-bold text-zinc-900 mt-1">SK2120704783</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-5">
+    <div class="px-6 py-4 border-b border-zinc-100 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-6 h-6 rounded-full gradient-primary text-white text-xs font-bold flex items-center justify-center">3</span>
+        <h2 class="font-bold text-zinc-900">Položky</h2>
+      </div>
+      <button class="text-xs text-violet-600 font-semibold hover:underline flex items-center gap-1">
+        <svg class="icon" style="width:12px;height:12px" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Pridať riadok
+      </button>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-12 gap-3 items-center px-2 pb-3 text-[10px] uppercase tracking-widest text-zinc-400 font-bold">
+        <div class="col-span-6">Popis</div>
+        <div class="col-span-1 text-center">Množ.</div>
+        <div class="col-span-1 text-center">MJ</div>
+        <div class="col-span-2 text-right">Cena / MJ</div>
+        <div class="col-span-1 text-center">DPH</div>
+        <div class="col-span-1 text-right">Spolu</div>
+      </div>
+      <div class="grid grid-cols-12 gap-3 items-center bg-zinc-50 rounded-lg p-2">
+        <input value="Konzultačné služby — vývoj (Júl 2026)" class="col-span-6 bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm" />
+        <input value="20" class="col-span-1 bg-white border border-zinc-200 rounded-lg px-2 py-2 text-sm mono text-center" />
+        <input value="h" class="col-span-1 bg-white border border-zinc-200 rounded-lg px-2 py-2 text-sm text-center" />
+        <input value="60,00 €" class="col-span-2 bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm mono text-right" />
+        <select class="col-span-1 bg-white border border-zinc-200 rounded-lg px-2 py-2 text-sm mono text-center">
+          <option>23%</option>
+        </select>
+        <div class="col-span-1 text-right font-bold text-zinc-900 mono">1 476 €</div>
+      </div>
+    </div>
+    <div class="px-6 py-5 border-t border-zinc-100 bg-gradient-to-r from-violet-50/50 to-pink-50/30">
+      <div class="flex justify-end">
+        <div class="text-right space-y-1.5 min-w-[300px]">
+          <div class="flex justify-between text-sm">
+            <span class="text-zinc-600">Základ dane</span>
+            <span class="mono font-semibold">1 200,00 €</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-zinc-600">DPH 23 %</span>
+            <span class="mono font-semibold">276,00 €</span>
+          </div>
+          <div class="flex justify-between pt-3 mt-2 border-t border-zinc-200 items-baseline">
+            <span class="font-bold text-zinc-900">Spolu k úhrade</span>
+            <span class="display text-4xl gradient-text mono">1 476,00 €</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3">
+    <button class="px-5 py-3 border border-zinc-200 rounded-lg text-sm font-semibold hover:border-zinc-300">Uložiť koncept</button>
+    <button class="px-6 py-3 gradient-primary text-white rounded-lg text-sm font-bold glow hover:opacity-90 flex items-center gap-2">
+      <svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Vystaviť a odoslať
+    </button>
+  </div>
+</section>
+
+<!-- ============ TAB: DETAIL FAKTÚRY ============ -->
+<section id="tab-invoice-detail" class="tab-panel hidden">
+  <div class="mb-6">
+    <a class="text-xs text-zinc-500 hover:text-zinc-900 flex items-center gap-1">
+      <svg class="icon" style="width:12px;height:12px" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Späť na faktúry
+    </a>
+    <div class="flex items-start justify-between mt-3">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <h1 class="display text-4xl text-zinc-900 mono">FA-2026-0042</h1>
+          <span class="chip chip-warning">
+            <svg class="icon" style="width:10px;height:10px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Čaká na úhradu · splatná o 12 dní
+          </span>
+        </div>
+        <p class="text-sm text-zinc-500">Vystavená 28. 07. 2026 · DZP 28. 07. 2026 · Alza.sk s.r.o.</p>
+      </div>
+      <div class="flex gap-2 items-center">
+        <button class="px-4 py-2.5 border border-zinc-200 rounded-lg text-sm font-semibold hover:border-zinc-300 flex items-center gap-2">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Zaplatené
+        </button>
+        <button class="px-4 py-2.5 border border-zinc-200 rounded-lg text-sm font-semibold hover:border-zinc-300 flex items-center gap-2">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Náhľad
+        </button>
+        <button class="px-5 py-2.5 gradient-primary text-white rounded-lg text-sm font-bold glow flex items-center gap-2">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+          Poslať mailom
+        </button>
+        <button class="px-3 py-2.5 border border-zinc-200 rounded-lg text-sm font-semibold hover:border-zinc-300">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-5">
+    <div class="col-span-2 space-y-5">
+      <!-- HERO SUMA -->
+      <div class="gradient-primary rounded-2xl p-8 text-white relative overflow-hidden glow">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="relative">
+          <div class="text-[11px] uppercase tracking-widest text-white/70 font-bold mb-2">K úhrade</div>
+          <div class="display text-6xl mono">1 476,00 €</div>
+          <div class="text-sm text-white/80 mt-2">Splatné 11. 08. 2026 · o 12 dní</div>
+        </div>
+        <div class="absolute right-8 top-8 text-right text-xs text-white/60">
+          <div class="mono">SK89 1100 0000</div>
+          <div class="mono">0026 2200 1234</div>
+          <div class="mt-2">VS 20260042</div>
+        </div>
+      </div>
+
+      <!-- PARTIES -->
+      <div class="grid grid-cols-2 gap-5">
+        <div class="card p-6">
+          <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-3">Dodávateľ</div>
+          <div class="font-bold text-zinc-900 text-lg">SORB XT s.r.o.</div>
+          <div class="text-sm text-zinc-600 mt-2 leading-relaxed">
+            Karpatské námestie 10A<br>
+            831 06 Bratislava
+          </div>
+          <div class="mt-3 space-y-1 text-xs mono text-zinc-500">
+            <div>IČO 47518309</div>
+            <div>SK2120886867</div>
+          </div>
+        </div>
+        <div class="card p-6">
+          <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-3">Odberateľ</div>
+          <div class="font-bold text-zinc-900 text-lg">Alza.sk s.r.o.</div>
+          <div class="text-sm text-zinc-600 mt-2 leading-relaxed">
+            Bottova 2A<br>
+            811 09 Bratislava
+          </div>
+          <div class="mt-3 space-y-1 text-xs mono text-zinc-500">
+            <div>IČO 27082440</div>
+            <div>SK2120704783</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITEMS -->
+      <div class="card overflow-hidden">
+        <div class="px-6 py-5 border-b border-zinc-100">
+          <h2 class="font-bold text-zinc-900">Položky</h2>
+        </div>
+        <table class="w-full">
+          <thead class="bg-zinc-50/50 border-b border-zinc-100">
+            <tr>
+              <th class="table-th w-8">#</th>
+              <th class="table-th">Popis</th>
+              <th class="table-th text-right w-20">Množ.</th>
+              <th class="table-th text-right w-24">Cena</th>
+              <th class="table-th text-right w-16">DPH</th>
+              <th class="table-th text-right w-28">Spolu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="table-td mono text-zinc-400">1</td>
+              <td class="table-td">Konzultačné služby — vývoj (Júl 2026)</td>
+              <td class="table-td text-right mono">20 h</td>
+              <td class="table-td text-right mono">60,00 €</td>
+              <td class="table-td text-right mono">23 %</td>
+              <td class="table-td text-right font-bold mono">1 476,00 €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="space-y-5">
+      <!-- TIMELINE -->
+      <div class="card p-6">
+        <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-4">Časová os</div>
+        <div class="relative pl-6">
+          <div class="absolute left-[9px] top-2 bottom-2 w-px bg-zinc-200"></div>
+          <div class="relative mb-4">
+            <div class="absolute -left-[17px] top-1 w-4 h-4 rounded-full gradient-primary flex items-center justify-center">
+              <svg class="icon text-white" style="width:8px;height:8px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Vystavená</div>
+            <div class="text-xs text-zinc-500 mono">28. 07. 2026 · 14:32</div>
+          </div>
+          <div class="relative mb-4">
+            <div class="absolute -left-[17px] top-1 w-4 h-4 rounded-full gradient-primary flex items-center justify-center">
+              <svg class="icon text-white" style="width:8px;height:8px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="text-sm font-semibold">Odoslaná e-mailom</div>
+            <div class="text-xs text-zinc-500 mono">28. 07. 2026 · 14:33</div>
+          </div>
+          <div class="relative">
+            <div class="absolute -left-[17px] top-1 w-4 h-4 rounded-full border-2 border-zinc-200 bg-white"></div>
+            <div class="text-sm text-zinc-500">Čaká na úhradu</div>
+            <div class="text-xs text-zinc-400">Splatná o 12 dní</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCOUNTING -->
+      <div class="card p-6">
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Automatické účtovanie</div>
+          <span class="chip chip-success">
+            <svg class="icon" style="width:10px;height:10px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Zaúčtované
+          </span>
+        </div>
+        <div class="space-y-2 mono text-xs">
+          <div class="flex justify-between p-2 rounded bg-zinc-50">
+            <span class="text-zinc-600">MD 311 <span class="text-zinc-400">Odberatelia</span></span>
+            <span class="font-bold text-zinc-900">1 476,00</span>
+          </div>
+          <div class="flex justify-between p-2 rounded bg-zinc-50">
+            <span class="text-zinc-600">D 602 <span class="text-zinc-400">Tržby</span></span>
+            <span class="font-bold text-zinc-900">1 200,00</span>
+          </div>
+          <div class="flex justify-between p-2 rounded bg-zinc-50">
+            <span class="text-zinc-600">D 343.02 <span class="text-zinc-400">DPH výstup</span></span>
+            <span class="font-bold text-zinc-900">276,00</span>
+          </div>
+        </div>
+        <button class="mt-4 text-xs text-violet-600 font-semibold hover:underline flex items-center gap-1">
+          Otvoriť denníkový zápis
+          <svg class="icon" style="width:10px;height:10px" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- FILES -->
+      <div class="card p-6">
+        <div class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-3">Súbory</div>
+        <div class="space-y-2">
+          <button class="w-full flex items-center justify-between p-3 rounded-lg border border-zinc-100 hover:border-zinc-200 hover:bg-zinc-50 text-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 bg-red-50 rounded flex items-center justify-center">
+                <svg class="icon text-red-600" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="text-left">
+                <div class="font-semibold">FA-2026-0042.pdf</div>
+                <div class="text-xs text-zinc-500">124 KB</div>
+              </div>
+            </div>
+            <svg class="icon text-zinc-400" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button class="w-full flex items-center justify-between p-3 rounded-lg border border-zinc-100 hover:border-zinc-200 hover:bg-zinc-50 text-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 bg-blue-50 rounded flex items-center justify-center">
+                <svg class="icon text-blue-600" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </div>
+              <div class="text-left">
+                <div class="font-semibold">FA-2026-0042.isdoc</div>
+                <div class="text-xs text-zinc-500">4 KB · XML</div>
+              </div>
+            </div>
+            <svg class="icon text-zinc-400" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function showTab(t) {
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
+  document.getElementById('tab-' + t).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
