@@ -29,7 +29,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
       <div className="md:grid md:grid-cols-[256px_1fr] min-h-screen">
-        <div className="md:min-h-screen" style={{ background: 'linear-gradient(180deg, #064e3b 0%, #052e16 100%)' }}>
+        <div className="md:min-h-screen bg-white border-r border-zinc-200">
           <Sidebar companies={companies || []} userEmail={user.email || ''} />
         </div>
         <div className="flex flex-col">
