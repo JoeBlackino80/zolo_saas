@@ -88,19 +88,29 @@ export default function ProductPickerModal({
     if (receiveQty <= 0) { toast('Množstvo > 0', 'error'); return; }
     setReceiving(true);
     const sb = createClient();
-    const { data: { user } } = await sb.auth.getUser();
-    const { data: warehouse } = await sb.from('warehouses').select('id').eq('company_id', companyId).limit(1).maybeSingle();
-    if (!warehouse) {
-      // Auto-create default warehouse
-      await sb.from('warehouses').insert({ company_id: companyId, name: 'Hlavný sklad', is_active: true, created_by: user?.id });
-      const { data: w2 } = await sb.from('warehouses').select('id').eq('company_id', companyId).limit(1).maybeSingle();
-      if (!w2) { toast('Nepodarilo sa vytvoriť sklad', 'error'); setReceiving(false); return; }
+
+    // Get or auto-create default warehouse (atomic via .select().single())
+    let warehouseId: string | undefined;
+    const { data: existing } = await sb.from('warehouses').select('id').eq('company_id', companyId).limit(1).maybeSingle();
+    if (existing?.id) {
+      warehouseId = existing.id as string;
+    } else {
+      const { data: created, error: whErr } = await sb.from('warehouses')
+        .insert({ company_id: companyId, name: 'Hlavný sklad', is_active: true })
+        .select('id')
+        .single();
+      if (whErr || !created?.id) {
+        toast(`Nepodarilo sa vytvoriť sklad: ${whErr?.message || 'unknown'}`, 'error');
+        setReceiving(false);
+        return;
+      }
+      warehouseId = created.id as string;
     }
-    const { data: w } = await sb.from('warehouses').select('id').eq('company_id', companyId).limit(1).maybeSingle();
+
     const cost = receiveCost > 0 ? receiveCost : selected.purchase_price;
     const { error } = await sb.from('stock_batches').insert({
       company_id: companyId,
-      warehouse_id: w?.id,
+      warehouse_id: warehouseId,
       product_id: selected.id,
       received_date: new Date().toISOString().slice(0, 10),
       qty_received: receiveQty,
@@ -108,9 +118,8 @@ export default function ProductPickerModal({
       cost_per_unit: cost,
     });
     setReceiving(false);
-    if (error) { toast(error.message, 'error'); return; }
+    if (error) { toast(`Naskladnenie zlyhalo: ${error.message}`, 'error'); return; }
     toast(`Naskladnené: ${receiveQty} ${selected.unit} × ${fmtEur(cost)}`, 'success');
-    // Confirm pick + auto-close
     const updated = { ...selected, stock_qty: selected.stock_qty + receiveQty };
     onPicked(updated);
   }
