@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
     currency: invoice.currency || 'EUR', subtotal: Number(invoice.subtotal || 0), vat_amount: Number(invoice.vat_amount || 0), total: Number(invoice.total || 0),
     variable_symbol: invoice.variable_symbol, notes: invoice.notes,
     customer_name: invoice.customer_name, customer_ico: invoice.customer_ico, customer_dic: invoice.customer_dic, customer_ic_dph: invoice.customer_ic_dph,
-    customer_street: invoice.customer_street, customer_city: invoice.customer_city, customer_zip: invoice.customer_zip,
+    customer_street: invoice.customer_street ?? null, customer_city: invoice.customer_city ?? null, customer_zip: invoice.customer_zip ?? null,
     company: { name: co?.name || '', ico: co?.ico || null, dic: co?.dic || null, ic_dph: co?.ic_dph || null, street: co?.street || null, city: co?.city || null, zip: co?.zip || null, iban: co?.iban || null, bic: co?.bic || null },
     items: items.map((it) => ({
       position: it.position, description: it.description, quantity: Number(it.quantity), unit: it.unit, unit_price: Number(it.unit_price), vat_rate: Number(it.vat_rate),
