@@ -48,7 +48,7 @@ export default function NotificationBell() {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute top-full right-0 mt-1.5 w-80 bg-white text-zinc-900 rounded-xl shadow-2xl border border-zinc-200 z-50 overflow-hidden">
+          <div className="absolute top-0 left-full ml-3 w-80 bg-white text-zinc-900 rounded-xl shadow-2xl border border-zinc-200 z-50 overflow-hidden">
             <div className="px-4 py-2.5 border-b border-zinc-100 flex items-center justify-between">
               <div className="font-semibold text-sm">Notifikácie</div>
               <Link href="/dashboard/notifications" onClick={() => setOpen(false)} className="text-xs text-zinc-500 hover:text-zinc-900">Všetky →</Link>
